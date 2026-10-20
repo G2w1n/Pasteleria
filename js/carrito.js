@@ -81,7 +81,7 @@ export function crearCarrito(itemsIniciales = [], alCambiar = () => {}) {
       const conDescuento = subtotal > MINIMO_DESCUENTO;
       // Redondeo a céntimos: 184 * 0.9 da 165.60000000000002 en JavaScript
       const total = Math.round((conDescuento ? aplicarDescuento(subtotal) : subtotal) * 100) / 100;
-      return { subtotal, descuento: subtotal - total, total, conDescuento, faltan: Math.max(MINIMO_DESCUENTO - subtotal, 0) };
+      return { subtotal, descuento: Math.round((subtotal - total) * 100) / 100, total, conDescuento, faltan: Math.max(MINIMO_DESCUENTO - subtotal, 0) };
     },
   };
 }
