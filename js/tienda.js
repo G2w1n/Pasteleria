@@ -8,9 +8,11 @@ import { Drawer } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dis
 import { NEGOCIO } from "./config.js";
 import { iniciarTema } from "./tema.js";
 import { iniciarCatalogo } from "./catalogo.js";
+import { iniciarCarrito } from "./carrito.js";
 
 iniciarTema(document.querySelector("#btnTema"));
 iniciarCatalogo();
+iniciarCarrito();
 
 // ---------- Drawers: cerrar al elegir una sección ----------
 // Un enlace interno (#catalogo, #pedido...) dentro del menú o del carrito

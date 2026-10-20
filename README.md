@@ -33,7 +33,8 @@ Los colores se cambian **sin tocar Bootstrap**: `css/estilos.css` redefine las v
 │   ├── tema.js          ← botón de modo claro / oscuro
 │   ├── productos.js     ← los 16 productos y sus categorías
 │   ├── ilustraciones.js ← dibujos SVG de los productos
-│   └── catalogo.js      ← filtros, buscador, orden y detalle
+│   ├── catalogo.js      ← filtros, buscador, orden y detalle
+│   └── carrito.js       ← carrito, descuento, Toast y WhatsApp
 └── img/
     ├── favicon.svg
     └── hero-torta.svg ← ilustración propia de la portada
@@ -53,9 +54,23 @@ Bootstrap 6 usa módulos ES, así que **no funciona abriendo el archivo con dobl
 - [x] **Fase 1:** Base y marca: Bootstrap 6 por CDN, paleta, tipografía, favicon y SEO
 - [x] **Fase 2:** Estructura: navbar, drawer, hero, "Nosotros", "Visítanos" (con estado *Abierto ahora* según la hora de Lima), footer y modo oscuro
 - [x] **Fase 3:** Catálogo: 16 productos en 4 categorías, filtros, buscador sin tildes, ordenamiento y detalle en un Dialog
-- [ ] **Fase 4:** Carrito: closure, recursividad, `localStorage`, descuento, Toast y WhatsApp
+- [x] **Fase 4:** Carrito: closure, recursividad, `localStorage`, descuento de 10 % sobre S/ 100, límite de stock, Toast y pedido por WhatsApp
 - [ ] **Fase 5:** Pedido especial: formulario con validación y precio en vivo
 - [ ] **Fase 6:** Pulido y publicación en GitHub Pages
+
+## Conceptos de la Semana 10 (funciones y módulos)
+
+| Concepto | Dónde | Qué hace |
+|---|---|---|
+| Módulos ES (`import` / `export`) | todos los archivos de `js/` | Cada archivo tiene una sola responsabilidad; sus variables no son globales |
+| Función flecha | `soles()` en `catalogo.js` | Da formato de moneda: `soles(89)` → `"S/ 89.00"` |
+| Parámetro **rest** | `sumar(...numeros)` en `carrito.js` | Suma cualquier cantidad de montos para el subtotal |
+| Parámetro **por defecto** | `agregar(producto, cantidad = 1)`, `aplicarDescuento(total, porcentaje = 10)`, `filtrarProductos(lista, { categoria = "todos", … } = {})` | Si no se indica el valor, se usa uno razonable |
+| **Recursividad** | `contarUnidades(lista)` en `carrito.js` | Caso base: lista vacía → 0. Si no: unidades del primero + `contarUnidades(resto)` |
+| **Closure** | `crearCarrito()` en `carrito.js` | La lista `items` es privada; solo cambia con `agregar`, `quitar`, `vaciar`… |
+| Desestructuración | `const [primero, ...resto] = lista` | Separa el primer elemento del resto en la recursión |
+| Eventos personalizados | `kuyay:agregar` | El catálogo avisa y el carrito escucha, sin depender uno del otro |
+| Delegación de eventos | `#grillaProductos`, `#carritoLista` | Un solo *listener* atiende todas las tarjetas y filas |
 
 ## Fotos de los productos
 
