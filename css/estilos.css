@@ -192,6 +192,272 @@
     margin: 0 0 1rem;
   }
 
+  /* ---------- Catálogo ---------- */
+  .catalogo-cabecera {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+  }
+  .catalogo-cabecera .titulo-seccion {
+    margin-bottom: 0;
+  }
+  .catalogo-cabecera > p {
+    max-width: 40ch;
+  }
+  .catalogo-herramientas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .filtros {
+    flex-wrap: nowrap;
+    overflow-x: auto;           /* en celular las pills se deslizan */
+    max-width: 100%;
+    scrollbar-width: none;
+    --bs-nav-pills-bg: color-mix(in oklch, var(--bs-fg-body) 6%, transparent);
+  }
+  .filtros .nav-link {
+    white-space: nowrap;
+    font-weight: 600;
+  }
+  .filtro-cantidad {
+    font-size: 0.75em;
+    opacity: 0.7;
+    margin-inline-start: 0.15rem;
+  }
+  .catalogo-busqueda {
+    display: flex;
+    flex-wrap: wrap;            /* en celular, el orden baja debajo del buscador */
+    gap: 0.5rem;
+    flex: 1 1 22rem;
+    max-width: 34rem;
+  }
+  .buscador {
+    flex: 1 1 15rem;
+  }
+  .orden {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  /* Tarjeta de producto */
+  .producto {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1rem;
+    border-color: color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+    background: light-dark(#fff, #241b1d);
+    transition: translate 0.2s ease, box-shadow 0.2s ease;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .producto:hover {
+      translate: 0 -4px;
+      box-shadow: 0 14px 30px -12px color-mix(in oklch, var(--kuyay-cacao) 35%, transparent);
+    }
+    .producto:hover .producto-media svg {
+      scale: 1.05;
+    }
+  }
+  .producto-media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    display: grid;
+    place-items: center;
+    background: light-dark(var(--tono), color-mix(in oklch, var(--tono) 14%, #241b1d));
+  }
+  .producto-media svg,
+  .producto-media img {
+    width: 82%;
+    height: auto;
+    transition: scale 0.3s ease;
+  }
+  .producto-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .producto-insignias {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    display: flex;
+    gap: 0.35rem;
+  }
+  .producto-cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .producto-categoria {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bs-accent-fg);
+  }
+  .producto-nombre {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  /* El nombre es un botón que abre el detalle; toda la tarjeta es "clicable" */
+  .producto-enlace {
+    all: unset;
+    cursor: pointer;
+  }
+  .producto-enlace::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .producto-enlace:focus-visible {
+    text-decoration: underline;
+  }
+  .producto:has(.producto-enlace:focus-visible) {
+    outline: 3px solid var(--bs-primary-focus-ring);
+    outline-offset: 2px;
+  }
+  .producto-descripcion {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--bs-fg-2);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .producto-pie {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+  .producto-pie .btn {
+    position: relative; /* por encima del área clicable de la tarjeta */
+    z-index: 1;
+  }
+  .producto-precio {
+    font-family: var(--bs-heading-font-family);
+    font-size: 1.3rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .producto-agotado .producto-media > svg,
+  .producto-agotado .producto-media > img {
+    filter: grayscale(0.85);
+    opacity: 0.6;
+  }
+
+  .sin-resultados {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 0.25rem;
+    padding-block: 3rem;
+  }
+  .sin-resultados > i {
+    font-size: 2.5rem;
+    color: var(--bs-primary-fg);
+  }
+  .sin-resultados .btn {
+    margin-top: 1rem;
+  }
+
+  /* Detalle del producto */
+  .detalle .dialog-header {
+    border-bottom: 0;
+  }
+  .detalle-media {
+    /* Sin esto, la proporción 4:3 + height:100% calcula el ancho desde la
+       altura y la imagen se sale de su columna */
+    aspect-ratio: auto;
+    width: 100%;
+    border-radius: 1rem;
+    overflow: hidden;
+    height: 100%;
+    min-height: 240px;
+  }
+  .detalle-titulo {
+    font-size: clamp(1.6rem, 1.3rem + 1vw, 2rem);
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+  }
+  .detalle-precio > span:first-child {
+    font-family: var(--bs-heading-font-family);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--bs-primary-fg);
+  }
+  .detalle-stock {
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin: 0.25rem 0 1rem;
+  }
+  .detalle-subtitulo {
+    font-family: var(--bs-body-font-family);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bs-fg-3);
+  }
+  .detalle-ingredientes {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .detalle-ingredientes li {
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    background: var(--bs-accent-bg-subtle);
+    color: var(--bs-accent-fg-emphasis);
+  }
+  .detalle-compra {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .cantidad {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .cantidad input {
+    width: 3.5rem;
+    text-align: center;
+    font-weight: 700;
+    -moz-appearance: textfield;
+  }
+  .cantidad input::-webkit-inner-spin-button,
+  .cantidad input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+  }
+  .detalle-agotado {
+    padding: 0.8rem 1rem;
+    border-radius: 0.75rem;
+    background: var(--bs-bg-3);
+    margin: 0;
+  }
+
+  .defs-svg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
   /* Nosotros */
   .valores {
     list-style: none;

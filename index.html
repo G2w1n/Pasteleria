@@ -122,12 +122,45 @@
       </div>
     </section>
 
-    <!-- ================= CATÁLOGO (fase 3) ================= -->
+    <!-- ================= CATÁLOGO ================= -->
     <section class="seccion" id="catalogo" aria-labelledby="catalogoTitulo">
       <div class="container">
-        <p class="ceja">Nuestra vitrina</p>
-        <h2 class="titulo-seccion" id="catalogoTitulo">Catálogo</h2>
-        <p class="fg-2">Muy pronto: tortas, postres, panes y salados.</p>
+        <div class="catalogo-cabecera">
+          <div>
+            <p class="ceja">Nuestra vitrina</p>
+            <h2 class="titulo-seccion" id="catalogoTitulo">Catálogo</h2>
+          </div>
+          <p class="fg-2 mb-0">Horneado hoy en Barranco. Pide antes de las 6:00&nbsp;p.&nbsp;m. y llega el mismo día.</p>
+        </div>
+
+        <!-- Barra de herramientas: filtros, buscador y orden -->
+        <div class="catalogo-herramientas">
+          <ul class="nav nav-pills filtros" id="filtros" aria-label="Filtrar por categoría"></ul>
+          <div class="catalogo-busqueda">
+            <label class="form-control form-adorn buscador">
+              <span class="form-adorn-icon"><i class="bi bi-search" aria-hidden="true"></i></span>
+              <span class="visually-hidden">Buscar productos</span>
+              <input class="form-ghost" type="search" id="buscador" placeholder="Busca lúcuma, cacao, empanada…" autocomplete="off">
+            </label>
+            <label class="visually-hidden" for="orden">Ordenar productos</label>
+            <select class="form-control orden" id="orden">
+              <option value="destacados">Destacados</option>
+              <option value="precio-asc">Precio: menor a mayor</option>
+              <option value="precio-desc">Precio: mayor a menor</option>
+              <option value="nombre">Nombre (A–Z)</option>
+            </select>
+          </div>
+        </div>
+        <p class="fg-3 fs-sm mt-5 mb-0" id="resumenCatalogo" aria-live="polite"></p>
+
+        <div class="row row-cols-1 sm:row-cols-2 lg:row-cols-3 xl:row-cols-4 g-7 mt-1" id="grillaProductos"></div>
+
+        <div class="sin-resultados" id="sinResultados" hidden>
+          <i class="bi bi-search-heart" aria-hidden="true"></i>
+          <p class="fw-semibold mb-0">No encontramos productos para “<span id="textoBuscado"></span>”</p>
+          <p class="fg-3 fs-sm">Prueba con otra palabra o revisa todas las categorías.</p>
+          <button class="btn btn-outline theme-primary" type="button" id="limpiarBusqueda">Ver todo el catálogo</button>
+        </div>
       </div>
     </section>
 
@@ -266,6 +299,53 @@
       </div>
     </div>
   </dialog>
+
+  <!-- ================= DETALLE DEL PRODUCTO ================= -->
+  <dialog class="dialog dialog-lg detalle" id="detalleProducto" aria-labelledby="detalleTitulo">
+    <div class="dialog-header">
+      <p class="producto-categoria mb-0" id="detalleCategoria"></p>
+      <button class="btn-close" type="button" data-bs-dismiss="dialog" aria-label="Cerrar"></button>
+    </div>
+    <div class="dialog-body">
+      <div class="row g-7">
+        <div class="md:col-6">
+          <div class="producto-media detalle-media" id="detalleMedia"></div>
+        </div>
+        <div class="md:col-6 detalle-info">
+          <h2 class="detalle-titulo" id="detalleTitulo"></h2>
+          <p class="detalle-precio mb-0"><span id="detallePrecio"></span> <span class="fg-3 fs-sm" id="detallePorcion"></span></p>
+          <p class="detalle-stock" id="detalleStock"></p>
+          <p class="fg-2" id="detalleDescripcion"></p>
+          <h3 class="detalle-subtitulo">Ingredientes</h3>
+          <ul class="detalle-ingredientes" id="detalleIngredientes"></ul>
+
+          <div class="detalle-compra" id="detalleCompra">
+            <div class="cantidad" role="group" aria-label="Cantidad">
+              <button class="btn btn-subtle theme-secondary btn-icon" type="button" id="detalleMenos" aria-label="Quitar uno"><i class="bi bi-dash" aria-hidden="true"></i></button>
+              <input class="form-control" type="number" id="detalleCantidad" value="1" min="1" aria-label="Cantidad" readonly>
+              <button class="btn btn-subtle theme-secondary btn-icon" type="button" id="detalleMas" aria-label="Agregar uno"><i class="bi bi-plus" aria-hidden="true"></i></button>
+            </div>
+            <button class="btn btn-solid theme-primary flex-grow-1" type="button" id="detalleAgregar">
+              <i class="bi bi-bag-plus" aria-hidden="true"></i> Agregar al carrito
+            </button>
+          </div>
+          <p class="detalle-agotado" id="detalleAgotado" hidden>
+            <i class="bi bi-clock-history" aria-hidden="true"></i> Se agotó por hoy. Vuelve mañana temprano o escríbenos para separarlo.
+          </p>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Degradado compartido por las ilustraciones de productos (definido una sola vez) -->
+  <svg class="defs-svg" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="brillo" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity=".35"/>
+        <stop offset=".6" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+  </svg>
 
   <!-- JS de Bootstrap 6: es un módulo, type="module" es obligatorio -->
   <script type="module"

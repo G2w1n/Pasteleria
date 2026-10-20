@@ -2,13 +2,15 @@
 // Kuyay · Pastelería de autor
 // Lógica de la tienda. Es un módulo ES (type="module"):
 // sus variables NO son globales.
-// En las fases 3 y 4 aquí van el catálogo y el carrito.
+// Este archivo solo conecta los módulos; cada uno hace una cosa.
 // =========================================================
 import { Drawer } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { NEGOCIO } from "./config.js";
 import { iniciarTema } from "./tema.js";
+import { iniciarCatalogo } from "./catalogo.js";
 
 iniciarTema(document.querySelector("#btnTema"));
+iniciarCatalogo();
 
 // ---------- Drawers: cerrar al elegir una sección ----------
 // Un enlace interno (#catalogo, #pedido...) dentro del menú o del carrito

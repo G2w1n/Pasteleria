@@ -28,9 +28,12 @@ Los colores se cambian **sin tocar Bootstrap**: `css/estilos.css` redefine las v
 ├── css/
 │   └── estilos.css ← colores y tipografía de la marca
 ├── js/
-│   ├── tienda.js   ← punto de entrada: conecta todo
-│   ├── config.js   ← datos del negocio (WhatsApp, horario)
-│   └── tema.js     ← botón de modo claro / oscuro
+│   ├── tienda.js        ← punto de entrada: conecta todo
+│   ├── config.js        ← datos del negocio (WhatsApp, horario)
+│   ├── tema.js          ← botón de modo claro / oscuro
+│   ├── productos.js     ← los 16 productos y sus categorías
+│   ├── ilustraciones.js ← dibujos SVG de los productos
+│   └── catalogo.js      ← filtros, buscador, orden y detalle
 └── img/
     ├── favicon.svg
     └── hero-torta.svg ← ilustración propia de la portada
@@ -49,10 +52,18 @@ Bootstrap 6 usa módulos ES, así que **no funciona abriendo el archivo con dobl
 
 - [x] **Fase 1:** Base y marca: Bootstrap 6 por CDN, paleta, tipografía, favicon y SEO
 - [x] **Fase 2:** Estructura: navbar, drawer, hero, "Nosotros", "Visítanos" (con estado *Abierto ahora* según la hora de Lima), footer y modo oscuro
-- [ ] **Fase 3:** Catálogo: productos, filtros, buscador, ordenamiento y detalle
+- [x] **Fase 3:** Catálogo: 16 productos en 4 categorías, filtros, buscador sin tildes, ordenamiento y detalle en un Dialog
 - [ ] **Fase 4:** Carrito: closure, recursividad, `localStorage`, descuento, Toast y WhatsApp
 - [ ] **Fase 5:** Pedido especial: formulario con validación y precio en vivo
 - [ ] **Fase 6:** Pulido y publicación en GitHub Pages
+
+## Fotos de los productos
+
+Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraciones.js`
+(8 formas que cambian de color según el producto). Para usar una foto real:
+
+1. Guarda la foto en `img/productos/` (de preferencia en `.webp`, 800 × 600 px).
+2. En `js/productos.js`, agrega a ese producto la línea `foto: "img/productos/nombre.webp",`.
 
 ## Tecnologías
 
