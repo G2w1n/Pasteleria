@@ -28,10 +28,15 @@ Los colores se cambian **sin tocar Bootstrap**: `css/estilos.css` redefine las v
 ├── css/
 │   └── estilos.css ← colores y tipografía de la marca
 ├── js/
-│   └── tienda.js   ← catálogo, carrito y funciones
+│   ├── tienda.js   ← punto de entrada: conecta todo
+│   ├── config.js   ← datos del negocio (WhatsApp, horario)
+│   └── tema.js     ← botón de modo claro / oscuro
 └── img/
-    └── favicon.svg
+    ├── favicon.svg
+    └── hero-torta.svg ← ilustración propia de la portada
 ```
+
+> Los datos del negocio (dirección, teléfono, correo) son **ficticios**, para fines académicos. El número de WhatsApp se cambia en `js/config.js`.
 
 ## Cómo ejecutarlo
 
@@ -43,7 +48,7 @@ Bootstrap 6 usa módulos ES, así que **no funciona abriendo el archivo con dobl
 ## Avance
 
 - [x] **Fase 1:** Base y marca: Bootstrap 6 por CDN, paleta, tipografía, favicon y SEO
-- [ ] **Fase 2:** Estructura: navbar, drawer, hero, sección "Visítanos", footer y modo oscuro
+- [x] **Fase 2:** Estructura: navbar, drawer, hero, "Nosotros", "Visítanos" (con estado *Abierto ahora* según la hora de Lima), footer y modo oscuro
 - [ ] **Fase 3:** Catálogo: productos, filtros, buscador, ordenamiento y detalle
 - [ ] **Fase 4:** Carrito: closure, recursividad, `localStorage`, descuento, Toast y WhatsApp
 - [ ] **Fase 5:** Pedido especial: formulario con validación y precio en vivo
@@ -52,4 +57,5 @@ Bootstrap 6 usa módulos ES, así que **no funciona abriendo el archivo con dobl
 ## Tecnologías
 
 - [Bootstrap 6.0.0-alpha.1](https://getbootstrap.com/docs/6.0/) por CDN, con verificación SRI
+- [Bootstrap Icons 1.13.1](https://icons.getbootstrap.com/)
 - HTML5, CSS3 (variables, `@layer`, `light-dark()`) y JavaScript (módulos ES)

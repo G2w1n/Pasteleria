@@ -17,6 +17,15 @@
 
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
 
+  <!-- Tema guardado (claro/oscuro). Va aquí para que la página no parpadee al cargar -->
+  <script>
+    try {
+      const t = localStorage.getItem("kuyay-tema");
+      if (t) document.documentElement.dataset.bsTheme = t;
+      else if (matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.dataset.bsTheme = "dark";
+    } catch {}
+  </script>
+
   <!-- Fuentes de la marca -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,55 +37,235 @@
         integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe"
         crossorigin="anonymous">
 
+  <!-- Íconos (Bootstrap Icons) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+        integrity="sha384-CK2SzKma4jA5H/MXDUU7i1TqZlCFaD4T01vtyDFvPlD97JQyS+IsSh1nI2EFbpyk"
+        crossorigin="anonymous">
+
   <!-- Estilos de la marca, SIEMPRE después de Bootstrap -->
   <link href="css/estilos.css" rel="stylesheet">
 </head>
 <body>
   <a class="visually-hidden-focusable" href="#contenido">Saltar al contenido</a>
 
-  <!-- FASE 1: vista de la marca. En la fase 2 se reemplaza por la estructura de la tienda -->
-  <main id="contenido" class="container py-12">
-    <header class="marca-intro">
-      <img src="img/favicon.svg" alt="" width="72" height="72">
-      <p class="ceja">Pastelería de autor · Lima</p>
-      <h1 class="fs-6xl">Kuyay</h1>
-      <p class="fs-xl fg-2">Hecho con <em>kuyay</em>, horneado con calma.</p>
-    </header>
+  <!-- ================= MENÚ SUPERIOR ================= -->
+  <header class="cabecera sticky-top">
+    <nav class="navbar md:navbar-expand navbar-translucent" aria-label="Menú principal">
+      <div class="container">
+        <a class="navbar-brand marca" href="#inicio">
+          <img src="img/favicon.svg" alt="" width="36" height="36">
+          <span>Kuyay</span>
+        </a>
 
-    <section class="mt-12" aria-labelledby="titulo-paleta">
-      <h2 id="titulo-paleta" class="fs-2xl">Paleta de la marca</h2>
-      <ul class="paleta">
-        <li><span class="muestra" style="--c: var(--kuyay-mora)"></span><b>Mora andina</b><code>#8e2c4e</code></li>
-        <li><span class="muestra" style="--c: var(--kuyay-lucuma)"></span><b>Lúcuma</b><code>#e0a03a</code></li>
-        <li><span class="muestra" style="--c: var(--kuyay-cacao)"></span><b>Cacao</b><code>#3a2420</code></li>
-        <li><span class="muestra" style="--c: var(--kuyay-crema)"></span><b>Crema</b><code>#fbf6ef</code></li>
-      </ul>
-    </section>
+        <!-- En celular el menú es un drawer; desde 768 px se vuelve una barra horizontal -->
+        <dialog class="drawer drawer-end" id="menu" aria-labelledby="menuTitulo">
+          <div class="drawer-header">
+            <h2 class="drawer-title fs-lg" id="menuTitulo">Menú</h2>
+            <button class="btn-close" type="button" data-bs-dismiss="drawer" aria-label="Cerrar menú"></button>
+          </div>
+          <div class="drawer-body">
+            <ul class="navbar-nav md:ms-auto">
+              <li class="nav-item"><a class="nav-link" href="#catalogo">Catálogo</a></li>
+              <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
+              <li class="nav-item"><a class="nav-link" href="#pedido">Pedido especial</a></li>
+              <li class="nav-item"><a class="nav-link" href="#visitanos">Visítanos</a></li>
+            </ul>
+          </div>
+        </dialog>
 
-    <section class="mt-12" aria-labelledby="titulo-prueba">
-      <h2 id="titulo-prueba" class="fs-2xl">Prueba de Bootstrap 6</h2>
-      <p class="fg-2">Si los botones tienen los colores de la marca y la ventana se abre, el CSS y el JavaScript cargaron bien.</p>
-      <div class="d-flex flex-wrap gap-3 mt-5">
-        <button class="btn btn-solid theme-primary" type="button"
-                data-bs-toggle="dialog" data-bs-target="#saludo">Probar JavaScript</button>
-        <button class="btn btn-solid theme-accent" type="button">Botón de acento</button>
-        <button class="btn btn-outline theme-primary" type="button">Botón de contorno</button>
-        <span class="badge theme-primary align-self-center">Nuevo</span>
+        <!-- Acciones: siempre visibles, también en celular -->
+        <div class="acciones">
+          <button class="btn btn-text btn-icon" type="button" id="btnTema" aria-label="Activar modo oscuro" aria-pressed="false">
+            <i class="bi bi-moon-stars" aria-hidden="true"></i>
+          </button>
+          <button class="btn btn-text btn-icon position-relative" type="button"
+                  data-bs-toggle="drawer" data-bs-target="#carrito" aria-label="Abrir carrito (0 productos)" id="btnCarrito">
+            <i class="bi bi-bag-heart" aria-hidden="true"></i>
+            <span class="badge theme-accent contador-carrito" id="contadorCarrito" data-cantidad="0" aria-hidden="true">0</span>
+          </button>
+          <button class="btn btn-text btn-icon navbar-toggler" type="button"
+                  data-bs-toggle="drawer" data-bs-target="#menu" aria-label="Abrir menú">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main id="contenido">
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="inicio" aria-labelledby="heroTitulo">
+      <div class="container">
+        <div class="row align-items-center g-7">
+          <div class="lg:col-7">
+            <p class="ceja">Pastelería de autor · Barranco, Lima</p>
+            <h1 class="hero-titulo" id="heroTitulo">Postres con <span class="resalte">sabor a Perú</span>, hechos con kuyay</h1>
+            <p class="fs-lg hero-texto">Horneamos cada mañana con lúcuma, cacao de Cusco, aguaymanto y maracuyá. Pide en línea y recíbelo en tu casa.</p>
+            <div class="d-flex flex-wrap gap-3 mt-7">
+              <a class="btn btn-solid theme-primary btn-lg" href="#catalogo">Ver catálogo <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+              <a class="btn btn-outline theme-primary btn-lg" href="#pedido">Torta personalizada</a>
+            </div>
+            <ul class="beneficios">
+              <li><i class="bi bi-truck" aria-hidden="true"></i> Delivery en Lima</li>
+              <li><i class="bi bi-award" aria-hidden="true"></i> Ingredientes peruanos</li>
+              <li><i class="bi bi-stars" aria-hidden="true"></i> Horneado cada mañana</li>
+            </ul>
+          </div>
+          <div class="lg:col-5">
+            <div class="hero-ilustracion">
+              <img src="img/hero-torta.svg" width="480" height="480"
+                   alt="Ilustración de una torta de tres pisos de cacao, lúcuma y mora, decorada con aguaymantos">
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <dialog class="dialog" id="saludo" aria-labelledby="saludo-titulo">
-      <div class="dialog-header">
-        <h2 class="dialog-title fs-xl" id="saludo-titulo">¡Funciona!</h2>
-        <button class="btn-close" type="button" data-bs-dismiss="dialog" aria-label="Cerrar"></button>
+    <!-- ================= CATÁLOGO (fase 3) ================= -->
+    <section class="seccion" id="catalogo" aria-labelledby="catalogoTitulo">
+      <div class="container">
+        <p class="ceja">Nuestra vitrina</p>
+        <h2 class="titulo-seccion" id="catalogoTitulo">Catálogo</h2>
+        <p class="fg-2">Muy pronto: tortas, postres, panes y salados.</p>
       </div>
-      <div class="dialog-body">El JavaScript de Bootstrap 6 está activo.</div>
-    </dialog>
+    </section>
+
+    <!-- ================= NOSOTROS ================= -->
+    <section class="seccion seccion-alterna" id="nosotros" aria-labelledby="nosotrosTitulo">
+      <div class="container">
+        <div class="row g-7 align-items-center">
+          <div class="lg:col-5">
+            <p class="ceja">Nuestra historia</p>
+            <h2 class="titulo-seccion" id="nosotrosTitulo">Una receta de la abuela que se volvió pastelería</h2>
+            <p class="fg-2">Kuyay nació en una cocina de Barranco con la torta de lúcuma de la familia. Hoy seguimos horneando en lotes pequeños, sin conservantes y con productores peruanos.</p>
+          </div>
+          <div class="lg:col-7">
+            <ul class="valores">
+              <li class="valor">
+                <i class="bi bi-flower1" aria-hidden="true"></i>
+                <h3 class="fs-lg">Sabores de aquí</h3>
+                <p>Lúcuma de Huánuco, cacao de Cusco y aguaymanto de Cajamarca.</p>
+              </li>
+              <li class="valor">
+                <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i>
+                <h3 class="fs-lg">Hecho a mano</h3>
+                <p>Lotes pequeños cada mañana. Lo que no se vende, se dona.</p>
+              </li>
+              <li class="valor">
+                <i class="bi bi-heart" aria-hidden="true"></i>
+                <h3 class="fs-lg">Con kuyay</h3>
+                <p>Kuyay significa "amor" en quechua. Es nuestro ingrediente principal.</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PEDIDO ESPECIAL (fase 5) ================= -->
+    <section class="seccion" id="pedido" aria-labelledby="pedidoTitulo">
+      <div class="container">
+        <p class="ceja">Para tu celebración</p>
+        <h2 class="titulo-seccion" id="pedidoTitulo">Pedido especial</h2>
+        <p class="fg-2">Muy pronto: diseña tu torta personalizada.</p>
+      </div>
+    </section>
+
+    <!-- ================= VISÍTANOS ================= -->
+    <section class="seccion seccion-alterna" id="visitanos" aria-labelledby="visitanosTitulo">
+      <div class="container">
+        <div class="row g-7">
+          <div class="lg:col-5">
+            <p class="ceja">Te esperamos</p>
+            <h2 class="titulo-seccion" id="visitanosTitulo">Visítanos</h2>
+
+            <div class="d-flex align-items-center gap-3 mt-5">
+              <h3 class="fs-lg mb-0">Horario</h3>
+              <span class="badge" id="estadoTienda"></span>
+            </div>
+            <table class="table horario mt-3">
+              <caption class="visually-hidden">Horario de atención</caption>
+              <tbody>
+                <tr data-dia="1 2 3 4 5"><th scope="row">Lunes a viernes</th><td>8:00 a. m. – 8:00 p. m.</td></tr>
+                <tr data-dia="6"><th scope="row">Sábado</th><td>8:00 a. m. – 9:00 p. m.</td></tr>
+                <tr data-dia="0"><th scope="row">Domingo</th><td>9:00 a. m. – 2:00 p. m.</td></tr>
+              </tbody>
+            </table>
+
+            <ul class="contacto">
+              <li><i class="bi bi-geo-alt" aria-hidden="true"></i> Av. Grau 312, Barranco, Lima</li>
+              <li><i class="bi bi-telephone" aria-hidden="true"></i> <a href="tel:+51987654321">987 654 321</a></li>
+              <li><i class="bi bi-envelope" aria-hidden="true"></i> <a href="mailto:hola@kuyay.pe">hola@kuyay.pe</a></li>
+            </ul>
+            <a class="btn btn-solid theme-success mt-5" href="https://wa.me/51987654321?text=Hola%20Kuyay%2C%20quisiera%20hacer%20una%20consulta" target="_blank" rel="noopener">
+              <i class="bi bi-whatsapp" aria-hidden="true"></i> Escríbenos por WhatsApp
+            </a>
+          </div>
+          <div class="lg:col-7">
+            <div class="mapa">
+              <iframe src="https://maps.google.com/maps?q=Barranco%2C%20Lima&amp;z=15&amp;output=embed"
+                      title="Mapa de ubicación de Kuyay en Barranco, Lima"
+                      loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer class="container py-7 fg-3 fs-sm">
-    © <span id="anio">2026</span> Kuyay · Pastelería de autor
+  <!-- ================= PIE DE PÁGINA ================= -->
+  <footer class="pie">
+    <div class="container">
+      <div class="row g-7">
+        <div class="md:col-5">
+          <a class="marca" href="#inicio">
+            <img src="img/favicon.svg" alt="" width="36" height="36">
+            <span>Kuyay</span>
+          </a>
+          <p class="mt-3">Hecho con <em>kuyay</em>, horneado con calma.</p>
+          <ul class="redes" aria-label="Redes sociales">
+            <li><a class="btn btn-subtle theme-primary btn-icon" href="#" aria-label="Instagram"><i class="bi bi-instagram" aria-hidden="true"></i></a></li>
+            <li><a class="btn btn-subtle theme-primary btn-icon" href="#" aria-label="Facebook"><i class="bi bi-facebook" aria-hidden="true"></i></a></li>
+            <li><a class="btn btn-subtle theme-primary btn-icon" href="#" aria-label="TikTok"><i class="bi bi-tiktok" aria-hidden="true"></i></a></li>
+          </ul>
+        </div>
+        <div class="md:col-3">
+          <h2 class="pie-titulo">Tienda</h2>
+          <ul class="list-unstyled pie-enlaces">
+            <li><a href="#catalogo">Catálogo</a></li>
+            <li><a href="#pedido">Pedido especial</a></li>
+            <li><a href="#nosotros">Nosotros</a></li>
+          </ul>
+        </div>
+        <div class="md:col-4">
+          <h2 class="pie-titulo">Contacto</h2>
+          <ul class="list-unstyled pie-enlaces">
+            <li>Av. Grau 312, Barranco, Lima</li>
+            <li><a href="tel:+51987654321">987 654 321</a></li>
+            <li><a href="mailto:hola@kuyay.pe">hola@kuyay.pe</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="pie-legal">© <span id="anio">2026</span> Kuyay · Pastelería de autor. Proyecto académico de Diseño Web.</p>
+    </div>
   </footer>
+
+  <!-- ================= CARRITO (lógica en la fase 4) ================= -->
+  <dialog class="drawer drawer-end" id="carrito" aria-labelledby="carritoTitulo">
+    <div class="drawer-header">
+      <h2 class="drawer-title fs-xl" id="carritoTitulo">Tu carrito</h2>
+      <button class="btn-close" type="button" data-bs-dismiss="drawer" aria-label="Cerrar carrito"></button>
+    </div>
+    <div class="drawer-body">
+      <div class="carrito-vacio">
+        <i class="bi bi-bag-heart" aria-hidden="true"></i>
+        <p class="fw-semibold mb-0">Tu carrito está vacío</p>
+        <p class="fg-3 fs-sm">Agrega algo dulce del catálogo.</p>
+        <a class="btn btn-outline theme-primary" href="#catalogo">Ver catálogo</a>
+      </div>
+    </div>
+  </dialog>
 
   <!-- JS de Bootstrap 6: es un módulo, type="module" es obligatorio -->
   <script type="module"
