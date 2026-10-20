@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kuyay · Pastelería de autor</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Kuyay es una pastelería de autor que hornea con ingredientes peruanos: lúcuma, cacao, aguaymanto y maracuyá. Pide tortas, postres y salados en línea.">
+  <meta name="theme-color" content="#8e2c4e">
+
+  <!-- Vista previa al compartir (Open Graph). La imagen se agrega en la fase 6 -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Kuyay · Pastelería de autor">
+  <meta property="og:description" content="Hecho con kuyay, horneado con calma. Tortas, postres y salados con sabores peruanos.">
+  <meta property="og:locale" content="es_PE">
+
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+
+  <!-- Fuentes de la marca -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS de Bootstrap 6 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe"
+        crossorigin="anonymous">
+
+  <!-- Estilos de la marca, SIEMPRE después de Bootstrap -->
+  <link href="css/estilos.css" rel="stylesheet">
+</head>
+<body>
+  <a class="visually-hidden-focusable" href="#contenido">Saltar al contenido</a>
+
+  <!-- FASE 1: vista de la marca. En la fase 2 se reemplaza por la estructura de la tienda -->
+  <main id="contenido" class="container py-12">
+    <header class="marca-intro">
+      <img src="img/favicon.svg" alt="" width="72" height="72">
+      <p class="ceja">Pastelería de autor · Lima</p>
+      <h1 class="fs-6xl">Kuyay</h1>
+      <p class="fs-xl fg-2">Hecho con <em>kuyay</em>, horneado con calma.</p>
+    </header>
+
+    <section class="mt-12" aria-labelledby="titulo-paleta">
+      <h2 id="titulo-paleta" class="fs-2xl">Paleta de la marca</h2>
+      <ul class="paleta">
+        <li><span class="muestra" style="--c: var(--kuyay-mora)"></span><b>Mora andina</b><code>#8e2c4e</code></li>
+        <li><span class="muestra" style="--c: var(--kuyay-lucuma)"></span><b>Lúcuma</b><code>#e0a03a</code></li>
+        <li><span class="muestra" style="--c: var(--kuyay-cacao)"></span><b>Cacao</b><code>#3a2420</code></li>
+        <li><span class="muestra" style="--c: var(--kuyay-crema)"></span><b>Crema</b><code>#fbf6ef</code></li>
+      </ul>
+    </section>
+
+    <section class="mt-12" aria-labelledby="titulo-prueba">
+      <h2 id="titulo-prueba" class="fs-2xl">Prueba de Bootstrap 6</h2>
+      <p class="fg-2">Si los botones tienen los colores de la marca y la ventana se abre, el CSS y el JavaScript cargaron bien.</p>
+      <div class="d-flex flex-wrap gap-3 mt-5">
+        <button class="btn btn-solid theme-primary" type="button"
+                data-bs-toggle="dialog" data-bs-target="#saludo">Probar JavaScript</button>
+        <button class="btn btn-solid theme-accent" type="button">Botón de acento</button>
+        <button class="btn btn-outline theme-primary" type="button">Botón de contorno</button>
+        <span class="badge theme-primary align-self-center">Nuevo</span>
+      </div>
+    </section>
+
+    <dialog class="dialog" id="saludo" aria-labelledby="saludo-titulo">
+      <div class="dialog-header">
+        <h2 class="dialog-title fs-xl" id="saludo-titulo">¡Funciona!</h2>
+        <button class="btn-close" type="button" data-bs-dismiss="dialog" aria-label="Cerrar"></button>
+      </div>
+      <div class="dialog-body">El JavaScript de Bootstrap 6 está activo.</div>
+    </dialog>
+  </main>
+
+  <footer class="container py-7 fg-3 fs-sm">
+    © <span id="anio">2026</span> Kuyay · Pastelería de autor
+  </footer>
+
+  <!-- JS de Bootstrap 6: es un módulo, type="module" es obligatorio -->
+  <script type="module"
+          src="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-1a/pXj49ZQ1aHEmrJ+gMw1otqoVsYwlEnlD8mIfY2TV03r20Y0CN7uqx1tQogjPL"
+          crossorigin="anonymous"></script>
+  <script type="module" src="js/tienda.js"></script>
+</body>
+</html>

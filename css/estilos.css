@@ -1,0 +1,110 @@
+/* =========================================================
+   Kuyay · Pastelería de autor
+   Estilos de la marca sobre Bootstrap 6.
+
+   Bootstrap 6 organiza su CSS en capas (@layer):
+   - Sus VARIABLES (:root) están fuera de toda capa. Las
+     nuestras también deben estarlo; como este archivo se
+     carga después, nuestros valores ganan.
+   - Sus ESTILOS van en capas, y reserva la capa "custom"
+     para nosotros: después de sus componentes y antes de
+     sus utilidades. Así clases como p-5 o fg-primary siguen
+     ganando cuando las escribimos en el HTML.
+   ========================================================= */
+
+/* ---------- Variables de la marca (sin capa) ---------- */
+:root {
+  /* ---- Paleta ---- */
+  --kuyay-mora: #8e2c4e;        /* principal: botones, enlaces */
+  --kuyay-mora-oscura: #6b1f3a;
+  --kuyay-mora-clara: #e58aa9;  /* versión para modo oscuro */
+  --kuyay-lucuma: #e0a03a;      /* acento: insignias, destacados */
+  --kuyay-cacao: #3a2420;       /* texto */
+  --kuyay-crema: #fbf6ef;       /* fondo */
+
+  /* ---- "primary" de Bootstrap = mora andina ---- */
+  --bs-primary-base: var(--kuyay-mora);
+  --bs-primary-bg: var(--kuyay-mora);
+  --bs-primary-fg: light-dark(var(--kuyay-mora), var(--kuyay-mora-clara));
+  --bs-primary-fg-emphasis: light-dark(var(--kuyay-mora-oscura), #f6c9d8);
+  --bs-primary-bg-subtle: light-dark(#f8e6ec, #3a1824);
+  --bs-primary-bg-muted: light-dark(#f0cdd9, #52213a);
+  --bs-primary-border: light-dark(#dba3b7, #7a2f4c);
+  --bs-primary-focus-ring: color-mix(in oklch, var(--kuyay-mora) 55%, transparent);
+  --bs-primary-contrast: #ffffff;
+
+  /* ---- "accent" de Bootstrap = lúcuma ---- */
+  --bs-accent-base: var(--kuyay-lucuma);
+  --bs-accent-bg: var(--kuyay-lucuma);
+  --bs-accent-fg: light-dark(#8a5a0c, #f2c27a);
+  --bs-accent-fg-emphasis: light-dark(#5e3d06, #f8dcae);
+  --bs-accent-bg-subtle: light-dark(#fcf0dc, #3a2a10);
+  --bs-accent-bg-muted: light-dark(#f7deb2, #523b14);
+  --bs-accent-border: light-dark(#ecc480, #7a5718);
+  --bs-accent-focus-ring: color-mix(in oklch, var(--kuyay-lucuma) 55%, transparent);
+  --bs-accent-contrast: var(--kuyay-cacao); /* texto oscuro: blanco sobre lúcuma no se lee */
+
+  /* ---- Fondo, texto y tipografía ---- */
+  --bs-bg-body: light-dark(var(--kuyay-crema), #1b1416);
+  --bs-fg-body: light-dark(var(--kuyay-cacao), #f3e9e2);
+  --bs-body-font-family: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bs-heading-font-family: "Fraunces", Georgia, "Times New Roman", serif;
+}
+
+/* ---------- Estilos propios (capa custom) ---------- */
+@layer custom {
+  h1, h2, h3 {
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---- Vista de la marca (fase 1) ---- */
+  .marca-intro {
+    display: grid;
+    justify-items: start;
+    gap: 0.5rem;
+  }
+  .marca-intro h1 {
+    font-weight: 800;
+    line-height: 1;
+    margin: 0;
+    color: var(--bs-primary-fg);
+  }
+  .marca-intro em {
+    font-family: var(--bs-heading-font-family);
+    color: var(--bs-accent-fg);
+  }
+
+  .ceja {
+    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bs-accent-fg);
+  }
+
+  .paleta {
+    list-style: none;
+    padding: 0;
+    margin: 1.25rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  .paleta li {
+    display: grid;
+    gap: 0.15rem;
+  }
+  .paleta code {
+    color: var(--bs-fg-3);
+  }
+  .muestra {
+    display: block;
+    height: 72px;
+    border-radius: 0.75rem;
+    background: var(--c);
+    border: 1px solid color-mix(in oklch, var(--bs-fg-body) 15%, transparent);
+    margin-bottom: 0.5rem;
+  }
+}
