@@ -65,6 +65,43 @@
     letter-spacing: -0.01em;
   }
 
+  /* ---------- Animaciones al hacer scroll (js/animaciones.js) ---------- */
+  .con-animaciones .revelar {
+    opacity: 0;
+    translate: 0 24px;
+    transition: opacity 0.6s ease, translate 0.6s ease;
+    transition-delay: var(--retraso, 0ms);
+  }
+  .con-animaciones .revelar.visible {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  /* Menú: sección actual (ScrollSpy de Bootstrap) */
+  .navbar .nav-link.active {
+    position: relative;
+  }
+  @media (width >= 768px) {
+    .navbar .nav-link.active::after {
+      content: "";
+      position: absolute;
+      left: var(--bs-nav-link-padding-x, 0.5rem);
+      right: var(--bs-nav-link-padding-x, 0.5rem);
+      bottom: 0.1rem;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+    }
+  }
+
+  .sin-js {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    background: var(--bs-warning-bg-subtle);
+    color: var(--bs-warning-fg-emphasis);
+  }
+
   .ceja {
     margin: 0 0 0.6rem;
     font-size: 0.8rem;

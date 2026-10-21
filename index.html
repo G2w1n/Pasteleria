@@ -9,13 +9,50 @@
   <meta name="description" content="Kuyay es una pastelería de autor que hornea con ingredientes peruanos: lúcuma, cacao, aguaymanto y maracuyá. Pide tortas, postres y salados en línea.">
   <meta name="theme-color" content="#8e2c4e">
 
-  <!-- Vista previa al compartir (Open Graph). La imagen se agrega en la fase 6 -->
+  <link rel="canonical" href="https://g2w1n.github.io/Pasteleria/">
+
+  <!-- Vista previa al compartir en WhatsApp, Facebook, LinkedIn y X -->
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://g2w1n.github.io/Pasteleria/">
   <meta property="og:title" content="Kuyay · Pastelería de autor">
   <meta property="og:description" content="Hecho con kuyay, horneado con calma. Tortas, postres y salados con sabores peruanos.">
+  <meta property="og:image" content="https://g2w1n.github.io/Pasteleria/img/og-kuyay.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Kuyay, pastelería de autor: torta de tres pisos de cacao, lúcuma y mora">
   <meta property="og:locale" content="es_PE">
+  <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+
+  <!-- Datos del negocio para buscadores (Google muestra horario y dirección) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Bakery",
+    "name": "Kuyay · Pastelería de autor",
+    "description": "Pastelería de autor con ingredientes peruanos: lúcuma, cacao, aguaymanto y maracuyá.",
+    "url": "https://g2w1n.github.io/Pasteleria/",
+    "image": "https://g2w1n.github.io/Pasteleria/img/og-kuyay.png",
+    "telephone": "+51987654321",
+    "email": "hola@kuyay.pe",
+    "priceRange": "S/ 5 – S/ 240",
+    "servesCuisine": "Peruana",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Av. Grau 312",
+      "addressLocality": "Barranco",
+      "addressRegion": "Lima",
+      "addressCountry": "PE"
+    },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "08:00", "closes": "20:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "08:00", "closes": "21:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Sunday", "opens": "09:00", "closes": "14:00" }
+    ]
+  }
+  </script>
 
   <!-- Tema guardado (claro/oscuro). Va aquí para que la página no parpadee al cargar -->
   <script>
@@ -46,7 +83,7 @@
   <!-- Estilos de la marca, SIEMPRE después de Bootstrap -->
   <link href="css/estilos.css" rel="stylesheet">
 </head>
-<body>
+<body data-bs-spy="scroll" data-bs-target="#menu" data-bs-root-margin="-30% 0px -60% 0px">
   <a class="visually-hidden-focusable" href="#contenido">Saltar al contenido</a>
 
   <!-- ================= MENÚ SUPERIOR ================= -->
@@ -66,6 +103,8 @@
           </div>
           <div class="drawer-body">
             <ul class="navbar-nav md:ms-auto">
+              <!-- "Inicio" solo se ve en el menú del celular; en escritorio lo cumple el logo -->
+              <li class="nav-item md:d-none"><a class="nav-link" href="#inicio">Inicio</a></li>
               <li class="nav-item"><a class="nav-link" href="#catalogo">Catálogo</a></li>
               <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
               <li class="nav-item"><a class="nav-link" href="#pedido">Pedido especial</a></li>
@@ -92,6 +131,10 @@
       </div>
     </nav>
   </header>
+
+  <noscript>
+    <p class="sin-js">Para ver el catálogo y usar el carrito, activa JavaScript en tu navegador. También puedes pedir por WhatsApp al 987 654 321.</p>
+  </noscript>
 
   <main id="contenido">
     <!-- ================= HERO ================= -->
@@ -125,7 +168,7 @@
     <!-- ================= CATÁLOGO ================= -->
     <section class="seccion" id="catalogo" aria-labelledby="catalogoTitulo">
       <div class="container">
-        <div class="catalogo-cabecera">
+        <div class="revelar catalogo-cabecera">
           <div>
             <p class="ceja">Nuestra vitrina</p>
             <h2 class="titulo-seccion" id="catalogoTitulo">Catálogo</h2>
@@ -168,24 +211,24 @@
     <section class="seccion seccion-alterna" id="nosotros" aria-labelledby="nosotrosTitulo">
       <div class="container">
         <div class="row g-7 align-items-center">
-          <div class="lg:col-5">
+          <div class="revelar lg:col-5">
             <p class="ceja">Nuestra historia</p>
             <h2 class="titulo-seccion" id="nosotrosTitulo">Una receta de la abuela que se volvió pastelería</h2>
             <p class="fg-2">Kuyay nació en una cocina de Barranco con la torta de lúcuma de la familia. Hoy seguimos horneando en lotes pequeños, sin conservantes y con productores peruanos.</p>
           </div>
           <div class="lg:col-7">
             <ul class="valores">
-              <li class="valor">
+              <li class="revelar valor">
                 <i class="bi bi-flower1" aria-hidden="true"></i>
                 <h3 class="fs-lg">Sabores de aquí</h3>
                 <p>Lúcuma de Huánuco, cacao de Cusco y aguaymanto de Cajamarca.</p>
               </li>
-              <li class="valor">
+              <li class="revelar valor">
                 <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i>
                 <h3 class="fs-lg">Hecho a mano</h3>
                 <p>Lotes pequeños cada mañana. Lo que no se vende, se dona.</p>
               </li>
-              <li class="valor">
+              <li class="revelar valor">
                 <i class="bi bi-heart" aria-hidden="true"></i>
                 <h3 class="fs-lg">Con kuyay</h3>
                 <p>Kuyay significa "amor" en quechua. Es nuestro ingrediente principal.</p>
@@ -199,7 +242,7 @@
     <!-- ================= PEDIDO ESPECIAL ================= -->
     <section class="seccion" id="pedido" aria-labelledby="pedidoTitulo">
       <div class="container">
-        <div class="catalogo-cabecera">
+        <div class="revelar catalogo-cabecera">
           <div>
             <p class="ceja">Para tu celebración</p>
             <h2 class="titulo-seccion" id="pedidoTitulo">Diseña tu torta</h2>
@@ -403,7 +446,7 @@
 
           <!-- ---------- Resumen en vivo ---------- -->
           <div class="lg:col-5">
-            <aside class="card resumen-pedido" aria-labelledby="resumenTitulo">
+            <div class="card resumen-pedido" role="region" aria-labelledby="resumenTitulo">
               <div class="resumen-media" id="resumenMedia"></div>
               <div class="card-body">
                 <h3 class="fs-lg" id="resumenTitulo">Tu torta</h3>
@@ -414,7 +457,7 @@
                 </div>
                 <p class="fg-3 fs-xs mb-0">Precio referencial. El delivery y el adelanto (50 %) se confirman por WhatsApp.</p>
               </div>
-            </aside>
+            </div>
           </div>
         </div>
       </div>
@@ -424,7 +467,7 @@
     <section class="seccion seccion-alterna" id="visitanos" aria-labelledby="visitanosTitulo">
       <div class="container">
         <div class="row g-7">
-          <div class="lg:col-5">
+          <div class="revelar lg:col-5">
             <p class="ceja">Te esperamos</p>
             <h2 class="titulo-seccion" id="visitanosTitulo">Visítanos</h2>
 
@@ -451,7 +494,7 @@
             </a>
           </div>
           <div class="lg:col-7">
-            <div class="mapa">
+            <div class="revelar mapa">
               <iframe src="https://maps.google.com/maps?q=Barranco%2C%20Lima&amp;z=15&amp;output=embed"
                       title="Mapa de ubicación de Kuyay en Barranco, Lima"
                       loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>

@@ -10,11 +10,13 @@ import { iniciarTema } from "./tema.js";
 import { iniciarCatalogo } from "./catalogo.js";
 import { iniciarCarrito } from "./carrito.js";
 import { iniciarPedido } from "./pedido.js";
+import { iniciarAnimaciones } from "./animaciones.js";
 
 iniciarTema(document.querySelector("#btnTema"));
 iniciarCatalogo();
 iniciarCarrito();
 iniciarPedido();
+iniciarAnimaciones();
 
 // ---------- Drawers: cerrar al elegir una sección ----------
 // Un enlace interno (#catalogo, #pedido...) dentro del menú o del carrito
