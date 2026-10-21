@@ -7,16 +7,9 @@
 export const prefiereQuieto = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 // ---------- Transición de vista (View Transitions API) ----------
-// Envuelve un cambio del DOM para que el navegador lo anime:
-// por ejemplo, las tarjetas se deslizan a su nuevo lugar al filtrar.
-export function transicion(cambiar) {
-  if (!document.startViewTransition || prefiereQuieto()) return cambiar();
-  return document.startViewTransition(cambiar);
-}
-
-// Igual que transicion(), pero con un "tipo" para que el CSS sepa qué animar
-// (por ejemplo "tema" o "detalle"). Si el navegador no entiende los tipos,
-// el cambio se hace sin animación.
+// Envuelve un cambio del DOM para que el navegador lo anime. El "tipo" le dice
+// al CSS qué animar ("filtro", "tema" o "detalle"). Si el navegador no entiende
+// las transiciones o sus tipos, el cambio se hace sin animación.
 export function transicionConTipo(tipo, cambiar) {
   if (!document.startViewTransition || prefiereQuieto()) {
     cambiar();
@@ -93,6 +86,151 @@ function tarjetas3D() {
       tarjeta.classList.remove("en-3d");
       tarjeta.style.removeProperty("--rx");
       tarjeta.style.removeProperty("--ry");
+    }
+  });
+}
+
+// ---------- Carrito que se sacude al recibir un producto ----------
+export function sacudirCarrito() {
+  const icono = document.querySelector("#btnCarrito .bi");
+  if (!icono || prefiereQuieto()) return;
+  icono.classList.remove("sacudir");
+  void icono.offsetWidth; // reinicia la animación si ya estaba
+  icono.classList.add("sacudir");
+}
+
+// ---------- Palabras que rotan en la portada ----------
+// "Postres con sabor a Perú" → "lúcuma" → "cacao"… El h1 conserva "Perú"
+// para los lectores de pantalla (la parte que rota es aria-hidden).
+function palabrasRotativas() {
+  const caja = document.querySelector(".palabra-rotativa");
+  if (!caja || prefiereQuieto()) return;
+  const palabras = caja.dataset.palabras.split(",");
+  let i = 0;
+  let pausado = false;
+  caja.closest("h1").addEventListener("pointerenter", () => (pausado = true));
+  caja.closest("h1").addEventListener("pointerleave", () => (pausado = false));
+
+  // Mide el ancho de una palabra para que el resto de la línea se acomode suavemente
+  const medir = (texto) => {
+    const sonda = document.createElement("span");
+    sonda.className = "palabra-sonda";
+    sonda.textContent = texto;
+    caja.append(sonda);
+    const ancho = sonda.getBoundingClientRect().width;
+    sonda.remove();
+    return ancho;
+  };
+  caja.style.width = `${medir(palabras[0])}px`;
+
+  setInterval(() => {
+    if (pausado || document.hidden) return;
+    i = (i + 1) % palabras.length;
+    const saliente = caja.querySelector(".palabra:not(.saliendo)");
+    const entrante = document.createElement("span");
+    entrante.className = "palabra entrando";
+    entrante.textContent = palabras[i];
+    caja.append(entrante);
+    caja.style.width = `${medir(palabras[i])}px`;
+    saliente?.classList.add("saliendo");
+    saliente?.addEventListener("animationend", () => saliente.remove(), { once: true });
+    entrante.addEventListener("animationend", () => entrante.classList.remove("entrando"), { once: true });
+  }, 2600);
+}
+
+// ---------- Botones flotantes: volver arriba y WhatsApp ----------
+function botonesFlotantes() {
+  const volver = document.querySelector("#volverArriba");
+  if (!volver) return;
+  const circulo = volver.querySelector("circle");
+  const largo = 2 * Math.PI * 21; // perímetro del círculo (r = 21)
+  circulo.style.strokeDasharray = largo;
+
+  let pendiente = false;
+  const actualizar = () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    const avance = max > 0 ? scrollY / max : 0;
+    circulo.style.strokeDashoffset = largo * (1 - avance); // el borde se llena con el scroll
+    volver.classList.toggle("visible", scrollY > 500);
+    pendiente = false;
+  };
+  window.addEventListener("scroll", () => {
+    if (!pendiente) requestAnimationFrame(actualizar);
+    pendiente = true;
+  }, { passive: true });
+  actualizar();
+  volver.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: prefiereQuieto() ? "auto" : "smooth" });
+    document.querySelector("#contenido")?.focus({ preventScroll: true });
+  });
+
+  // Burbuja "¿Te ayudamos?" a los 6 segundos (una vez por visita).
+  // No en la página del pedido: ahí la persona ya está pidiendo.
+  const burbuja = document.querySelector("#formPedido") ? null : document.querySelector("#burbujaWhatsApp");
+  let yaCerrada = false;
+  try {
+    yaCerrada = sessionStorage.getItem("kuyay-burbuja") === "cerrada";
+  } catch {}
+  if (burbuja && !yaCerrada) {
+    setTimeout(() => (burbuja.hidden = false), 6000);
+    document.querySelector("#cerrarBurbuja").addEventListener("click", () => {
+      burbuja.hidden = true;
+      try {
+        sessionStorage.setItem("kuyay-burbuja", "cerrada");
+      } catch {}
+    });
+  }
+}
+
+// ---------- Sorpresa: lluvia de cupcakes ----------
+// Se activa escribiendo "kuyay" en cualquier parte, o con 5 clics en la torta de la portada.
+function lluviaDeCupcakes() {
+  if (prefiereQuieto()) return;
+  const capa = document.createElement("div");
+  capa.className = "confeti";
+  capa.setAttribute("aria-hidden", "true");
+  document.body.append(capa);
+  const caidas = Array.from({ length: 28 }, () => {
+    const c = document.createElement("img");
+    c.src = "img/favicon.svg";
+    c.alt = "";
+    c.className = "cupcake-cae";
+    const tam = 28 + Math.random() * 30;
+    Object.assign(c.style, { width: `${tam}px`, left: `${Math.random() * 100}vw`, top: `${-tam - 20}px` });
+    capa.append(c);
+    const giro = (Math.random() - 0.5) * 720;
+    return c.animate(
+      [
+        { transform: "translateY(0) rotate(0deg)", opacity: 1 },
+        { transform: `translateY(${innerHeight + 120}px) rotate(${giro}deg)`, opacity: 0.9 },
+      ],
+      { duration: 1800 + Math.random() * 1600, delay: Math.random() * 900, easing: "cubic-bezier(.4, 0, .8, .6)", fill: "backwards" },
+    ).finished;
+  });
+  Promise.all(caidas).then(() => capa.remove());
+}
+
+function sorpresa() {
+  let tecleado = "";
+  document.addEventListener("keydown", (e) => {
+    if (e.target.closest("input, textarea, select, [contenteditable]")) return;
+    tecleado = (tecleado + e.key.toLowerCase()).slice(-5);
+    if (tecleado === "kuyay") lluviaDeCupcakes();
+  });
+  const torta = document.querySelector(".hero-ilustracion");
+  if (!torta) return;
+  let clics = 0;
+  let reloj = null;
+  torta.addEventListener("click", () => {
+    clics += 1;
+    torta.classList.remove("rebotar");
+    void torta.offsetWidth;
+    torta.classList.add("rebotar");
+    clearTimeout(reloj);
+    reloj = setTimeout(() => (clics = 0), 1500);
+    if (clics === 5) {
+      clics = 0;
+      lluviaDeCupcakes();
     }
   });
 }
@@ -218,4 +356,7 @@ export function iniciarAnimaciones() {
   contadores();
   cabeceraAlScroll();
   tarjetas3D();
+  palabrasRotativas();
+  botonesFlotantes();
+  sorpresa();
 }

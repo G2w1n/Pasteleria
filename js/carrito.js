@@ -10,7 +10,7 @@ import { productos } from "./productos.js";
 import { dibujarProducto } from "./ilustraciones.js";
 import { soles } from "./catalogo.js";
 import { NEGOCIO } from "./config.js";
-import { animarNumero, volarAlCarrito, confeti } from "./animaciones.js";
+import { animarNumero, volarAlCarrito, confeti, sacudirCarrito, prefiereQuieto } from "./animaciones.js";
 
 // ================= PARTE 1: LÓGICA =================
 
@@ -241,7 +241,10 @@ export function iniciarCarrito() {
   // El catálogo pide agregar (evento emitido por catalogo.js)
   document.addEventListener("kuyay:agregar", async ({ detail: { producto, cantidad, origen } }) => {
     const agregadas = carrito.agregar(producto, cantidad);
-    if (agregadas > 0) await volarAlCarrito(origen, $("#btnCarrito"));
+    if (agregadas > 0) {
+      await volarAlCarrito(origen, $("#btnCarrito"));
+      sacudirCarrito();
+    }
     if (agregadas === 0) {
       avisar(`Ya tienes todas las unidades disponibles de ${producto.nombre}.`, { tema: "theme-warning", icono: "bi-exclamation-circle-fill" });
     } else if (agregadas < cantidad) {
@@ -265,8 +268,23 @@ export function iniciarCarrito() {
     if (quitar) carrito.quitar(quitar);
   });
 
-  $("#btnVaciar").addEventListener("click", () => {
-    if (confirm("¿Vaciar el carrito?")) carrito.vaciar();
+  // Al vaciar, las filas salen deslizándose una por una antes de borrarse
+  $("#btnVaciar").addEventListener("click", async () => {
+    if (!confirm("¿Vaciar el carrito?")) return;
+    if (!prefiereQuieto()) {
+      const filas = [...$("#carritoLista").children];
+      await Promise.all(
+        filas.map((fila, i) =>
+          fila.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateX(60px)" }], {
+            duration: 280,
+            delay: i * 70,
+            easing: "ease-in",
+            fill: "forwards",
+          }).finished,
+        ),
+      );
+    }
+    carrito.vaciar();
   });
 
   $("#avisos").addEventListener("click", (e) => {

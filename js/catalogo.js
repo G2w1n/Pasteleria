@@ -3,10 +3,10 @@
 // Las tarjetas y el detalle se usan en dos páginas:
 // Inicio (favoritos) y Catálogo (todos los productos).
 // =========================================================
-import { Dialog } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
-import { CATEGORIAS, productos } from "./productos.js";
+import { Dialog, Popover, Tab, Tooltip } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
+import { CATEGORIAS, INGREDIENTES_PERUANOS, productos } from "./productos.js";
 import { dibujarProducto } from "./ilustraciones.js";
-import { transicion, transicionConTipo } from "./animaciones.js";
+import { transicionConTipo } from "./animaciones.js";
 
 // ---------- Utilidades (funciones flecha) ----------
 export const soles = (monto) => `S/ ${monto.toFixed(2)}`;
@@ -133,7 +133,29 @@ function llenarDetalle(p) {
   $("#detallePrecio").textContent = soles(p.precio);
   $("#detallePorcion").textContent = p.porcion;
   $("#detalleDescripcion").textContent = p.descripcion;
-  $("#detalleIngredientes").innerHTML = p.ingredientes.map((i) => `<li>${i}</li>`).join("");
+  // Pestañas: siempre se abre en "Descripción"
+  Tab.getOrCreateInstance($("#pestanaDescripcion")).show();
+
+  // Ingredientes: los peruanos llevan un Tooltip que explica qué son
+  $("#detalleIngredientes").querySelectorAll("[data-bs-toggle]").forEach((el) => Tooltip.getInstance(el)?.dispose());
+  $("#detalleIngredientes").innerHTML = p.ingredientes
+    .map((i) =>
+      INGREDIENTES_PERUANOS[i]
+        ? `<li><button class="ingrediente-peruano" type="button" data-bs-toggle="tooltip" data-bs-title="${INGREDIENTES_PERUANOS[i]}">${i} <i class="bi bi-info-circle" aria-hidden="true"></i></button></li>`
+        : `<li>${i}</li>`,
+    )
+    .join("");
+  $("#detalleIngredientesAyuda").hidden = !p.ingredientes.some((i) => INGREDIENTES_PERUANOS[i]);
+
+  // Alérgenos
+  $("#detalleAlergenos").innerHTML = p.alergenos.length
+    ? p.alergenos.map((a) => `<li><i class="bi bi-exclamation-diamond" aria-hidden="true"></i> ${a}</li>`).join("")
+    : `<li class="sin-alergenos"><i class="bi bi-check2-circle" aria-hidden="true"></i> Sin alérgenos principales</li>`;
+
+  // Popover "¿Cómo conservarlo?": el texto depende de la categoría
+  const conservar = $("#detalleConservar");
+  Popover.getInstance(conservar)?.dispose();
+  conservar.setAttribute("data-bs-content", CATEGORIAS.find((c) => c.id === p.categoria)?.conservacion ?? "");
   $("#detalleStock").textContent = agotado(p) ? "Agotado por hoy" : p.stock <= 5 ? `¡Quedan solo ${p.stock}!` : "Disponible hoy";
   $("#detalleStock").className = `detalle-stock ${agotado(p) ? "fg-danger" : p.stock <= 5 ? "fg-warning" : "fg-success"}`;
 
@@ -238,18 +260,43 @@ function escribirURL({ categoria, texto, orden }) {
 export function iniciarCatalogo() {
   const estado = leerURL();
 
-  function pintarFiltros() {
+  // Los filtros se pintan una sola vez; después solo se cambia cuál está activo,
+  // para que la "pastilla" de color se deslice hasta él en vez de saltar
+  function crearFiltros() {
     const contar = (id) => (id === "todos" ? productos.length : productos.filter((p) => p.categoria === id).length);
-    $("#filtros").innerHTML = [{ id: "todos", nombre: "Todos" }, ...CATEGORIAS]
-      .map(
-        (c) => `<li class="nav-item">
-          <button class="nav-link ${c.id === estado.categoria ? "active" : ""}" type="button"
-                  data-categoria="${c.id}" aria-pressed="${c.id === estado.categoria}">
-            ${c.nombre} <span class="filtro-cantidad">${contar(c.id)}</span>
-          </button>
-        </li>`,
-      )
-      .join("");
+    $("#filtros").innerHTML =
+      `<li class="filtros-indicador" aria-hidden="true"></li>` +
+      [{ id: "todos", nombre: "Todos" }, ...CATEGORIAS]
+        .map(
+          (c) => `<li class="nav-item">
+            <button class="nav-link" type="button" data-categoria="${c.id}" aria-pressed="false">
+              ${c.nombre} <span class="filtro-cantidad">${contar(c.id)}</span>
+            </button>
+          </li>`,
+        )
+        .join("");
+  }
+
+  function pintarFiltros({ animar = true } = {}) {
+    const botones = $("#filtros").querySelectorAll("[data-categoria]");
+    botones.forEach((b) => {
+      const activo = b.dataset.categoria === estado.categoria;
+      b.classList.toggle("active", activo);
+      b.setAttribute("aria-pressed", String(activo));
+    });
+    moverIndicador(animar);
+  }
+
+  function moverIndicador(animar = true) {
+    const activo = $("#filtros .nav-link.active");
+    const indicador = $("#filtros .filtros-indicador");
+    if (!activo || !indicador) return;
+    // Posición del botón dentro de la lista (que puede estar desplazada en celular)
+    const lista = $("#filtros");
+    const x = activo.getBoundingClientRect().left - lista.getBoundingClientRect().left + lista.scrollLeft;
+    indicador.classList.toggle("sin-transicion", !animar);
+    indicador.style.width = `${activo.offsetWidth}px`;
+    indicador.style.transform = `translateX(${x}px)`;
   }
 
   function pintarCatalogo() {
@@ -262,12 +309,16 @@ export function iniciarCatalogo() {
   }
 
   // Los cambios de filtro y orden se animan; el buscador no (se escribe letra por letra)
-  const actualizar = ({ animar = true } = {}) => (animar ? transicion(pintarCatalogo) : pintarCatalogo());
+  const actualizar = ({ animar = true } = {}) => (animar ? transicionConTipo("filtro", pintarCatalogo) : pintarCatalogo());
 
   $("#buscador").value = estado.texto;
   $("#orden").value = estado.orden;
-  pintarFiltros();
+  crearFiltros();
+  pintarFiltros({ animar: false });
   pintarCatalogo();
+  // Las fuentes y el ancho de la ventana cambian el tamaño de los botones
+  document.fonts?.ready.then(() => moverIndicador(false));
+  window.addEventListener("resize", () => moverIndicador(false));
 
   $("#filtros").addEventListener("click", (e) => {
     const boton = e.target.closest("[data-categoria]");

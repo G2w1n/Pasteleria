@@ -1792,6 +1792,584 @@
       60% { rotate: 20deg; opacity: 1; }
     }
   }
+
+  /* =========================================================
+     COMPONENTES NUEVOS DE BOOTSTRAP Y MÁS ANIMACIONES
+     ========================================================= */
+
+  main:focus {
+    outline: none; /* recibe el foco desde "volver arriba", no necesita borde */
+  }
+
+  /* ---------- Palabras que rotan en la portada ---------- */
+  .palabra-rotativa {
+    position: relative;
+    display: inline-block;
+    vertical-align: bottom;
+    height: 1.05em;
+    overflow: hidden;
+    transition: width 0.45s cubic-bezier(.2, .7, .2, 1);
+  }
+  .palabra-rotativa .palabra {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    white-space: nowrap;
+  }
+  .palabra-sonda {
+    position: absolute;
+    visibility: hidden;
+    white-space: nowrap;
+  }
+  .palabra.entrando {
+    animation: palabra-entra 0.5s cubic-bezier(.2, .7, .2, 1) both;
+  }
+  .palabra.saliendo {
+    animation: palabra-sale 0.4s ease-in both;
+  }
+  @keyframes palabra-entra {
+    from { transform: translateY(100%) rotateX(-70deg); opacity: 0; }
+  }
+  @keyframes palabra-sale {
+    to { transform: translateY(-100%) rotateX(70deg); opacity: 0; }
+  }
+
+  /* ---------- Chocolate que gotea sobre el pie de página ---------- */
+  .pie {
+    position: relative;
+  }
+  .chocolate {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    fill: #5a352c;
+    pointer-events: none;
+  }
+  .gota-larga {
+    transform-box: fill-box;
+    transform-origin: 50% 0;
+  }
+  .gota-cae {
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .gota-larga { animation: estirar-gota 5s ease-in-out infinite; }
+    .g2 { animation-delay: 1.2s; animation-duration: 6s; }
+    .g3 { animation-delay: 2.4s; }
+    .g4 { animation-delay: 0.6s; animation-duration: 7s; }
+    .g5 { animation-delay: 3s; }
+    .gota-cae { animation: caer-gota 6s ease-in infinite; }
+    .c2 { animation-delay: 3.2s; animation-duration: 7s; }
+    @keyframes estirar-gota {
+      50% { transform: scaleY(1.35); }
+    }
+    @keyframes caer-gota {
+      0%, 70% { opacity: 0; transform: translateY(0); }
+      75% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(60px); }
+    }
+  }
+  .pie > .container {
+    position: relative;
+    padding-top: 1.5rem; /* espacio para el chocolate */
+  }
+
+  /* ---------- Botones flotantes ---------- */
+  .flotantes {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 1030;
+    display: grid;
+    justify-items: end;
+    gap: 0.75rem;
+  }
+  .flotante {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 0;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    text-decoration: none;
+    box-shadow: 0 10px 24px -8px color-mix(in oklch, var(--kuyay-cacao) 50%, transparent);
+    transition: scale 0.2s ease, opacity 0.3s ease, translate 0.3s ease;
+  }
+  .flotante:hover {
+    scale: 1.08;
+  }
+  .flotante:focus-visible {
+    outline: 3px solid var(--bs-primary-focus-ring);
+    outline-offset: 3px;
+  }
+  .whatsapp {
+    background: var(--bs-success-bg);
+    color: #fff;
+  }
+  .whatsapp:hover {
+    color: #fff;
+  }
+  /* Latido: un anillo que se expande y se desvanece */
+  .whatsapp::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--bs-success-bg);
+    opacity: 0;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .whatsapp::after { animation: latido 2.4s ease-out infinite; }
+    @keyframes latido {
+      0% { opacity: 0.8; scale: 1; }
+      100% { opacity: 0; scale: 1.7; }
+    }
+  }
+  .whatsapp-flotante {
+    position: relative;
+  }
+  .burbuja {
+    position: absolute;
+    right: calc(100% + 0.75rem);
+    bottom: 0.25rem;
+    width: 15rem;
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.85rem 2.25rem 0.85rem 1rem;
+    border-radius: 1rem 1rem 0.25rem 1rem;
+    background: var(--bs-bg-body);
+    color: var(--bs-fg-body);
+    font-size: 0.9rem;
+    box-shadow: 0 14px 30px -12px color-mix(in oklch, var(--kuyay-cacao) 45%, transparent);
+    border: 1px solid color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+  }
+  .burbuja span {
+    color: var(--bs-fg-2);
+  }
+  .burbuja .btn-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+  .burbuja[hidden] {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .burbuja:not([hidden]) {
+      animation: aparecer-burbuja 0.5s cubic-bezier(.3, 1.5, .5, 1) both;
+      transform-origin: 100% 100%;
+    }
+    @keyframes aparecer-burbuja {
+      from { opacity: 0; scale: 0.6; }
+    }
+  }
+  .volver-arriba {
+    background: var(--bs-bg-body);
+    color: var(--bs-primary-fg);
+    opacity: 0;
+    translate: 0 12px;
+    pointer-events: none;
+  }
+  .volver-arriba.visible {
+    opacity: 1;
+    translate: 0 0;
+    pointer-events: auto;
+  }
+  .volver-progreso {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    rotate: -90deg; /* el progreso empieza arriba */
+  }
+  .volver-progreso circle {
+    fill: none;
+    stroke: var(--bs-primary-bg);
+    stroke-width: 3;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.1s linear;
+  }
+  /* En el pedido (celular), el botón de enviar ocupa la parte de abajo */
+  @media (width < 1024px) {
+    body:has(.btn-enviar) .flotantes {
+      bottom: 5.5rem;
+    }
+  }
+  /* Avisos arriba a la derecha, debajo del menú (abajo están los flotantes) */
+  .avisos {
+    top: 4.5rem !important;
+  }
+
+  /* ---------- Sorpresa y carrito ---------- */
+  .cupcake-cae {
+    position: absolute;
+    height: auto;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .bi.sacudir {
+      display: inline-block;
+      animation: sacudir 0.55s ease;
+    }
+    @keyframes sacudir {
+      20% { rotate: -14deg; }
+      40% { rotate: 12deg; }
+      60% { rotate: -8deg; }
+      80% { rotate: 4deg; }
+    }
+    .hero-ilustracion.rebotar img {
+      animation: rebotar 0.4s cubic-bezier(.3, 1.6, .5, 1), flotar 6s ease-in-out infinite;
+    }
+    @keyframes rebotar {
+      40% { scale: 0.92 1.06; }
+    }
+  }
+  .hero-ilustracion {
+    cursor: pointer;
+  }
+
+  /* ---------- Filtros: pastilla que se desliza ---------- */
+  .filtros {
+    position: relative;
+  }
+  .filtros-indicador {
+    position: absolute;
+    top: var(--bs-nav-pills-padding, 0.25rem);
+    bottom: var(--bs-nav-pills-padding, 0.25rem);
+    left: 0;
+    border-radius: 3rem;
+    background: var(--bs-primary-bg);
+    transition: transform 0.4s cubic-bezier(.3, 1.3, .5, 1), width 0.4s cubic-bezier(.3, 1.3, .5, 1);
+    pointer-events: none;
+  }
+  .filtros-indicador.sin-transicion {
+    transition: none;
+  }
+  .filtros .nav-item {
+    position: relative; /* por encima de la pastilla */
+  }
+  .filtros .nav-link.active {
+    background: transparent;
+    color: var(--bs-primary-contrast);
+  }
+
+  /* ---------- Detalle: pestañas, ingredientes y alérgenos ---------- */
+  .detalle-pestanas {
+    margin-top: 0.5rem;
+    --bs-nav-underline-link-active-color: var(--bs-primary-fg);
+  }
+  .detalle-pestanas .nav-link {
+    font-weight: 600;
+  }
+  .detalle-pestanas .nav-link.active {
+    color: var(--bs-primary-fg);
+    border-bottom-color: var(--bs-primary-bg);
+  }
+  .detalle-paneles {
+    padding-block: 1rem 1.25rem;
+    min-height: 7.5rem;
+  }
+  .detalle-paneles .tab-pane:focus-visible {
+    outline: 2px solid var(--bs-primary-focus-ring);
+    outline-offset: 4px;
+    border-radius: 0.5rem;
+  }
+  .detalle-ingredientes {
+    margin-bottom: 0.75rem;
+  }
+  .ingrediente-peruano {
+    all: unset;
+    cursor: help;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    background: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary-fg-emphasis);
+    border: 1px dashed var(--bs-primary-border);
+  }
+  .ingrediente-peruano:focus-visible {
+    outline: 2px solid var(--bs-primary-focus-ring);
+    outline-offset: 2px;
+  }
+  .detalle-alergenos {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .detalle-alergenos li {
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    background: var(--bs-warning-bg-subtle);
+    color: var(--bs-warning-fg-emphasis);
+  }
+  .detalle-alergenos .sin-alergenos {
+    background: var(--bs-success-bg-subtle);
+    color: var(--bs-success-fg-emphasis);
+  }
+
+  /* Tooltip y Popover con los colores de la marca */
+  .tooltip {
+    --bs-tooltip-bg: var(--kuyay-cacao);
+    --bs-tooltip-color: #fbf6ef;
+    --bs-tooltip-max-width: 240px;
+  }
+  .popover {
+    --bs-popover-header-bg: var(--bs-accent-bg-subtle);
+    --bs-popover-header-color: var(--bs-accent-fg-emphasis);
+    --bs-popover-max-width: 300px;
+  }
+
+  /* ---------- Pasos del pedido (Stepper de Bootstrap 6) ---------- */
+  .pasos-pedido {
+    position: sticky;
+    top: 4rem;
+    z-index: 3;
+    margin-bottom: 1.25rem;
+    padding: 0.9rem 1rem;
+    border-radius: 1rem;
+    background: color-mix(in oklch, var(--bs-bg-body) 92%, transparent);
+    backdrop-filter: blur(10px);
+    border: 1px solid color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+  }
+  .pasos-pedido .stepper {
+    --bs-stepper-size: 2.1rem;
+    --bs-stepper-active-bg: var(--bs-primary-bg);
+    margin: 0;
+  }
+  .pasos-pedido .stepper-item a {
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .pasos-pedido .stepper-item::before,
+  .pasos-pedido .stepper-item::after {
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+  /* Paso completo: el número se convierte en ✓ */
+  .pasos-pedido .stepper-item.completo::before {
+    content: "✓";
+    font-size: 1rem;
+  }
+  /* Paso actual: un anillo alrededor del número */
+  .pasos-pedido .stepper-item.actual::before {
+    box-shadow: 0 0 0 4px var(--bs-primary-bg-subtle);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pasos-pedido .stepper-item.completo::before {
+      animation: aparecer-check 0.45s cubic-bezier(.3, 1.8, .5, 1);
+    }
+    .pasos-pedido .stepper-item.actual::before {
+      animation: pulso-paso 2s ease-in-out infinite;
+    }
+    @keyframes pulso-paso {
+      50% { box-shadow: 0 0 0 7px var(--bs-primary-bg-subtle); }
+    }
+  }
+  @media (width < 576px) {
+    .pasos-pedido .stepper-item a {
+      font-size: 0.75rem;
+    }
+  }
+
+  /* ---------- Fecha con Datepicker ---------- */
+  .campo-fecha {
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%238e2c4e'%3E%3Cpath d='M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 1rem;
+    cursor: pointer;
+  }
+  [data-vc="calendar"] {
+    --vc-color-primary: var(--kuyay-mora);
+  }
+
+  /* ---------- Switch "¿Es un regalo?" ---------- */
+  .regalo {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
+    border-radius: 0.85rem;
+    border: 1px solid color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  .regalo:has(input:checked) {
+    background: var(--bs-primary-bg-subtle);
+    border-color: var(--bs-primary-border);
+  }
+  .regalo label {
+    display: grid;
+    cursor: pointer;
+  }
+  .regalo .bi-gift {
+    color: var(--bs-primary-fg);
+  }
+  .campos-regalo[hidden] {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .regalo:has(input:checked) .bi-gift {
+      display: inline-block;
+      animation: sacudir 0.6s ease;
+    }
+    .campos-regalo:not([hidden]) {
+      animation: subir 0.35s ease both;
+    }
+  }
+
+  /* ---------- Torta viva (js/torta-viva.js) ---------- */
+  .torta-viva {
+    width: 92%;
+    height: auto;
+    overflow: visible;
+  }
+  .tv-plato { fill: color-mix(in oklch, var(--kuyay-cacao) 14%, transparent); }
+  .tv-masa { fill: var(--tv-masa); }
+  .tv-relleno { fill: var(--tv-relleno); }
+  .tv-cobertura { fill: var(--tv-cobertura); }
+  .tv-masa, .tv-relleno, .tv-cobertura {
+    transition: fill 0.45s ease;
+  }
+  .tv-cuerpo {
+    transform-origin: 200px 270px;
+    transform: scale(var(--escala, 1));
+    transition: transform 0.6s cubic-bezier(.3, 1.4, .5, 1);
+  }
+  /* Segundo piso: cae desde arriba al elegir "Fiesta" */
+  .tv-piso-2 {
+    opacity: 0;
+    transform: translateY(-120px);
+    transition: opacity 0.3s ease, transform 0.6s cubic-bezier(.3, 1.4, .5, 1);
+  }
+  [data-tamano="fiesta"] .tv-piso-2 {
+    opacity: 1;
+    transform: none;
+  }
+  /* La decoración se sube al piso de arriba (y se achica) en "Fiesta" */
+  .tv-arriba {
+    transform-origin: 200px 172px;
+    transition: transform 0.6s cubic-bezier(.3, 1.4, .5, 1);
+  }
+  [data-tamano="fiesta"] .tv-arriba {
+    transform: translateY(-74px) scale(0.66);
+  }
+  /* Extras: aparecen con un pequeño salto */
+  .tv-extra {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    transform: translateY(-24px) scale(0.4);
+    transition: opacity 0.3s ease, transform 0.5s cubic-bezier(.3, 1.6, .5, 1);
+  }
+  .con-velas .tv-velas,
+  .con-flores .tv-flores,
+  .con-topper .tv-topper,
+  .con-aguaymanto .tv-aguaymantos,
+  .con-foto .tv-foto {
+    opacity: 1;
+    transform: none;
+  }
+  .tv-mensaje {
+    font-family: var(--bs-heading-font-family);
+    font-style: italic;
+    font-weight: 700;
+    font-size: 15px;
+    fill: var(--tv-texto);
+    transition: fill 0.45s ease;
+  }
+  .tv-llama {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tv-llama { animation: llama 0.9s ease-in-out infinite alternate; }
+    .tv-vela:nth-child(2) .tv-llama { animation-delay: 0.3s; }
+    .tv-vela:nth-child(3) .tv-llama { animation-delay: 0.6s; }
+    @keyframes llama {
+      0% { transform: scale(1, 1) rotate(-3deg); fill: #f2a516; }
+      100% { transform: scale(0.85, 1.15) rotate(3deg); fill: #f7c843; }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .tv-cuerpo, .tv-piso-2, .tv-arriba, .tv-extra { transition: none; }
+  }
+
+  /* ---------- Línea de tiempo (Nosotros) ---------- */
+  .linea-tiempo {
+    position: relative;
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0 0 0 2.25rem;
+    display: grid;
+    gap: 1.75rem;
+  }
+  .linea-tiempo::before {
+    content: "";
+    position: absolute;
+    left: 0.55rem;
+    top: 0.4rem;
+    bottom: 0.4rem;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(var(--kuyay-lucuma), var(--kuyay-mora));
+    transform-origin: top;
+  }
+  /* La línea se dibuja mientras haces scroll (CSS puro, scroll-driven) */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .linea-tiempo::before {
+        animation: dibujar-linea linear both;
+        animation-timeline: view();
+        animation-range: entry 10% cover 60%;
+      }
+      @keyframes dibujar-linea {
+        from { scale: 1 0; }
+      }
+    }
+  }
+  .hito {
+    position: relative;
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+  .hito::before {
+    content: "";
+    position: absolute;
+    left: -2.05rem;
+    top: 0.35rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: var(--bs-bg-body);
+    border: 3px solid var(--kuyay-mora);
+  }
+  .hito-anio {
+    font-family: var(--bs-heading-font-family);
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--bs-primary-fg);
+  }
+  .hito-texto p {
+    margin: 0;
+    color: var(--bs-fg-2);
+  }
+  @media (width < 576px) {
+    .hito { grid-template-columns: 1fr; gap: 0.25rem; }
+  }
 }
 
 /* =========================================================
@@ -1842,6 +2420,18 @@
   html:active-view-transition-type(detalle)::view-transition-new(producto-activo) {
     height: 100%;
     object-fit: cover;
+  }
+
+  /* Al filtrar, la barra de filtros no se funde con su imagen anterior:
+     así la pastilla se desliza sin dejar un "fantasma" */
+  html:active-view-transition-type(filtro) .catalogo-herramientas {
+    view-transition-name: herramientas;
+  }
+  html:active-view-transition-type(filtro)::view-transition-old(herramientas) {
+    display: none;
+  }
+  html:active-view-transition-type(filtro)::view-transition-new(herramientas) {
+    animation: none;
   }
 
   /* Tarjetas que se reacomodan al filtrar: movimiento suave */

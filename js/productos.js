@@ -5,6 +5,7 @@
 // Campos:
 //   etiqueta: "nuevo" | "popular" | null
 //   stock:    unidades disponibles (0 = agotado)
+//   alergenos: lista de alérgenos (se muestra en la pestaña "Alérgenos")
 //   ilustracion: forma y colores del dibujo SVG (ver ilustraciones.js)
 //   foto (opcional): ruta de una foto real, por ejemplo
 //         "img/productos/torta-lucuma.webp". Si existe, reemplaza
@@ -12,11 +13,28 @@
 // =========================================================
 
 export const CATEGORIAS = [
-  { id: "tortas", nombre: "Tortas" },
-  { id: "postres", nombre: "Postres" },
-  { id: "panes", nombre: "Panes" },
-  { id: "salados", nombre: "Salados" },
+  { id: "tortas", nombre: "Tortas", conservacion: "Refrigerada entre 2 y 6 °C. Consumir en 3 días. Sácala 20 minutos antes de servir para que la crema recupere su textura." },
+  { id: "postres", nombre: "Postres", conservacion: "Refrigerados, salvo los alfajores (en un lugar fresco y seco). Consumir en 3 días; los alfajores duran una semana." },
+  { id: "panes", nombre: "Panes", conservacion: "En su bolsa de papel, a temperatura ambiente. Duran 2 días; el panetón, hasta 3 semanas. Para recuperar el crocante, 3 minutos al horno." },
+  { id: "salados", nombre: "Salados", conservacion: "Refrigerados hasta 2 días. Caliéntalos 8 minutos en horno a 180 °C; en microondas pierden lo crocante." },
 ];
+
+// Ingredientes peruanos que pueden ser nuevos para un visitante extranjero.
+// Se explican con un Tooltip de Bootstrap en la pestaña "Ingredientes".
+export const INGREDIENTES_PERUANOS = {
+  "Lúcuma": "Fruta andina de pulpa amarilla y sabor a caramelo. El sabor de helado favorito del Perú.",
+  "Aguaymanto": "Fruta pequeña, dorada y ácida, envuelta en un capuchón de hojas. También llamada physalis o uchuva.",
+  "Maracuyá": "Fruta de la pasión: ácida, aromática y muy jugosa.",
+  "Manjar blanco": "Dulce de leche peruano, hecho a fuego lento con leche y azúcar.",
+  "Cacao 70 %": "Cacao fino de aroma del Cusco, con 70 % de pureza.",
+  "Sal de Maras": "Sal rosada de las salineras de Maras, en el Valle Sagrado del Cusco.",
+  "Ají amarillo": "El ají más usado en la cocina peruana: picante suave y afrutado.",
+  "Maíz morado": "Maíz andino de color intenso; con él se prepara la chicha y la mazamorra.",
+  "Quinua": "Grano andino muy nutritivo, cultivado en el Altiplano desde hace miles de años.",
+  "Camote": "Batata dulce. Frita, acompaña al pan con chicharrón.",
+  "Salsa criolla": "Cebolla morada en tiras con limón, ají y culantro.",
+  "Queso andino": "Queso fresco de vaca de la sierra peruana, suave y ligeramente salado.",
+};
 
 export const productos = [
   // ---------------- Tortas ----------------
@@ -30,6 +48,7 @@ export const productos = [
     ingredientes: ["Lúcuma", "Manjar blanco", "Bizcocho de vainilla", "Crema chantilly"],
     etiqueta: "popular",
     stock: 6,
+    alergenos: ["Gluten", "Lácteos", "Huevo"],
     ilustracion: { forma: "rebanada", masa: "#f3d9a4", relleno: "#e9a23b", cobertura: "#f7c873", topping: "#8e2c4e", fondo: "#fcefd6" },
   },
   {
@@ -42,6 +61,7 @@ export const productos = [
     ingredientes: ["Cacao 70 %", "Ganache", "Sal de Maras", "Mantequilla"],
     etiqueta: null,
     stock: 4,
+    alergenos: ["Gluten", "Lácteos", "Huevo"],
     ilustracion: { forma: "rebanada", masa: "#5a352c", relleno: "#a8735a", cobertura: "#3a2420", topping: "#e0a03a", fondo: "#efe1d8" },
   },
   {
@@ -54,6 +74,7 @@ export const productos = [
     ingredientes: ["Maracuyá", "Leche evaporada", "Leche condensada", "Crema de leche"],
     etiqueta: "nuevo",
     stock: 5,
+    alergenos: ["Gluten", "Lácteos", "Huevo"],
     ilustracion: { forma: "rebanada", masa: "#fbefd2", relleno: "#fff8ea", cobertura: "#f2b705", topping: "#5a8f5e", fondo: "#fdf3c9" },
   },
   {
@@ -66,6 +87,7 @@ export const productos = [
     ingredientes: ["Queso crema", "Aguaymanto", "Galleta de vainilla", "Limón"],
     etiqueta: null,
     stock: 3,
+    alergenos: ["Gluten", "Lácteos", "Huevo"],
     ilustracion: { forma: "rebanada", masa: "#fff6e2", relleno: "#c9945a", cobertura: "#f2a516", topping: "#f2a516", fondo: "#fdeed3" },
   },
 
@@ -80,6 +102,7 @@ export const productos = [
     ingredientes: ["Manjar blanco", "Merengue", "Oporto", "Canela"],
     etiqueta: "popular",
     stock: 20,
+    alergenos: ["Lácteos", "Huevo"],
     ilustracion: { forma: "vaso", masa: "#e9b25a", relleno: "#f3cf8e", cobertura: "#fffaf2", topping: "#a8735a", fondo: "#fbeedd" },
   },
   {
@@ -92,6 +115,7 @@ export const productos = [
     ingredientes: ["Maicena", "Manjar blanco", "Mantequilla", "Azúcar en polvo"],
     etiqueta: null,
     stock: 15,
+    alergenos: ["Gluten", "Lácteos"],
     ilustracion: { forma: "alfajor", masa: "#f6e4c3", relleno: "#c98a4b", cobertura: "#ffffff", topping: "#ffffff", fondo: "#f7ecdf" },
   },
   {
@@ -104,6 +128,7 @@ export const productos = [
     ingredientes: ["Maíz morado", "Piña", "Membrillo", "Clavo y canela"],
     etiqueta: null,
     stock: 18,
+    alergenos: [],
     ilustracion: { forma: "vaso", masa: "#4b1d3f", relleno: "#6b2a57", cobertura: "#7b3366", topping: "#f2c27a", fondo: "#efe0ea" },
   },
   {
@@ -116,6 +141,7 @@ export const productos = [
     ingredientes: ["Leche", "Huevos", "Caramelo", "Vainilla"],
     etiqueta: null,
     stock: 0,
+    alergenos: ["Lácteos", "Huevo"],
     ilustracion: { forma: "vaso", masa: "#f5d58a", relleno: "#f5d58a", cobertura: "#b0631c", topping: "#b0631c", fondo: "#fbf0d8" },
   },
 
@@ -130,6 +156,7 @@ export const productos = [
     ingredientes: ["Harina", "Yema de huevo", "Mantequilla", "Ajonjolí"],
     etiqueta: null,
     stock: 30,
+    alergenos: ["Gluten", "Huevo", "Lácteos", "Ajonjolí"],
     ilustracion: { forma: "pan", masa: "#d99a4e", relleno: "#f3d2a0", cobertura: "#b9742f", topping: "#fbf6ef", fondo: "#f6e9d6" },
   },
   {
@@ -142,6 +169,7 @@ export const productos = [
     ingredientes: ["Harina", "Anís", "Azúcar", "Mantequilla"],
     etiqueta: null,
     stock: 25,
+    alergenos: ["Gluten", "Lácteos"],
     ilustracion: { forma: "pan", masa: "#e3ad62", relleno: "#f6dcae", cobertura: "#c98a3c", topping: "#5a352c", fondo: "#f7ecd9" },
   },
   {
@@ -154,6 +182,7 @@ export const productos = [
     ingredientes: ["Masa madre", "Fruta confitada", "Pasas", "Naranja"],
     etiqueta: "nuevo",
     stock: 8,
+    alergenos: ["Gluten", "Huevo", "Lácteos"],
     ilustracion: { forma: "paneton", masa: "#c98a3c", relleno: "#f3d2a0", cobertura: "#8e2c4e", topping: "#e0a03a", fondo: "#f8e6ec" },
   },
   {
@@ -166,6 +195,7 @@ export const productos = [
     ingredientes: ["Masa madre", "Harina integral", "Quinua", "Sal marina"],
     etiqueta: null,
     stock: 10,
+    alergenos: ["Gluten"],
     ilustracion: { forma: "pan", masa: "#a8692f", relleno: "#e8c48f", cobertura: "#8a5320", topping: "#f6e4c3", fondo: "#efe2d3" },
   },
 
@@ -180,6 +210,7 @@ export const productos = [
     ingredientes: ["Carne de res", "Cebolla", "Aceituna", "Huevo"],
     etiqueta: "popular",
     stock: 24,
+    alergenos: ["Gluten", "Huevo"],
     ilustracion: { forma: "empanada", masa: "#e0a75a", relleno: "#b9742f", cobertura: "#c98a3c", topping: "#fbf6ef", fondo: "#f7e8d4" },
   },
   {
@@ -192,6 +223,7 @@ export const productos = [
     ingredientes: ["Pollo", "Ají amarillo", "Pan", "Queso parmesano"],
     etiqueta: "nuevo",
     stock: 20,
+    alergenos: ["Gluten", "Lácteos", "Frutos secos"],
     ilustracion: { forma: "empanada", masa: "#e9b44f", relleno: "#f2b705", cobertura: "#d0912f", topping: "#fbf6ef", fondo: "#fbf0cf" },
   },
   {
@@ -204,6 +236,7 @@ export const productos = [
     ingredientes: ["Chicharrón de cerdo", "Camote", "Salsa criolla", "Pan francés"],
     etiqueta: null,
     stock: 12,
+    alergenos: ["Gluten"],
     ilustracion: { forma: "sanguche", masa: "#d99a4e", relleno: "#8a4b2a", cobertura: "#e9862f", topping: "#9b2f6b", fondo: "#f6e5d5" },
   },
   {
@@ -216,6 +249,7 @@ export const productos = [
     ingredientes: ["Masa wantán", "Queso andino", "Palta", "Limón"],
     etiqueta: null,
     stock: 14,
+    alergenos: ["Gluten", "Lácteos"],
     ilustracion: { forma: "palitos", masa: "#e7b062", relleno: "#fff1c9", cobertura: "#c98a3c", topping: "#7fa04a", fondo: "#f3eed6" },
   },
 ];

@@ -108,7 +108,7 @@
     <p class="sin-js">Para ver el catálogo y usar el carrito, activa JavaScript en tu navegador. También puedes pedir por WhatsApp al 987 654 321.</p>
   </noscript>
 
-  <main id="contenido">
+  <main id="contenido" tabindex="-1">
     <!-- ================= CABECERA DE LA PÁGINA ================= -->
     <section class="cabecera-pagina" aria-labelledby="tituloPagina">
       <div class="container">
@@ -131,9 +131,19 @@
         <div class="row g-7 mt-1">
           <!-- ---------- Formulario ---------- -->
           <div class="lg:col-7">
+            <!-- Pasos del pedido (Stepper de Bootstrap 6) -->
+            <nav class="pasos-pedido" aria-label="Pasos del pedido">
+              <ol class="stepper stepper-horizontal" id="pasosPedido">
+                <li class="stepper-item" data-paso="0"><a href="#paso1">Tu torta</a></li>
+                <li class="stepper-item" data-paso="1"><a href="#paso2">Detalles</a></li>
+                <li class="stepper-item" data-paso="2"><a href="#paso3">Entrega</a></li>
+                <li class="stepper-item" data-paso="3"><a href="#paso4">Tus datos</a></li>
+              </ol>
+            </nav>
+
             <form class="pedido-form" id="formPedido" novalidate>
               <!-- Paso 1 -->
-              <fieldset class="paso">
+              <fieldset class="paso" id="paso1">
                 <legend class="paso-titulo"><span class="paso-numero">1</span> Tu torta</legend>
 
                 <div class="form-field">
@@ -164,7 +174,7 @@
               </fieldset>
 
               <!-- Paso 2 -->
-              <fieldset class="paso">
+              <fieldset class="paso" id="paso2">
                 <legend class="paso-titulo"><span class="paso-numero">2</span> Detalles</legend>
 
                 <div class="form-field">
@@ -195,6 +205,18 @@
                   </div>
                 </div>
 
+                <!-- Switch de Bootstrap 6 -->
+                <div class="regalo mt-5">
+                  <div class="switch switch-lg"><input type="checkbox" id="esRegalo" name="regalo" role="switch" aria-describedby="regaloAyuda"></div>
+                  <label for="esRegalo"><b><i class="bi bi-gift" aria-hidden="true"></i> ¿Es un regalo?</b>
+                    <small class="fg-3" id="regaloAyuda">Tarjeta con dedicatoria y caja de regalo con lazo (+S/ 8)</small></label>
+                </div>
+                <div class="form-field mt-3 campos-regalo" id="camposRegalo" hidden>
+                  <label class="form-label" for="dedicatoria">Dedicatoria para la tarjeta</label>
+                  <textarea class="form-control" id="dedicatoria" name="dedicatoria" rows="2" maxlength="140" placeholder="Para Ana, con todo nuestro kuyay…" aria-describedby="dedicatoriaContador"></textarea>
+                  <div class="form-text text-end" id="dedicatoriaContador">0 / 140</div>
+                </div>
+
                 <div class="form-field mt-5">
                   <label class="form-label" for="alergias">Alergias o indicaciones <span class="fg-3 fw-normal">(opcional)</span></label>
                   <textarea class="form-control" id="alergias" name="alergias" rows="2" placeholder="Ej.: sin nueces, poco dulce…"></textarea>
@@ -202,16 +224,18 @@
               </fieldset>
 
               <!-- Paso 3 -->
-              <fieldset class="paso">
+              <fieldset class="paso" id="paso3">
                 <legend class="paso-titulo"><span class="paso-numero">3</span> Entrega</legend>
 
                 <div class="row g-5">
                   <div class="md:col-6">
                     <div class="form-field">
                       <label class="form-label" for="fecha">Fecha de entrega</label>
-                      <input class="form-control" type="date" id="fecha" name="fecha" required aria-describedby="fechaAyuda fechaError">
+                      <!-- Datepicker de Bootstrap 6 (se activa en js/pedido.js) -->
+                      <input class="form-control campo-fecha" type="text" id="fecha" name="fecha" required autocomplete="off"
+                             placeholder="Elige una fecha" aria-describedby="fechaAyuda fechaError">
                       <div class="invalid-feedback" id="fechaError"></div>
-                      <div class="form-text" id="fechaAyuda">Con al menos 2 días de anticipación.</div>
+                      <div class="form-text" id="fechaAyuda">Con al menos 2 días de anticipación. Puedes escribirla como 25/10/2026.</div>
                     </div>
                   </div>
                   <div class="md:col-6">
@@ -273,7 +297,7 @@
               </fieldset>
 
               <!-- Paso 4 -->
-              <fieldset class="paso">
+              <fieldset class="paso" id="paso4">
                 <legend class="paso-titulo"><span class="paso-numero">4</span> Tus datos</legend>
                 <div class="row g-5">
                   <div class="md:col-6">

@@ -17,7 +17,7 @@ const $ = (selector) => document.querySelector(selector);
 const existe = (selector) => document.querySelector(selector) !== null;
 
 // ---------- Comunes a todas las páginas ----------
-insertarComponentes({ conDetalle: existe("#grillaProductos") || existe("#grillaDestacados") });
+insertarComponentes({ conDetalle: existe("#grillaProductos") || existe("#grillaDestacados"), whatsapp: NEGOCIO.whatsapp });
 iniciarTema($("#btnTema"));
 iniciarCarrito();
 

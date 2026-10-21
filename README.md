@@ -34,6 +34,12 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | Table, Badge | Horario |
 | Carousel (con pausa y avance automático) | Reseñas de clientes |
 | Accordion (`<details>` nativo, una pregunta abierta a la vez) | Preguntas frecuentes |
+| **Nav underline + Tab** (pestañas) | Detalle del producto: *Descripción · Ingredientes · Alérgenos* |
+| **Popover** | "¿Cómo conservarlo?" en el detalle, con un texto distinto por categoría |
+| **Tooltip** | Ingredientes peruanos explicados (lúcuma, aguaymanto, sal de Maras…), botones flotantes |
+| **Datepicker** (calendario incluido en Bootstrap 6) | Fecha de entrega: bloquea los días con menos de 2 o más de 60 días de anticipación |
+| **Stepper** | Pasos del pedido: el actual late y los completos se convierten en ✓ |
+| **Switch** | "¿Es un regalo?": suma S/ 8 y muestra la dedicatoria |
 
 ![Inicio: favoritos y categorías](docs/capturas/inicio.jpg)
 
@@ -69,8 +75,16 @@ Todas se desactivan si el sistema pide **reducir movimiento**, y ninguna oculta 
 | **Tarjetas 3D** que se inclinan con el mouse, con reflejo de luz | Variables CSS `--rx`, `--ry` actualizadas con `pointermove` (solo en computadora) |
 | **Confeti** al superar S/ 100 en el carrito y al confirmar un pedido | Web Animations API, piezas con los colores de la marca (`confeti()`) |
 | **"Agregar" → "✓ Agregado"** por un momento | Cambio de clase y animación del ícono |
+| **Torta viva en el pedido:** crece con el tamaño, en "Fiesta" cae un segundo piso, los extras aparecen sobre ella (velas con llama que parpadea, flores, topper, aguaymantos, foto) y el mensaje se escribe en el frente | SVG dibujado una sola vez; cada cambio actualiza variables CSS y clases, y CSS anima la transición (`torta-viva.js`) |
+| **Palabras que rotan:** "sabor a Perú → lúcuma → cacao → maracuyá" | Animación 3D en CSS; el ancho de la línea se ajusta suavemente (`palabrasRotativas()`) |
+| **Chocolate que gotea** sobre el pie de página | SVG con gotas que se estiran y caen |
+| **Pastilla deslizante** en los filtros del catálogo | Un elemento que se mueve hasta el filtro activo con `transform` |
+| **Volver arriba** con el borde que se llena según el scroll, y **WhatsApp flotante** que late, con burbuja "¿Te ayudamos?" | `stroke-dashoffset` y animaciones CSS (`botonesFlotantes()`) |
+| **Carrito que se sacude** al recibir un producto, y filas que salen una por una al vaciarlo | Animación CSS y Web Animations API |
+| **Línea de tiempo** en Nosotros que se dibuja al hacer scroll | CSS puro: `animation-timeline: view()` |
+| **Sorpresa:** escribe "kuyay" en cualquier página (o haz 5 clics en la torta de la portada) | Lluvia de cupcakes (`lluviaDeCupcakes()`) |
 | Transición entre páginas (el contenido se desliza, el menú queda fijo) | View Transitions API entre documentos: `@view-transition { navigation: auto }` en `estilos.css` |
-| Tarjetas que se reacomodan al filtrar u ordenar | `document.startViewTransition()` + un `view-transition-name` único por tarjeta (`transicion()` en `animaciones.js`) |
+| Tarjetas que se reacomodan al filtrar u ordenar | `document.startViewTransition()` + un `view-transition-name` único por tarjeta (`transicionConTipo()` en `animaciones.js`) |
 | El producto "vuela" al carrito | Web Animations API: copia del dibujo que viaja en curva hasta el ícono (`volarAlCarrito()`) |
 | Entrada escalonada de la portada y las cabeceras | `@keyframes` con `animation-delay` |
 | Destellos que titilan y puntos que flotan | Animación CSS dentro del propio `hero-torta.svg` |
@@ -85,6 +99,10 @@ Todas se desactivan si el sistema pide **reducir movimiento**, y ninguna oculta 
 | Modo oscuro en círculo | Detalle que crece desde la tarjeta |
 |---|---|
 | ![Cambio de tema en círculo](docs/capturas/tema-circulo.jpg) | ![Detalle creciendo](docs/capturas/detalle-creciendo.jpg) |
+| **Torta viva del pedido (Stepper, Switch)** | **Calendario (Datepicker)** |
+| ![Torta viva con dos pisos, velas y topper](docs/capturas/pedido-vivo.jpg) | ![Calendario de Bootstrap 6](docs/capturas/calendario.jpg) |
+| **Pestañas y Popover en el detalle** | **Chocolate que gotea** |
+| ![Popover de conservación](docs/capturas/detalle-popover.jpg) | ![Pie de página con chocolate](docs/capturas/pie-chocolate.jpg) |
 | **Producto volando al carrito** | **Confeti y "✓ Agregado"** |
 | ![Producto volando al carrito](docs/capturas/vuelo.jpg) | ![Confeti al alcanzar el descuento](docs/capturas/confeti.jpg) |
 
@@ -149,6 +167,7 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 │   ├── catalogo.js       ← filtros, buscador, orden y detalle
 │   ├── carrito.js        ← carrito, descuento, Toast y WhatsApp
 │   ├── pedido.js         ← formulario de torta personalizada
+│   ├── torta-viva.js     ← vista previa animada de la torta del pedido
 │   └── animaciones.js    ← transiciones, vuelo al carrito, números y scroll
 ├── img/
 │   ├── favicon.svg
@@ -173,7 +192,7 @@ Requiere un navegador reciente (Chrome o Edge 130+, Firefox 132+, Safari 18+), i
 
 ## Calidad
 
-- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en las 6 páginas y en 9 estados interactivos (carrito abierto, detalle, aviso, errores y confirmación del pedido, pregunta frecuente abierta, reseñas en pausa, menú móvil), en modo claro y oscuro: **0 problemas**. El carrusel de reseñas tiene botón de pausa (WCAG 2.2.2) y se puede recorrer con el teclado. Para lograrlo se ajustaron tres colores de Bootstrap que no llegaban al contraste mínimo de 4.5:1 (verde de los botones de WhatsApp, verde de textos y gris terciario en modo oscuro). Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
+- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en las 6 páginas y en 14 estados interactivos (carrito abierto, detalle, pestañas con tooltip, popover, calendario abierto, regalo activado, aviso, burbuja de WhatsApp, errores y confirmación del pedido, pregunta frecuente abierta, reseñas en pausa, menú móvil), en modo claro y oscuro: **0 problemas**. El carrusel de reseñas tiene botón de pausa (WCAG 2.2.2) y se puede recorrer con el teclado. Para lograrlo se ajustaron tres colores de Bootstrap que no llegaban al contraste mínimo de 4.5:1 (verde de los botones de WhatsApp, verde de textos y gris terciario en modo oscuro). Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
 - **Movimiento reducido:** si el sistema lo pide, no hay animaciones.
 - **Sin JavaScript:** se muestra un aviso con el WhatsApp y el contenido sigue visible.
 - **Rendimiento:** sin imágenes pesadas (ilustraciones SVG), mapa con `loading="lazy"`, fuentes con `display=swap`, Bootstrap y los íconos por CDN con verificación SRI.
@@ -212,3 +231,4 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [x] **Fase 6:** Animaciones, auditoría de accesibilidad, SEO, imagen para redes y publicación
 - [x] **Fase 7:** Sitio de 5 páginas, transiciones entre páginas, vuelo al carrito, filtros en la URL y más animaciones
 - [x] **Fase 8:** Torta que se arma sola, modo oscuro en círculo, detalle que crece, tarjetas 3D, confeti, parallax, reseñas, preguntas frecuentes y página 404
+- [x] **Fase 9:** Switch, pestañas, Popover, Tooltip, Datepicker y Stepper de Bootstrap 6; torta viva, palabras que rotan, chocolate que gotea, filtros deslizantes, botones flotantes, línea de tiempo y sorpresa
