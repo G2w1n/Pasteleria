@@ -196,12 +196,227 @@
       </div>
     </section>
 
-    <!-- ================= PEDIDO ESPECIAL (fase 5) ================= -->
+    <!-- ================= PEDIDO ESPECIAL ================= -->
     <section class="seccion" id="pedido" aria-labelledby="pedidoTitulo">
       <div class="container">
-        <p class="ceja">Para tu celebración</p>
-        <h2 class="titulo-seccion" id="pedidoTitulo">Pedido especial</h2>
-        <p class="fg-2">Muy pronto: diseña tu torta personalizada.</p>
+        <div class="catalogo-cabecera">
+          <div>
+            <p class="ceja">Para tu celebración</p>
+            <h2 class="titulo-seccion" id="pedidoTitulo">Diseña tu torta</h2>
+          </div>
+          <p class="fg-2 mb-0">Elige tamaño, sabores y detalles. Te mostramos el precio al instante y confirmamos tu pedido por WhatsApp.</p>
+        </div>
+
+        <div class="alert theme-danger mt-7" id="pedidoErrores" role="alert" tabindex="-1" hidden></div>
+
+        <div class="row g-7 mt-1">
+          <!-- ---------- Formulario ---------- -->
+          <div class="lg:col-7">
+            <form class="pedido-form" id="formPedido" novalidate>
+              <!-- Paso 1 -->
+              <fieldset class="paso">
+                <legend class="paso-titulo"><span class="paso-numero">1</span> Tu torta</legend>
+
+                <div class="form-field">
+                  <span class="form-label" id="tamanoEtiqueta">Tamaño</span>
+                  <div class="opciones-tamano" id="opcionesTamano" role="radiogroup" aria-labelledby="tamanoEtiqueta"></div>
+                </div>
+
+                <div class="sabores">
+                  <div>
+                    <div class="form-field">
+                      <label class="form-label" for="bizcocho">Bizcocho</label>
+                      <select class="form-control" id="bizcocho" name="bizcocho"></select>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="form-field">
+                      <label class="form-label" for="relleno">Relleno</label>
+                      <select class="form-control" id="relleno" name="relleno"></select>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="form-field">
+                      <label class="form-label" for="cobertura">Cobertura</label>
+                      <select class="form-control" id="cobertura" name="cobertura"></select>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <!-- Paso 2 -->
+              <fieldset class="paso">
+                <legend class="paso-titulo"><span class="paso-numero">2</span> Detalles</legend>
+
+                <div class="form-field">
+                  <span class="form-label" id="extrasEtiqueta">Extras <span class="fg-3 fw-normal">(opcional)</span></span>
+                  <div class="opciones-extras" id="opcionesExtras" role="group" aria-labelledby="extrasEtiqueta"></div>
+                </div>
+
+                <div class="row g-5 mt-1">
+                  <div class="md:col-6">
+                    <div class="form-field">
+                      <label class="form-label" for="ocasion">Ocasión</label>
+                      <select class="form-control" id="ocasion" name="ocasion">
+                        <option>Cumpleaños</option>
+                        <option>Aniversario</option>
+                        <option>Baby shower</option>
+                        <option>Graduación</option>
+                        <option>Matrimonio</option>
+                        <option>Otra</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="md:col-6">
+                    <div class="form-field">
+                      <label class="form-label" for="mensaje">Mensaje en la torta <span class="fg-3 fw-normal">(opcional)</span></label>
+                      <input class="form-control" id="mensaje" name="mensaje" maxlength="40" placeholder="¡Feliz cumple, Ana!" aria-describedby="mensajeContador">
+                      <div class="form-text text-end" id="mensajeContador">0 / 40</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-field mt-5">
+                  <label class="form-label" for="alergias">Alergias o indicaciones <span class="fg-3 fw-normal">(opcional)</span></label>
+                  <textarea class="form-control" id="alergias" name="alergias" rows="2" placeholder="Ej.: sin nueces, poco dulce…"></textarea>
+                </div>
+              </fieldset>
+
+              <!-- Paso 3 -->
+              <fieldset class="paso">
+                <legend class="paso-titulo"><span class="paso-numero">3</span> Entrega</legend>
+
+                <div class="row g-5">
+                  <div class="md:col-6">
+                    <div class="form-field">
+                      <label class="form-label" for="fecha">Fecha de entrega</label>
+                      <input class="form-control" type="date" id="fecha" name="fecha" required aria-describedby="fechaAyuda fechaError">
+                      <div class="invalid-feedback" id="fechaError"></div>
+                      <div class="form-text" id="fechaAyuda">Con al menos 2 días de anticipación.</div>
+                    </div>
+                  </div>
+                  <div class="md:col-6">
+                    <div class="form-field">
+                      <label class="form-label" for="franja">Horario</label>
+                      <select class="form-control" id="franja" name="franja" required aria-describedby="franjaError">
+                        <option value="manana">Mañana (9:00 a. m. – 12:00 m.)</option>
+                        <option value="tarde">Tarde (12:00 m. – 6:00 p. m.)</option>
+                      </select>
+                      <div class="invalid-feedback" id="franjaError"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-field mt-5">
+                  <span class="form-label" id="entregaEtiqueta">¿Cómo la recibes?</span>
+                  <div class="opciones-entrega" role="radiogroup" aria-labelledby="entregaEtiqueta">
+                    <label class="opcion-tarjeta">
+                      <input class="radio" type="radio" name="entrega" value="recojo" checked>
+                      <span><b><i class="bi bi-shop" aria-hidden="true"></i> Recojo en tienda</b><small>Av. Grau 312, Barranco · Gratis</small></span>
+                    </label>
+                    <label class="opcion-tarjeta">
+                      <input class="radio" type="radio" name="entrega" value="delivery">
+                      <span><b><i class="bi bi-truck" aria-hidden="true"></i> Delivery</b><small>Costo según distrito</small></span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="row g-5 mt-1" id="camposDelivery" hidden>
+                  <div class="md:col-5">
+                    <div class="form-field">
+                      <label class="form-label" for="distrito">Distrito</label>
+                      <select class="form-control" id="distrito" name="distrito" aria-describedby="distritoError">
+                        <option value="">Elige tu distrito</option>
+                        <option>Barranco</option>
+                        <option>Chorrillos</option>
+                        <option>Jesús María</option>
+                        <option>La Molina</option>
+                        <option>Lince</option>
+                        <option>Magdalena</option>
+                        <option>Miraflores</option>
+                        <option>San Borja</option>
+                        <option>San Isidro</option>
+                        <option>San Miguel</option>
+                        <option>Santiago de Surco</option>
+                        <option>Surquillo</option>
+                      </select>
+                      <div class="invalid-feedback" id="distritoError">Elige el distrito de entrega.</div>
+                    </div>
+                  </div>
+                  <div class="md:col-7">
+                    <div class="form-field">
+                      <label class="form-label" for="direccion">Dirección</label>
+                      <input class="form-control" id="direccion" name="direccion" autocomplete="street-address" placeholder="Calle, número y referencia" aria-describedby="direccionError">
+                      <div class="invalid-feedback" id="direccionError">Escribe la dirección de entrega.</div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <!-- Paso 4 -->
+              <fieldset class="paso">
+                <legend class="paso-titulo"><span class="paso-numero">4</span> Tus datos</legend>
+                <div class="row g-5">
+                  <div class="md:col-6">
+                    <div class="form-field">
+                      <label class="form-label" for="nombre">Nombre completo</label>
+                      <input class="form-control" id="nombre" name="nombre" required minlength="3" autocomplete="name" aria-describedby="nombreError">
+                      <div class="invalid-feedback" id="nombreError">Escribe tu nombre (mínimo 3 letras).</div>
+                    </div>
+                  </div>
+                  <div class="md:col-6">
+                    <div class="form-field">
+                      <label class="form-label" for="telefono">Celular</label>
+                      <input class="form-control" type="tel" id="telefono" name="telefono" required inputmode="numeric"
+                             pattern="9[0-9]{8}" maxlength="9" autocomplete="tel-national" placeholder="9 dígitos" aria-describedby="telefonoError">
+                      <div class="invalid-feedback" id="telefonoError">Escribe un celular de 9 dígitos que empiece con 9.</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-field mt-5">
+                  <label class="form-label" for="correo">Correo <span class="fg-3 fw-normal">(opcional)</span></label>
+                  <input class="form-control" type="email" id="correo" name="correo" autocomplete="email" placeholder="tu@correo.com" aria-describedby="correoError">
+                  <div class="invalid-feedback" id="correoError">Revisa el formato del correo.</div>
+                </div>
+              </fieldset>
+
+              <button class="btn btn-solid theme-primary btn-lg btn-enviar" type="submit">
+                <i class="bi bi-send" aria-hidden="true"></i> Enviar pedido
+                <span class="precio-boton" id="precioBoton" aria-hidden="true"></span>
+              </button>
+            </form>
+
+            <!-- Confirmación (se muestra al enviar) -->
+            <div class="alert theme-success confirmacion" id="pedidoConfirmacion" role="status" tabindex="-1" hidden>
+              <h3 class="alert-heading"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> ¡Tu pedido está listo para enviar!</h3>
+              <p>Revisa el resumen y envíalo por WhatsApp. Te confirmaremos la disponibilidad y el adelanto en menos de una hora.</p>
+              <pre class="confirmacion-resumen" id="confirmacionResumen"></pre>
+              <div class="d-flex flex-wrap gap-3">
+                <a class="btn btn-solid theme-success" id="confirmacionWhatsApp" href="#" target="_blank" rel="noopener">
+                  <i class="bi bi-whatsapp" aria-hidden="true"></i> Enviar por WhatsApp
+                </a>
+                <button class="btn btn-outline theme-success" type="button" id="btnEditarPedido">Editar pedido</button>
+                <button class="btn btn-text theme-success" type="button" id="btnNuevoPedido">Hacer otro pedido</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ---------- Resumen en vivo ---------- -->
+          <div class="lg:col-5">
+            <aside class="card resumen-pedido" aria-labelledby="resumenTitulo">
+              <div class="resumen-media" id="resumenMedia"></div>
+              <div class="card-body">
+                <h3 class="fs-lg" id="resumenTitulo">Tu torta</h3>
+                <dl class="resumen-lista" id="resumenLista"></dl>
+                <div class="resumen-total">
+                  <span>Precio estimado</span>
+                  <output id="resumenPrecio" for="formPedido" aria-live="polite">S/ 0.00</output>
+                </div>
+                <p class="fg-3 fs-xs mb-0">Precio referencial. El delivery y el adelanto (50 %) se confirman por WhatsApp.</p>
+              </div>
+            </aside>
+          </div>
+        </div>
       </div>
     </section>
 

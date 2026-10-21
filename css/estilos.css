@@ -458,6 +458,242 @@
     overflow: hidden;
   }
 
+  /* ---------- Pedido especial ---------- */
+  /* Flex y no grid: en grid, un botón sticky no puede salir de su propia celda */
+  .pedido-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .pedido-form[hidden],
+  .confirmacion[hidden],
+  #pedidoErrores[hidden],
+  #camposDelivery[hidden] {
+    display: none;
+  }
+  .paso {
+    border: 1px solid color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin: 0;
+    background: light-dark(#fff, #241b1d);
+    min-width: 0;
+  }
+  /* Reboot de Bootstrap hace flotar el legend: así queda DENTRO de la tarjeta */
+  .paso-titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    font-family: var(--bs-heading-font-family);
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  .paso-numero {
+    display: inline-grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--bs-primary-bg);
+    color: var(--bs-primary-contrast);
+    font-family: var(--bs-body-font-family);
+    font-size: 0.95rem;
+  }
+  .form-label {
+    font-weight: 600;
+  }
+  .sabores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  /* Tarjetas de opción (radio): tamaño y tipo de entrega */
+  .opciones-tamano,
+  .opciones-entrega {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+  .opcion-tarjeta {
+    position: relative;
+    display: flex;
+    align-items: start;
+    gap: 0.6rem;
+    padding: 0.9rem;
+    border: 1.5px solid color-mix(in oklch, var(--bs-fg-body) 14%, transparent);
+    border-radius: 0.85rem;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+  .opcion-tarjeta:hover {
+    border-color: var(--bs-primary-border);
+  }
+  .opcion-tarjeta:has(input:checked) {
+    border-color: var(--bs-primary-bg);
+    background: var(--bs-primary-bg-subtle);
+  }
+  .opcion-tarjeta:has(input:focus-visible) {
+    outline: 3px solid var(--bs-primary-focus-ring);
+    outline-offset: 2px;
+  }
+  .opcion-tarjeta > span {
+    display: grid;
+    gap: 0.1rem;
+  }
+  .opcion-tarjeta small {
+    font-size: 0.8rem;
+    color: var(--bs-fg-3);
+  }
+  .opcion-tarjeta em {
+    font-style: normal;
+    font-family: var(--bs-heading-font-family);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--bs-primary-fg);
+    margin-top: 0.25rem;
+  }
+  .opcion-tarjeta b i {
+    color: var(--bs-primary-fg);
+    margin-inline-end: 0.2rem;
+  }
+
+  /* Extras (checkbox) */
+  .opciones-extras {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.5rem;
+  }
+  .opcion-extra {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 0.65rem;
+    border: 1px solid color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+    cursor: pointer;
+  }
+  .opcion-extra:has(input:checked) {
+    border-color: var(--bs-primary-border);
+    background: var(--bs-primary-bg-subtle);
+  }
+  .opcion-extra > span {
+    flex: 1;
+  }
+  .opcion-extra small {
+    color: var(--bs-fg-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .btn-enviar {
+    align-self: start;
+  }
+  .precio-boton {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.9;
+  }
+  /* En celular el botón (con el precio) queda fijo abajo mientras se llena el formulario */
+  @media (width < 1024px) {
+    .btn-enviar {
+      align-self: stretch;
+      position: sticky;
+      bottom: 0.75rem;
+      z-index: 2;
+      box-shadow: 0 10px 24px -8px color-mix(in oklch, var(--kuyay-cacao) 45%, transparent);
+    }
+  }
+
+  /* Resumen en vivo: queda fijo al hacer scroll en pantallas grandes */
+  .resumen-pedido {
+    position: sticky;
+    top: 5.5rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: light-dark(#fff, #241b1d);
+    border-color: color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+  }
+  .resumen-media {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 16 / 10;
+    background: light-dark(var(--bs-primary-bg-subtle), #2e2023);
+  }
+  .resumen-media svg {
+    width: 70%;
+    height: auto;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .resumen-media svg path,
+    .resumen-media svg circle {
+      transition: fill 0.35s ease;
+    }
+  }
+  .resumen-lista {
+    margin: 0.75rem 0 0;
+    display: grid;
+    gap: 0.45rem;
+    font-size: 0.92rem;
+  }
+  .resumen-lista > div {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0.5rem;
+  }
+  .resumen-lista dt {
+    font-weight: 400;
+    color: var(--bs-fg-3);
+  }
+  .resumen-lista dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .resumen-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 1rem 0 0.5rem;
+    padding-top: 0.85rem;
+    border-top: 1px dashed color-mix(in oklch, var(--bs-fg-body) 20%, transparent);
+    font-weight: 700;
+  }
+  .resumen-total output {
+    font-family: var(--bs-heading-font-family);
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--bs-primary-fg);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .confirmacion {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .confirmacion .alert-heading {
+    font-size: 1.3rem;
+    margin: 0;
+  }
+  .confirmacion p {
+    margin: 0;
+  }
+  .confirmacion-resumen {
+    margin: 0;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    background: var(--bs-bg-body);
+    color: var(--bs-fg-body);
+    font-family: var(--bs-body-font-family);
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+  }
+  #pedidoErrores:focus,
+  .confirmacion:focus {
+    outline: 3px solid var(--bs-primary-focus-ring);
+    outline-offset: 2px;
+  }
+
   /* Nosotros */
   .valores {
     list-style: none;
