@@ -1,9 +1,12 @@
 // =========================================================
-// Catálogo: filtros, buscador, ordenamiento y detalle.
+// Catálogo: tarjetas, filtros, buscador, orden y detalle.
+// Las tarjetas y el detalle se usan en dos páginas:
+// Inicio (favoritos) y Catálogo (todos los productos).
 // =========================================================
 import { Dialog } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { CATEGORIAS, productos } from "./productos.js";
 import { dibujarProducto } from "./ilustraciones.js";
+import { transicion } from "./animaciones.js";
 
 // ---------- Utilidades (funciones flecha) ----------
 export const soles = (monto) => `S/ ${monto.toFixed(2)}`;
@@ -57,8 +60,10 @@ const botonAgregar = (p, extra = "") =>
     : `<button class="btn btn-solid theme-primary ${extra}" type="button" data-agregar="${p.id}"
          aria-label="Agregar ${p.nombre} al carrito"><i class="bi bi-bag-plus" aria-hidden="true"></i> Agregar</button>`;
 
+// view-transition-name: cada tarjeta tiene un nombre único para que,
+// al filtrar u ordenar, el navegador la deslice hasta su nueva posición
 const tarjetaProducto = (p) => `
-  <div class="col">
+  <div class="col" style="view-transition-name: tarjeta-${p.id}">
     <article class="card producto h-100 ${agotado(p) ? "producto-agotado" : ""}">
       <div class="producto-media" style="--tono: ${p.ilustracion.fondo}">
         ${imagenProducto(p)}
@@ -78,34 +83,14 @@ const tarjetaProducto = (p) => `
     </article>
   </div>`;
 
-// ---------- Estado de la vista ----------
-const estado = { categoria: "todos", texto: "", orden: "destacados" };
-
 const $ = (selector) => document.querySelector(selector);
 
-function pintarFiltros() {
-  const contar = (id) => (id === "todos" ? productos.length : productos.filter((p) => p.categoria === id).length);
-  const opciones = [{ id: "todos", nombre: "Todos" }, ...CATEGORIAS];
-  $("#filtros").innerHTML = opciones
-    .map(
-      (c) => `<li class="nav-item">
-        <button class="nav-link ${c.id === estado.categoria ? "active" : ""}" type="button"
-                data-categoria="${c.id}" aria-pressed="${c.id === estado.categoria}">
-          ${c.nombre} <span class="filtro-cantidad">${contar(c.id)}</span>
-        </button>
-      </li>`,
-    )
-    .join("");
-}
-
-function pintarCatalogo() {
-  const lista = filtrarProductos(productos, estado);
-  $("#grillaProductos").innerHTML = lista.map(tarjetaProducto).join("");
-  $("#sinResultados").hidden = lista.length > 0;
-  $("#textoBuscado").textContent = estado.texto;
-
-  const n = lista.length;
-  $("#resumenCatalogo").textContent = `${n} ${n === 1 ? "producto" : "productos"}`;
+// ---------- Agregar (lo escucha el carrito) ----------
+// "origen" es el dibujo que vuela hasta el carrito
+function pedirAgregar(id, cantidad = 1, origen = null) {
+  const producto = productos.find((p) => p.id === id);
+  if (!producto || agotado(producto)) return;
+  document.dispatchEvent(new CustomEvent("kuyay:agregar", { detail: { producto, cantidad, origen } }));
 }
 
 // ---------- Detalle del producto (Dialog de Bootstrap) ----------
@@ -138,38 +123,132 @@ function abrirDetalle(id) {
 
 function cambiarCantidad(delta) {
   const input = $("#detalleCantidad");
-  const nueva = Math.min(Math.max(Number(input.value) + delta, 1), Number(input.max));
-  input.value = nueva;
+  input.value = Math.min(Math.max(Number(input.value) + delta, 1), Number(input.max));
 }
 
-// Avisa al resto de la tienda (el carrito, en la fase 4) que se quiere agregar algo
-function pedirAgregar(id, cantidad = 1) {
-  const producto = productos.find((p) => p.id === id);
-  if (!producto || agotado(producto)) return;
-  document.dispatchEvent(new CustomEvent("kuyay:agregar", { detail: { producto, cantidad } }));
+function iniciarDetalle() {
+  $("#detalleMenos").addEventListener("click", () => cambiarCantidad(-1));
+  $("#detalleMas").addEventListener("click", () => cambiarCantidad(1));
+  $("#detalleAgregar").addEventListener("click", async () => {
+    // El dibujo vuela desde la tarjeta del catálogo, cuando el detalle ya se cerró
+    const id = productoAbierto.id;
+    const cantidad = Number($("#detalleCantidad").value);
+    await Dialog.getInstance($("#detalleProducto"))?.hide();
+    const tarjeta = document.querySelector(`[data-detalle="${id}"]`)?.closest(".producto");
+    pedirAgregar(id, cantidad, tarjeta?.querySelector(".producto-media > svg, .producto-media > img"));
+  });
 }
 
-// ---------- Inicio ----------
+// Delegación de eventos: un solo listener para todas las tarjetas de una grilla
+function activarTarjetas(grilla) {
+  grilla.addEventListener("click", (e) => {
+    const detalle = e.target.closest("[data-detalle]");
+    const agregar = e.target.closest("[data-agregar]");
+    if (detalle) abrirDetalle(detalle.dataset.detalle);
+    if (agregar) {
+      const dibujo = agregar.closest(".producto").querySelector(".producto-media > svg, .producto-media > img");
+      pedirAgregar(agregar.dataset.agregar, 1, dibujo);
+    }
+  });
+}
+
+// ================= PÁGINA INICIO =================
+
+// Los 4 favoritos: más vendidos y nuevos, sin agotados
+export function iniciarDestacados() {
+  const grilla = $("#grillaDestacados");
+  grilla.innerHTML = filtrarProductos(productos).filter((p) => !agotado(p)).slice(0, 4).map(tarjetaProducto).join("");
+  activarTarjetas(grilla);
+  iniciarDetalle();
+}
+
+// Tarjetas de categoría que llevan al catálogo ya filtrado
+export function pintarCategorias() {
+  $("#categoriasInicio").innerHTML = CATEGORIAS.map((c) => {
+    const lista = productos.filter((p) => p.categoria === c.id);
+    const muestra = lista.find((p) => p.etiqueta) ?? lista[0];
+    return `<li class="revelar">
+      <a class="categoria-tarjeta" href="catalogo.html?categoria=${c.id}" style="--tono: ${muestra.ilustracion.fondo}">
+        <span class="categoria-dibujo">${dibujarProducto(muestra.ilustracion)}</span>
+        <span class="categoria-nombre">${c.nombre}</span>
+        <span class="categoria-cantidad">${lista.length} productos <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
+      </a>
+    </li>`;
+  }).join("");
+}
+
+// ================= PÁGINA CATÁLOGO =================
+
+// El estado se lee de la URL (?categoria=tortas&q=lucuma&orden=precio-asc)
+// para que un enlace filtrado se pueda compartir
+const leerURL = () => {
+  const p = new URLSearchParams(location.search);
+  const categoria = p.get("categoria");
+  return {
+    categoria: CATEGORIAS.some((c) => c.id === categoria) ? categoria : "todos",
+    texto: p.get("q") ?? "",
+    orden: ORDENES[p.get("orden")] ? p.get("orden") : "destacados",
+  };
+};
+
+function escribirURL({ categoria, texto, orden }) {
+  const p = new URLSearchParams();
+  if (categoria !== "todos") p.set("categoria", categoria);
+  if (texto) p.set("q", texto);
+  if (orden !== "destacados") p.set("orden", orden);
+  history.replaceState(null, "", p.size ? `?${p}` : location.pathname);
+}
+
 export function iniciarCatalogo() {
+  const estado = leerURL();
+
+  function pintarFiltros() {
+    const contar = (id) => (id === "todos" ? productos.length : productos.filter((p) => p.categoria === id).length);
+    $("#filtros").innerHTML = [{ id: "todos", nombre: "Todos" }, ...CATEGORIAS]
+      .map(
+        (c) => `<li class="nav-item">
+          <button class="nav-link ${c.id === estado.categoria ? "active" : ""}" type="button"
+                  data-categoria="${c.id}" aria-pressed="${c.id === estado.categoria}">
+            ${c.nombre} <span class="filtro-cantidad">${contar(c.id)}</span>
+          </button>
+        </li>`,
+      )
+      .join("");
+  }
+
+  function pintarCatalogo() {
+    const lista = filtrarProductos(productos, estado);
+    $("#grillaProductos").innerHTML = lista.map(tarjetaProducto).join("");
+    $("#sinResultados").hidden = lista.length > 0;
+    $("#textoBuscado").textContent = estado.texto;
+    $("#resumenCatalogo").textContent = `${lista.length} ${lista.length === 1 ? "producto" : "productos"}`;
+    escribirURL(estado);
+  }
+
+  // Los cambios de filtro y orden se animan; el buscador no (se escribe letra por letra)
+  const actualizar = ({ animar = true } = {}) => (animar ? transicion(pintarCatalogo) : pintarCatalogo());
+
+  $("#buscador").value = estado.texto;
+  $("#orden").value = estado.orden;
   pintarFiltros();
   pintarCatalogo();
 
   $("#filtros").addEventListener("click", (e) => {
     const boton = e.target.closest("[data-categoria]");
-    if (!boton) return;
+    if (!boton || boton.dataset.categoria === estado.categoria) return;
     estado.categoria = boton.dataset.categoria;
     pintarFiltros();
-    pintarCatalogo();
+    actualizar();
   });
 
   $("#buscador").addEventListener("input", (e) => {
     estado.texto = e.target.value;
-    pintarCatalogo();
+    actualizar({ animar: false });
   });
 
   $("#orden").addEventListener("change", (e) => {
     estado.orden = e.target.value;
-    pintarCatalogo();
+    actualizar();
   });
 
   $("#limpiarBusqueda").addEventListener("click", () => {
@@ -177,22 +256,10 @@ export function iniciarCatalogo() {
     estado.categoria = "todos";
     $("#buscador").value = "";
     pintarFiltros();
-    pintarCatalogo();
+    actualizar();
     $("#buscador").focus();
   });
 
-  // Delegación de eventos: un solo listener para todas las tarjetas
-  $("#grillaProductos").addEventListener("click", (e) => {
-    const detalle = e.target.closest("[data-detalle]");
-    const agregar = e.target.closest("[data-agregar]");
-    if (detalle) abrirDetalle(detalle.dataset.detalle);
-    if (agregar) pedirAgregar(agregar.dataset.agregar);
-  });
-
-  $("#detalleMenos").addEventListener("click", () => cambiarCantidad(-1));
-  $("#detalleMas").addEventListener("click", () => cambiarCantidad(1));
-  $("#detalleAgregar").addEventListener("click", () => {
-    pedirAgregar(productoAbierto.id, Number($("#detalleCantidad").value));
-    Dialog.getInstance($("#detalleProducto"))?.hide();
-  });
+  activarTarjetas($("#grillaProductos"));
+  iniciarDetalle();
 }

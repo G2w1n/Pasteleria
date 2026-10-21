@@ -1,5 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" role="img">
   <title>Torta de tres pisos de lúcuma y cacao con aguaymantos</title>
+  <!-- Destellos que titilan y puntos que flotan (se desactiva con "reducir movimiento") -->
+  <style>
+    .destello, .punto { transform-box: fill-box; transform-origin: center; }
+    @media (prefers-reduced-motion: no-preference) {
+      .destello { animation: titilar 2.4s ease-in-out infinite; }
+      .destello:nth-child(2) { animation-delay: .8s; }
+      .destello:nth-child(3) { animation-delay: 1.6s; }
+      .punto { animation: flotar 4s ease-in-out infinite; }
+      .punto:nth-child(2) { animation-delay: 1.3s; }
+      .punto:nth-child(3) { animation-delay: 2.6s; }
+    }
+    @keyframes titilar { 50% { transform: scale(.55) rotate(45deg); opacity: .5; } }
+    @keyframes flotar { 50% { transform: translateY(-8px); } }
+  </style>
 
   <!-- Base de la torta (bandeja) -->
   <ellipse cx="240" cy="418" rx="168" ry="22" fill="#3a2420" opacity=".12"/>
@@ -39,13 +53,13 @@
 
   <!-- Chispas decorativas -->
   <g fill="#e0a03a">
-    <path d="M96 150l5 12 12 5-12 5-5 12-5-12-12-5 12-5z"/>
-    <path d="M384 210l4 9 9 4-9 4-4 9-4-9-9-4 9-4z"/>
-    <path d="M372 96l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/>
+    <path class="destello" d="M96 150l5 12 12 5-12 5-5 12-5-12-12-5 12-5z"/>
+    <path class="destello" d="M384 210l4 9 9 4-9 4-4 9-4-9-9-4 9-4z"/>
+    <path class="destello" d="M372 96l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/>
   </g>
   <g fill="#8e2c4e" opacity=".7">
-    <circle cx="120" cy="236" r="5"/>
-    <circle cx="402" cy="300" r="4"/>
-    <circle cx="340" cy="70" r="4"/>
+    <circle class="punto" cx="120" cy="236" r="5"/>
+    <circle class="punto" cx="402" cy="300" r="4"/>
+    <circle class="punto" cx="340" cy="70" r="4"/>
   </g>
 </svg>

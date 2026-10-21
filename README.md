@@ -11,28 +11,61 @@ Es el proyecto de la **Semana 10 de Diseño Web** (Unidad 3: Funciones y módulo
 
 ![Portada de Kuyay](docs/capturas/portada.jpg)
 
-## Funcionalidades
+## Páginas
 
-| Sección | Qué hace | Componentes de Bootstrap 6 |
+| Página | Archivo | Qué tiene |
 |---|---|---|
-| Menú | Fijo arriba; en celular se abre como panel lateral. Resalta la sección actual | Navbar (`md:navbar-expand`), Drawer, ScrollSpy |
-| Portada | Ilustración propia, beneficios y llamados a la acción | Grilla, Botones |
-| Catálogo | 16 productos en 4 categorías, filtros, buscador sin tildes y orden por precio o nombre | Card, Badge, Nav pills, Form adorn |
-| Detalle | Ventana con ingredientes, stock y selector de cantidad | Dialog (`<dialog>` nativo) |
-| Carrito | Se guarda en el navegador; descuento de 10 % sobre S/ 100; pedido por WhatsApp | Drawer, List group, Toast |
-| Pedido especial | Torta personalizada en 4 pasos con precio y vista previa en vivo | Formularios, Radio, Check, validación, Alert |
-| Visítanos | Horario con "Abierto ahora" calculado con la hora de Lima, mapa y contacto | Table, Badge |
-| Modo oscuro | Respeta el ajuste del sistema y recuerda la elección | `data-bs-theme` |
+| Inicio | `index.html` | Portada animada, cinta en movimiento, 4 favoritos, categorías, adelanto de la historia y llamado a diseñar una torta |
+| Catálogo | `catalogo.html` | 16 productos, filtros, buscador sin tildes y orden. Los filtros quedan en la URL: `catalogo.html?categoria=tortas` se puede compartir |
+| Nosotros | `nosotros.html` | Historia, cifras que suben al aparecer, valores y proceso con línea que se dibuja |
+| Pedido especial | `pedido.html` | Torta personalizada en 4 pasos con precio y vista previa en vivo |
+| Visítanos | `contacto.html` | Horario con "Abierto ahora" (hora de Lima), contacto y mapa |
 
-| Catálogo | Detalle del producto |
+En todas las páginas: menú (con la página actual marcada), carrito, modo oscuro y pie de página.
+
+| Componente de Bootstrap 6 | Dónde |
 |---|---|
-| ![Catálogo con filtros](docs/capturas/catalogo.jpg) | ![Detalle del producto](docs/capturas/detalle.jpg) |
-| **Carrito** | **Pedido especial** |
-| ![Carrito con descuento](docs/capturas/carrito.jpg) | ![Formulario de torta personalizada](docs/capturas/pedido.jpg) |
+| Navbar (`md:navbar-expand`) + Drawer | Menú de todas las páginas |
+| Card, Badge, Nav pills, Form adorn | Catálogo y favoritos |
+| Dialog (`<dialog>` nativo) | Detalle del producto |
+| Drawer, List group, Toast | Carrito y avisos |
+| Formularios, Radio, Check, validación, Alert | Pedido especial |
+| Table, Badge | Horario |
 
-| Modo oscuro | Celular | Catálogo en celular |
+![Inicio: favoritos y categorías](docs/capturas/inicio.jpg)
+
+| Catálogo | Pedido especial |
+|---|---|
+| ![Catálogo con filtros](docs/capturas/catalogo.jpg) | ![Formulario de torta personalizada](docs/capturas/pedido.jpg) |
+| **Nosotros** | **Visítanos** |
+| ![Nosotros con cifras](docs/capturas/nosotros.jpg) | ![Horario y contacto](docs/capturas/contacto.jpg) |
+| **Carrito** | **Detalle del producto** |
+| ![Carrito con descuento](docs/capturas/carrito.jpg) | ![Detalle del producto](docs/capturas/detalle.jpg) |
+| **Modo oscuro** | **Catálogo en modo oscuro** |
+| ![Modo oscuro](docs/capturas/portada-oscuro.jpg) | ![Catálogo oscuro](docs/capturas/catalogo-oscuro.jpg) |
+
+| Celular | Catálogo en celular | Menú en celular |
 |---|---|---|
-| ![Modo oscuro](docs/capturas/portada-oscuro.jpg) | <img src="docs/capturas/movil.jpg" alt="Portada en celular" width="260"> | <img src="docs/capturas/movil-catalogo.jpg" alt="Catálogo en celular" width="260"> |
+| <img src="docs/capturas/movil.jpg" alt="Inicio en celular" width="240"> | <img src="docs/capturas/movil-catalogo.jpg" alt="Catálogo en celular" width="240"> | <img src="docs/capturas/movil-menu.jpg" alt="Menú en celular" width="240"> |
+
+## Animaciones y transiciones
+
+Todas se desactivan si el sistema pide **reducir movimiento**, y ninguna oculta contenido si falta JavaScript.
+
+| Efecto | Cómo está hecho |
+|---|---|
+| Transición entre páginas (el contenido se desliza, el menú queda fijo) | View Transitions API entre documentos: `@view-transition { navigation: auto }` en `estilos.css` |
+| Tarjetas que se reacomodan al filtrar u ordenar | `document.startViewTransition()` + un `view-transition-name` único por tarjeta (`transicion()` en `animaciones.js`) |
+| El producto "vuela" al carrito | Web Animations API: copia del dibujo que viaja en curva hasta el ícono (`volarAlCarrito()`) |
+| Entrada escalonada de la portada y las cabeceras | `@keyframes` con `animation-delay` |
+| Destellos que titilan y puntos que flotan | Animación CSS dentro del propio `hero-torta.svg` |
+| Cinta de texto en movimiento (se pausa con el mouse) | Contenido duplicado que se desplaza al 50 % |
+| Secciones que aparecen al hacer scroll | `IntersectionObserver` (`revelarAlScroll()`) |
+| Cifras que suben y precios que "cuentan" | `requestAnimationFrame` con suavizado (`animarNumero()`) |
+| Barra de progreso de lectura | CSS puro: `animation-timeline: scroll()` |
+| Menú que se compacta al bajar, subrayado que crece, botones que se hunden al presionar, filas del carrito y avisos que entran deslizándose | Transiciones CSS y `@starting-style` |
+
+![Producto volando al carrito](docs/capturas/vuelo.jpg)
 
 ## Conceptos de la Semana 10 (funciones y módulos)
 
@@ -77,11 +110,16 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 ## Estructura
 
 ```
-├── index.html            ← estructura + clases Bootstrap
+├── index.html            ← Inicio
+├── catalogo.html         ← Catálogo
+├── nosotros.html         ← Nosotros
+├── pedido.html           ← Diseña tu torta
+├── contacto.html         ← Visítanos
 ├── css/
 │   └── estilos.css       ← colores, tipografía y estilos de la marca
 ├── js/
-│   ├── tienda.js         ← punto de entrada: conecta todo
+│   ├── tienda.js         ← punto de entrada: inicia lo que cada página necesita
+│   ├── componentes.js    ← carrito, avisos y detalle (comunes a todas las páginas)
 │   ├── config.js         ← datos del negocio (WhatsApp, horario)
 │   ├── tema.js           ← botón de modo claro / oscuro
 │   ├── productos.js      ← los 16 productos y sus categorías
@@ -89,7 +127,7 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 │   ├── catalogo.js       ← filtros, buscador, orden y detalle
 │   ├── carrito.js        ← carrito, descuento, Toast y WhatsApp
 │   ├── pedido.js         ← formulario de torta personalizada
-│   └── animaciones.js    ← aparición suave al hacer scroll
+│   └── animaciones.js    ← transiciones, vuelo al carrito, números y scroll
 ├── img/
 │   ├── favicon.svg
 │   ├── apple-touch-icon.png
@@ -97,6 +135,8 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 │   └── og-kuyay.png      ← imagen al compartir en redes (1200 × 630)
 └── docs/capturas/        ← imágenes de este README
 ```
+
+> El menú y el pie de página se repiten en cada HTML (es un sitio estático, sin servidor). El carrito, los avisos y el detalle de producto los inserta `js/componentes.js`, porque solo funcionan con JavaScript.
 
 > Los datos del negocio (dirección, teléfono, correo) son **ficticios**, para fines académicos. El número de WhatsApp se cambia en `js/config.js`.
 
@@ -111,7 +151,7 @@ Requiere un navegador reciente (Chrome o Edge 130+, Firefox 132+, Safari 18+), i
 
 ## Calidad
 
-- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en 6 estados de la página (inicio, errores del formulario, carrito, detalle, aviso y menú móvil), en modo claro y oscuro: **0 problemas**. Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
+- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en las 5 páginas y en 7 estados interactivos (carrito abierto, detalle, aviso, errores y confirmación del pedido, menú móvil), en modo claro y oscuro: **0 problemas**. Para lograrlo se ajustaron tres colores de Bootstrap que no llegaban al contraste mínimo de 4.5:1 (verde de los botones de WhatsApp, verde de textos y gris terciario en modo oscuro). Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
 - **Movimiento reducido:** si el sistema lo pide, no hay animaciones.
 - **Sin JavaScript:** se muestra un aviso con el WhatsApp y el contenido sigue visible.
 - **Rendimiento:** sin imágenes pesadas (ilustraciones SVG), mapa con `loading="lazy"`, fuentes con `display=swap`, Bootstrap y los íconos por CDN con verificación SRI.
@@ -147,4 +187,5 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [x] **Fase 3:** Catálogo: 16 productos, filtros, buscador, ordenamiento y detalle
 - [x] **Fase 4:** Carrito: closure, recursividad, `localStorage`, descuento, Toast y WhatsApp
 - [x] **Fase 5:** Pedido especial: formulario en 4 pasos con validación y precio en vivo
-- [x] **Fase 6:** Animaciones, ScrollSpy, auditoría de accesibilidad, SEO, imagen para redes y publicación
+- [x] **Fase 6:** Animaciones, auditoría de accesibilidad, SEO, imagen para redes y publicación
+- [x] **Fase 7:** Sitio de 5 páginas, transiciones entre páginas, vuelo al carrito, filtros en la URL y más animaciones

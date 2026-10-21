@@ -44,9 +44,18 @@
   --bs-accent-focus-ring: color-mix(in oklch, var(--kuyay-lucuma) 55%, transparent);
   --bs-accent-contrast: var(--kuyay-cacao); /* texto oscuro: blanco sobre lúcuma no se lee */
 
+  /* ---- "success" (botones de WhatsApp): el verde de Bootstrap (#00b15a)
+     tiene contraste 2.9:1 con texto blanco; este llega a 5:1 ---- */
+  --bs-success-base: #15804c;
+  --bs-success-bg: #15804c;
+  --bs-success-fg: light-dark(#106b3e, #5fd39a);
+  --bs-success-fg-emphasis: light-dark(#0b5230, #a6ecc5);
+
   /* ---- Fondo, texto y tipografía ---- */
   --bs-bg-body: light-dark(var(--kuyay-crema), #1b1416);
   --bs-fg-body: light-dark(var(--kuyay-cacao), #f3e9e2);
+  /* Gris terciario: el de Bootstrap en modo oscuro no llega a 4.5:1 sobre el fondo cacao */
+  --bs-fg-3: light-dark(var(--bs-gray-600), #a8a09c);
   --bs-body-font-family: "Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --bs-heading-font-family: "Fraunces", Georgia, "Times New Roman", serif;
 }
@@ -66,23 +75,29 @@
   }
 
   /* ---------- Animaciones al hacer scroll (js/animaciones.js) ---------- */
+  /* Usa "transform" (y no "translate") para no chocar con los efectos
+     de hover de las tarjetas, que sí usan "translate" */
   .con-animaciones .revelar {
     opacity: 0;
-    translate: 0 24px;
-    transition: opacity 0.6s ease, translate 0.6s ease;
-    transition-delay: var(--retraso, 0ms);
+    transform: translateY(24px);
+    transition: opacity 0.6s ease var(--retraso, 0ms), transform 0.6s ease var(--retraso, 0ms),
+                translate 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
   }
   .con-animaciones .revelar.visible {
     opacity: 1;
-    translate: 0 0;
+    transform: none;
   }
 
-  /* Menú: sección actual (ScrollSpy de Bootstrap) */
-  .navbar .nav-link.active {
+  /* ---------- Menú: página actual y subrayado animado ---------- */
+  .navbar .nav-link {
     position: relative;
+    transition: color 0.2s ease;
+  }
+  .navbar .nav-link[aria-current="page"] {
+    color: var(--bs-primary-fg);
   }
   @media (width >= 768px) {
-    .navbar .nav-link.active::after {
+    .navbar .nav-link::after {
       content: "";
       position: absolute;
       left: var(--bs-nav-link-padding-x, 0.5rem);
@@ -91,6 +106,60 @@
       height: 2px;
       border-radius: 2px;
       background: currentColor;
+      scale: 0 1;               /* el subrayado crece desde el centro */
+      transition: scale 0.25s ease;
+    }
+    .navbar .nav-link:hover::after,
+    .navbar .nav-link[aria-current="page"]::after {
+      scale: 1 1;
+    }
+  }
+
+  /* Menú que se compacta y gana sombra al bajar (js/animaciones.js) */
+  .cabecera {
+    transition: box-shadow 0.3s ease;
+  }
+  .cabecera .navbar {
+    transition: padding 0.3s ease;
+  }
+  /* Fondo sólido para el menú: el translúcido de Bootstrap (80 % + desenfoque)
+     dejaba ver la cinta animada a través del menú al hacer scroll */
+  .cabecera {
+    background: var(--bs-bg-body);
+  }
+  .cabecera .navbar-translucent::before {
+    display: none;
+  }
+  .cabecera.con-scroll {
+    box-shadow: 0 6px 20px -12px color-mix(in oklch, var(--kuyay-cacao) 40%, transparent);
+  }
+  .cabecera.con-scroll .navbar {
+    --bs-navbar-padding-y: 0.2rem;
+  }
+
+  /* Barra de progreso de lectura: CSS puro con scroll-driven animations.
+     En navegadores que no lo soportan, simplemente no aparece. */
+  .progreso-lectura {
+    display: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .progreso-lectura {
+        display: block;
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        height: 3px;
+        width: 100%;
+        background: linear-gradient(90deg, var(--kuyay-lucuma), var(--kuyay-mora));
+        transform-origin: left;
+        animation: progreso-lectura linear both;
+        animation-timeline: scroll(root);
+      }
+      @keyframes progreso-lectura {
+        from { scale: 0 1; }
+        to { scale: 1 1; }
+      }
     }
   }
 
@@ -488,6 +557,11 @@
     margin: 0;
   }
 
+  /* Un diálogo cerrado no debe ocupar espacio (dejaba un hueco bajo el pie) */
+  .dialog:not([open]) {
+    display: none;
+  }
+
   .defs-svg {
     position: absolute;
     width: 0;
@@ -583,7 +657,7 @@
   }
   .opcion-tarjeta small {
     font-size: 0.8rem;
-    color: var(--bs-fg-3);
+    color: var(--bs-fg-2); /* fg-3 no llega a 4.5:1 sobre el fondo rosado en modo oscuro */
   }
   .opcion-tarjeta em {
     font-style: normal;
@@ -1006,16 +1080,6 @@
     display: none;
   }
 
-  /* Contador: "rebota" al agregar */
-  @media (prefers-reduced-motion: no-preference) {
-    .contador-carrito.rebote {
-      animation: rebote 0.45s ease;
-    }
-    @keyframes rebote {
-      40% { scale: 1.45; }
-    }
-  }
-
   /* Avisos (Toast) */
   .avisos {
     padding: 1rem;
@@ -1036,4 +1100,431 @@
   .aviso > span {
     flex: 1;
   }
+
+  /* =========================================================
+     PÁGINAS Y ANIMACIONES (versión multipágina)
+     ========================================================= */
+
+  /* ---------- Microinteracciones ---------- */
+  .btn {
+    transition: scale 0.12s ease, background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn:active:not(:disabled) {
+    scale: 0.96;
+  }
+  .filtros .nav-link {
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  .enlace-flecha {
+    padding-inline: 0;
+    font-weight: 700;
+  }
+  .enlace-flecha i,
+  .btn .bi-arrow-right {
+    display: inline-block;
+    transition: translate 0.2s ease;
+  }
+  .enlace-flecha:hover i,
+  .btn:hover .bi-arrow-right {
+    translate: 4px 0;
+  }
+
+  /* ---------- Entrada escalonada de la portada ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero .ceja,
+    .hero-titulo,
+    .hero-texto,
+    .hero-acciones,
+    .beneficios {
+      animation: subir 0.7s cubic-bezier(.2, .7, .2, 1) both;
+    }
+    .hero-titulo { animation-delay: 0.08s; }
+    .hero-texto { animation-delay: 0.18s; }
+    .hero-acciones { animation-delay: 0.28s; }
+    .beneficios { animation-delay: 0.38s; }
+    .hero-ilustracion {
+      animation: aparecer-torta 0.9s cubic-bezier(.3, 1.4, .5, 1) 0.2s both;
+    }
+    @keyframes subir {
+      from { opacity: 0; translate: 0 28px; }
+    }
+    @keyframes aparecer-torta {
+      from { opacity: 0; scale: 0.7; rotate: -6deg; }
+    }
+  }
+
+  /* ---------- Cinta en movimiento ---------- */
+  .cinta {
+    overflow: hidden;
+    padding-block: 0.9rem;
+    background: var(--kuyay-mora);
+    color: #fbf6ef;
+    rotate: -1.2deg;
+    margin-block: -0.5rem;
+    position: relative;
+    z-index: 1;
+  }
+  .cinta-pista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+    font-family: var(--bs-heading-font-family);
+    font-size: 1.15rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .cinta-punto {
+    color: var(--kuyay-lucuma);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cinta-pista {
+      animation: cinta 32s linear infinite;
+    }
+    .cinta:hover .cinta-pista {
+      animation-play-state: paused;
+    }
+    @keyframes cinta {
+      to { translate: -50% 0; } /* el contenido está duplicado: al llegar a la mitad, empalma */
+    }
+  }
+
+  /* ---------- Categorías (Inicio) ---------- */
+  .categorias-inicio {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .categoria-tarjeta {
+    display: grid;
+    gap: 0.25rem;
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+    text-decoration: none;
+    color: var(--bs-fg-body);
+    background: light-dark(var(--tono), color-mix(in oklch, var(--tono) 14%, #241b1d));
+    transition: translate 0.25s ease, box-shadow 0.25s ease;
+  }
+  .categoria-dibujo svg {
+    width: 100%;
+    height: auto;
+    transition: scale 0.35s cubic-bezier(.3, 1.4, .5, 1), rotate 0.35s ease;
+  }
+  .categoria-nombre {
+    font-family: var(--bs-heading-font-family);
+    font-size: 1.4rem;
+    font-weight: 800;
+  }
+  .categoria-cantidad {
+    font-size: 0.9rem;
+    color: var(--bs-fg-2);
+  }
+  .categoria-cantidad i {
+    display: inline-block;
+    transition: translate 0.2s ease;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .categoria-tarjeta:hover {
+      translate: 0 -6px;
+      box-shadow: 0 18px 30px -16px color-mix(in oklch, var(--kuyay-cacao) 40%, transparent);
+    }
+    .categoria-tarjeta:hover .categoria-dibujo svg {
+      scale: 1.08;
+      rotate: -3deg;
+    }
+    .categoria-tarjeta:hover .categoria-cantidad i {
+      translate: 4px 0;
+    }
+  }
+  .categoria-tarjeta:focus-visible {
+    outline: 3px solid var(--bs-primary-focus-ring);
+    outline-offset: 3px;
+  }
+
+  /* ---------- Banda "Diseña tu torta" ---------- */
+  .banda-cta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 2rem;
+    padding: clamp(1.75rem, 4vw, 3rem);
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(60% 90% at 90% 50%, #b23a64, transparent 70%),
+      var(--kuyay-mora);
+    color: #fbf6ef;
+    overflow: hidden;
+  }
+  .banda-cta .ceja {
+    color: var(--kuyay-lucuma);
+  }
+  .banda-cta p {
+    margin: 0;
+    color: #f3dde5;
+  }
+  .banda-cta-torta {
+    width: clamp(140px, 22vw, 260px);
+    height: auto;
+    filter: drop-shadow(0 20px 24px rgba(0, 0, 0, 0.25));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .banda-cta-torta { animation: flotar 6s ease-in-out infinite; }
+  }
+  @media (width < 640px) {
+    .banda-cta { grid-template-columns: 1fr; }
+    .banda-cta-torta { justify-self: center; }
+  }
+
+  /* ---------- Cabecera de las páginas internas ---------- */
+  .cabecera-pagina {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 2rem;
+    background:
+      radial-gradient(50% 80% at 90% 0%, var(--bs-accent-bg-subtle), transparent 70%),
+      radial-gradient(40% 70% at 0% 100%, var(--bs-primary-bg-subtle), transparent 70%);
+  }
+  .migas {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    color: var(--bs-fg-3);
+  }
+  .migas li + li::before {
+    content: "/";
+    margin-inline-end: 0.4rem;
+    opacity: 0.6;
+  }
+  .migas a {
+    color: inherit;
+  }
+  .migas a:hover {
+    color: var(--bs-primary-fg);
+  }
+  .titulo-pagina {
+    font-size: clamp(2.4rem, 1.6rem + 3.5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.05;
+    margin: 0;
+  }
+  .texto-pagina {
+    margin: 1rem 0 0;
+    max-width: 55ch;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cabecera-pagina .migas,
+    .cabecera-pagina .ceja,
+    .titulo-pagina,
+    .texto-pagina {
+      animation: subir 0.6s cubic-bezier(.2, .7, .2, 1) both;
+    }
+    .cabecera-pagina .ceja { animation-delay: 0.05s; }
+    .titulo-pagina { animation-delay: 0.1s; }
+    .texto-pagina { animation-delay: 0.2s; }
+  }
+
+  /* ---------- Nosotros ---------- */
+  .ilustracion-historia {
+    max-width: 380px;
+    margin-inline: auto;
+    padding: 2rem;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--bs-accent-bg-subtle) 0 60%, transparent 70%);
+  }
+  .ilustracion-historia img {
+    width: 100%;
+    height: auto;
+  }
+  .valores-3 {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .valor {
+    transition: translate 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .valor:hover {
+      translate: 0 -4px;
+      border-color: var(--bs-primary-border);
+      box-shadow: 0 14px 28px -16px color-mix(in oklch, var(--kuyay-cacao) 35%, transparent);
+    }
+  }
+
+  .cifras-seccion {
+    padding-block: 2.5rem;
+    background: var(--kuyay-cacao);
+    color: #fbf6ef;
+  }
+  .cifras {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1.5rem;
+    text-align: center;
+  }
+  .cifras b {
+    display: block;
+    font-family: var(--bs-heading-font-family);
+    font-size: clamp(2.2rem, 1.6rem + 2.5vw, 3.2rem);
+    font-weight: 800;
+    color: var(--kuyay-lucuma);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  .cifras span {
+    color: #e9dcd2;
+  }
+
+  .proceso {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    counter-reset: paso;
+  }
+  .paso-proceso {
+    position: relative;
+    display: grid;
+    gap: 0.75rem;
+    align-content: start;
+    counter-increment: paso;
+  }
+  .paso-proceso p {
+    margin: 0;
+    color: var(--bs-fg-2);
+    font-size: 0.95rem;
+  }
+  .paso-icono {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 50%;
+    background: var(--bs-primary-bg);
+    color: var(--bs-primary-contrast);
+    font-size: 1.35rem;
+  }
+  .paso-icono::after {
+    content: counter(paso);
+    position: absolute;
+    top: -0.3rem;
+    right: -0.3rem;
+    display: grid;
+    place-items: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 50%;
+    background: var(--kuyay-lucuma);
+    color: var(--kuyay-cacao);
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+  /* Línea que une los pasos: se "dibuja" cuando el paso aparece */
+  @media (width >= 992px) {
+    .paso-proceso:not(:last-child)::before {
+      content: "";
+      position: absolute;
+      top: 1.6rem;
+      left: 4rem;
+      right: -1rem;
+      height: 2px;
+      background: repeating-linear-gradient(90deg, var(--bs-primary-border) 0 8px, transparent 8px 14px);
+      transform-origin: left;
+      transition: scale 0.8s ease 0.3s;
+    }
+    .con-animaciones .paso-proceso:not(.visible)::before {
+      scale: 0 1;
+    }
+  }
+
+  /* ---------- "Vuela al carrito" (js/animaciones.js) ---------- */
+  .volando {
+    position: fixed;
+    z-index: 2000;
+    margin: 0;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Contador del carrito: pulso al recibir el producto */
+    .contador-carrito.rebote {
+      animation: rebote 0.5s cubic-bezier(.3, 1.6, .5, 1);
+    }
+    @keyframes rebote {
+      40% { scale: 1.6; }
+    }
+
+    /* Filas nuevas del carrito */
+    .item-carrito.entrando {
+      animation: entrar-fila 0.45s cubic-bezier(.2, .7, .2, 1) both;
+    }
+    @keyframes entrar-fila {
+      from { opacity: 0; translate: 24px 0; }
+    }
+
+    /* Avisos que entran deslizándose */
+    .avisos .toast.show {
+      transition: opacity 0.3s ease, translate 0.35s cubic-bezier(.2, .7, .2, 1);
+      @starting-style {
+        opacity: 0;
+        translate: 0 16px;
+      }
+    }
+
+    /* Tarjetas de producto: entrada escalonada al cargar la grilla */
+    #grillaProductos > .col,
+    #grillaDestacados > .col {
+      animation: subir 0.5s cubic-bezier(.2, .7, .2, 1) both;
+    }
+    #grillaProductos > .col:nth-child(2), #grillaDestacados > .col:nth-child(2) { animation-delay: 0.05s; }
+    #grillaProductos > .col:nth-child(3), #grillaDestacados > .col:nth-child(3) { animation-delay: 0.1s; }
+    #grillaProductos > .col:nth-child(4), #grillaDestacados > .col:nth-child(4) { animation-delay: 0.15s; }
+    #grillaProductos > .col:nth-child(n+5) { animation-delay: 0.2s; }
+  }
+}
+
+/* =========================================================
+   Transiciones entre páginas (View Transitions API).
+   Va fuera de las capas porque @view-transition es global.
+   Al pasar de una página a otra, el contenido se desvanece
+   y se desliza, mientras el menú queda fijo.
+   Navegadores sin soporte: cambian de página normalmente.
+   ========================================================= */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+    types: pagina;
+  }
+  .cabecera {
+    view-transition-name: cabecera;
+  }
+  html:active-view-transition-type(pagina)::view-transition-old(root) {
+    animation: salir-pagina 0.22s ease both;
+  }
+  html:active-view-transition-type(pagina)::view-transition-new(root) {
+    animation: entrar-pagina 0.38s cubic-bezier(.2, .7, .2, 1) both;
+  }
+  /* Tarjetas que se reacomodan al filtrar: movimiento suave */
+  ::view-transition-group(*) {
+    animation-duration: 0.4s;
+    animation-timing-function: cubic-bezier(.2, .7, .2, 1);
+  }
+}
+@keyframes salir-pagina {
+  to { opacity: 0; translate: 0 -12px; }
+}
+@keyframes entrar-pagina {
+  from { opacity: 0; translate: 0 18px; }
 }

@@ -7,6 +7,7 @@ import { NEGOCIO } from "./config.js";
 import { soles } from "./catalogo.js";
 import { sumar } from "./carrito.js";
 import { dibujarProducto } from "./ilustraciones.js";
+import { animarNumero } from "./animaciones.js";
 
 // ---------- Opciones y precios ----------
 // "color" se usa para pintar la vista previa de la torta
@@ -176,8 +177,9 @@ function pintarResumen(form) {
     ...(p.fecha && !reglaFecha(p.fecha) ? [["Entrega", fechaLarga(p.fecha)]] : []),
   ];
   $("#resumenLista").innerHTML = filas.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("");
-  $("#resumenPrecio").textContent = soles(calcularPrecio(p));
-  $("#precioBoton").textContent = `· ${soles(calcularPrecio(p))}`;
+  const precio = calcularPrecio(p);
+  animarNumero($("#resumenPrecio"), precio, soles);
+  animarNumero($("#precioBoton"), precio, (n) => `· ${soles(n)}`);
   $("#mensajeContador").textContent = `${p.mensaje.length} / 40`;
 }
 
@@ -302,7 +304,7 @@ export function iniciarPedido() {
     $("#pedidoConfirmacion").hidden = true;
     form.hidden = false;
     actualizar();
-    $("#pedido").scrollIntoView();
+    $("#formPedido").scrollIntoView({ block: "start" });
   });
 
   actualizar();

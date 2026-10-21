@@ -10,6 +10,7 @@ import { productos } from "./productos.js";
 import { dibujarProducto } from "./ilustraciones.js";
 import { soles } from "./catalogo.js";
 import { NEGOCIO } from "./config.js";
+import { animarNumero, volarAlCarrito } from "./animaciones.js";
 
 // ================= PARTE 1: LÓGICA =================
 
@@ -132,8 +133,8 @@ export function mensajeWhatsApp(lista, { subtotal, descuento, total, conDescuent
   ].join("\n");
 }
 
-const filaCarrito = ({ producto: p, cantidad }) => `
-  <li class="list-group-item item-carrito">
+const filaCarrito = ({ producto: p, cantidad }, nuevo = false) => `
+  <li class="list-group-item item-carrito ${nuevo ? "entrando" : ""}">
     <div class="item-media" style="--tono: ${p.ilustracion.fondo}">${p.foto ? `<img src="${p.foto}" alt="">` : dibujarProducto(p.ilustracion)}</div>
     <div class="item-info">
       <p class="item-nombre">${p.nombre}</p>
@@ -157,6 +158,8 @@ const filaCarrito = ({ producto: p, cantidad }) => `
     </div>
   </li>`;
 
+let idsPintados = null; // para animar solo las filas nuevas
+
 function pintarCarrito(carrito) {
   const lista = carrito.lista();
   const unidades = carrito.unidades();
@@ -171,7 +174,9 @@ function pintarCarrito(carrito) {
   $("#carritoCantidad").textContent = vacio ? "" : `(${unidades})`;
 
   $("#carritoVacio").hidden = !vacio;
-  $("#carritoLista").innerHTML = lista.map(filaCarrito).join("");
+  const anteriores = idsPintados ?? new Set(lista.map((it) => it.producto.id));
+  $("#carritoLista").innerHTML = lista.map((it) => filaCarrito(it, !anteriores.has(it.producto.id))).join("");
+  idsPintados = new Set(lista.map((it) => it.producto.id));
   $("#carritoPie").hidden = vacio;
   if (vacio) return;
 
@@ -188,7 +193,7 @@ function pintarCarrito(carrito) {
   $("#carritoSubtotal").textContent = soles(t.subtotal);
   $("#filaDescuento").hidden = !t.conDescuento;
   $("#carritoDescuento").textContent = `−${soles(t.descuento)}`;
-  $("#carritoTotal").textContent = soles(t.total);
+  animarNumero($("#carritoTotal"), t.total, soles);
 
   $("#btnWhatsApp").href = `https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(mensajeWhatsApp(lista, t))}`;
 }
@@ -222,8 +227,9 @@ export function iniciarCarrito() {
   pintarCarrito(carrito);
 
   // El catálogo pide agregar (evento emitido por catalogo.js)
-  document.addEventListener("kuyay:agregar", ({ detail: { producto, cantidad } }) => {
+  document.addEventListener("kuyay:agregar", async ({ detail: { producto, cantidad, origen } }) => {
     const agregadas = carrito.agregar(producto, cantidad);
+    if (agregadas > 0) await volarAlCarrito(origen, $("#btnCarrito"));
     if (agregadas === 0) {
       avisar(`Ya tienes todas las unidades disponibles de ${producto.nombre}.`, { tema: "theme-warning", icono: "bi-exclamation-circle-fill" });
     } else if (agregadas < cantidad) {

@@ -8,14 +8,13 @@
   <!-- SEO -->
   <meta name="description" content="Kuyay es una pastelería de autor que hornea con ingredientes peruanos: lúcuma, cacao, aguaymanto y maracuyá. Pide tortas, postres y salados en línea.">
   <meta name="theme-color" content="#8e2c4e">
-
   <link rel="canonical" href="https://g2w1n.github.io/Pasteleria/">
 
   <!-- Vista previa al compartir en WhatsApp, Facebook, LinkedIn y X -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://g2w1n.github.io/Pasteleria/">
   <meta property="og:title" content="Kuyay · Pastelería de autor">
-  <meta property="og:description" content="Hecho con kuyay, horneado con calma. Tortas, postres y salados con sabores peruanos.">
+  <meta property="og:description" content="Kuyay es una pastelería de autor que hornea con ingredientes peruanos: lúcuma, cacao, aguaymanto y maracuyá. Pide tortas, postres y salados en línea.">
   <meta property="og:image" content="https://g2w1n.github.io/Pasteleria/img/og-kuyay.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -83,14 +82,14 @@
   <!-- Estilos de la marca, SIEMPRE después de Bootstrap -->
   <link href="css/estilos.css" rel="stylesheet">
 </head>
-<body data-bs-spy="scroll" data-bs-target="#menu" data-bs-root-margin="-30% 0px -60% 0px">
+<body>
   <a class="visually-hidden-focusable" href="#contenido">Saltar al contenido</a>
 
-  <!-- ================= MENÚ SUPERIOR ================= -->
+  <!-- ================= MENÚ SUPERIOR (se repite en cada página) ================= -->
   <header class="cabecera sticky-top">
     <nav class="navbar md:navbar-expand navbar-translucent" aria-label="Menú principal">
       <div class="container">
-        <a class="navbar-brand marca" href="#inicio">
+        <a class="navbar-brand marca" href="index.html" aria-current="page">
           <img src="img/favicon.svg" alt="" width="36" height="36">
           <span>Kuyay</span>
         </a>
@@ -104,11 +103,11 @@
           <div class="drawer-body">
             <ul class="navbar-nav md:ms-auto">
               <!-- "Inicio" solo se ve en el menú del celular; en escritorio lo cumple el logo -->
-              <li class="nav-item md:d-none"><a class="nav-link" href="#inicio">Inicio</a></li>
-              <li class="nav-item"><a class="nav-link" href="#catalogo">Catálogo</a></li>
-              <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
-              <li class="nav-item"><a class="nav-link" href="#pedido">Pedido especial</a></li>
-              <li class="nav-item"><a class="nav-link" href="#visitanos">Visítanos</a></li>
+              <li class="nav-item md:d-none"><a class="nav-link" href="index.html" aria-current="page">Inicio</a></li>
+              <li class="nav-item"><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+              <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+              <li class="nav-item"><a class="nav-link" href="pedido.html">Pedido especial</a></li>
+              <li class="nav-item"><a class="nav-link" href="contacto.html">Visítanos</a></li>
             </ul>
           </div>
         </dialog>
@@ -130,6 +129,7 @@
         </div>
       </div>
     </nav>
+    <div class="progreso-lectura" aria-hidden="true"></div>
   </header>
 
   <noscript>
@@ -145,9 +145,9 @@
             <p class="ceja">Pastelería de autor · Barranco, Lima</p>
             <h1 class="hero-titulo" id="heroTitulo">Postres con <span class="resalte">sabor a Perú</span>, hechos con kuyay</h1>
             <p class="fs-lg hero-texto">Horneamos cada mañana con lúcuma, cacao de Cusco, aguaymanto y maracuyá. Pide en línea y recíbelo en tu casa.</p>
-            <div class="d-flex flex-wrap gap-3 mt-7">
-              <a class="btn btn-solid theme-primary btn-lg" href="#catalogo">Ver catálogo <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
-              <a class="btn btn-outline theme-primary btn-lg" href="#pedido">Torta personalizada</a>
+            <div class="d-flex flex-wrap gap-3 mt-7 hero-acciones">
+              <a class="btn btn-solid theme-primary btn-lg" href="catalogo.html">Ver catálogo <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
+              <a class="btn btn-outline theme-primary btn-lg" href="pedido.html">Torta personalizada</a>
             </div>
             <ul class="beneficios">
               <li><i class="bi bi-truck" aria-hidden="true"></i> Delivery en Lima</li>
@@ -165,352 +165,79 @@
       </div>
     </section>
 
-    <!-- ================= CATÁLOGO ================= -->
-    <section class="seccion" id="catalogo" aria-labelledby="catalogoTitulo">
+    <!-- ================= CINTA EN MOVIMIENTO ================= -->
+    <div class="cinta" aria-hidden="true">
+      <ul class="cinta-pista"><li>Delivery en Lima</li><li class="cinta-punto">✦</li><li>Lúcuma de Huánuco</li><li class="cinta-punto">✦</li><li>Cacao de Cusco</li><li class="cinta-punto">✦</li><li>Horneado cada mañana</li><li class="cinta-punto">✦</li><li>Tortas personalizadas</li><li class="cinta-punto">✦</li><li>Sin conservantes</li><li class="cinta-punto">✦</li><li>Delivery en Lima</li><li class="cinta-punto">✦</li><li>Lúcuma de Huánuco</li><li class="cinta-punto">✦</li><li>Cacao de Cusco</li><li class="cinta-punto">✦</li><li>Horneado cada mañana</li><li class="cinta-punto">✦</li><li>Tortas personalizadas</li><li class="cinta-punto">✦</li><li>Sin conservantes</li><li class="cinta-punto">✦</li></ul>
+    </div>
+
+    <!-- ================= FAVORITOS ================= -->
+    <section class="seccion" aria-labelledby="favoritosTitulo">
       <div class="container">
         <div class="revelar catalogo-cabecera">
           <div>
-            <p class="ceja">Nuestra vitrina</p>
-            <h2 class="titulo-seccion" id="catalogoTitulo">Catálogo</h2>
+            <p class="ceja">Lo más pedido</p>
+            <h2 class="titulo-seccion" id="favoritosTitulo">Nuestros favoritos</h2>
           </div>
-          <p class="fg-2 mb-0">Horneado hoy en Barranco. Pide antes de las 6:00&nbsp;p.&nbsp;m. y llega el mismo día.</p>
+          <a class="btn btn-outline theme-primary" href="catalogo.html">Ver todo el catálogo <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
         </div>
-
-        <!-- Barra de herramientas: filtros, buscador y orden -->
-        <div class="catalogo-herramientas">
-          <ul class="nav nav-pills filtros" id="filtros" aria-label="Filtrar por categoría"></ul>
-          <div class="catalogo-busqueda">
-            <label class="form-control form-adorn buscador">
-              <span class="form-adorn-icon"><i class="bi bi-search" aria-hidden="true"></i></span>
-              <span class="visually-hidden">Buscar productos</span>
-              <input class="form-ghost" type="search" id="buscador" placeholder="Busca lúcuma, cacao, empanada…" autocomplete="off">
-            </label>
-            <label class="visually-hidden" for="orden">Ordenar productos</label>
-            <select class="form-control orden" id="orden">
-              <option value="destacados">Destacados</option>
-              <option value="precio-asc">Precio: menor a mayor</option>
-              <option value="precio-desc">Precio: mayor a menor</option>
-              <option value="nombre">Nombre (A–Z)</option>
-            </select>
-          </div>
-        </div>
-        <p class="fg-3 fs-sm mt-5 mb-0" id="resumenCatalogo" aria-live="polite"></p>
-
-        <div class="row row-cols-1 sm:row-cols-2 lg:row-cols-3 xl:row-cols-4 g-7 mt-1" id="grillaProductos"></div>
-
-        <div class="sin-resultados" id="sinResultados" hidden>
-          <i class="bi bi-search-heart" aria-hidden="true"></i>
-          <p class="fw-semibold mb-0">No encontramos productos para “<span id="textoBuscado"></span>”</p>
-          <p class="fg-3 fs-sm">Prueba con otra palabra o revisa todas las categorías.</p>
-          <button class="btn btn-outline theme-primary" type="button" id="limpiarBusqueda">Ver todo el catálogo</button>
-        </div>
+        <div class="row row-cols-1 sm:row-cols-2 lg:row-cols-4 g-7 mt-1" id="grillaDestacados"></div>
       </div>
     </section>
 
-    <!-- ================= NOSOTROS ================= -->
-    <section class="seccion seccion-alterna" id="nosotros" aria-labelledby="nosotrosTitulo">
+    <!-- ================= CATEGORÍAS ================= -->
+    <section class="seccion seccion-alterna" aria-labelledby="categoriasTitulo">
+      <div class="container">
+        <div class="revelar">
+          <p class="ceja">Explora</p>
+          <h2 class="titulo-seccion" id="categoriasTitulo">¿Qué se te antoja hoy?</h2>
+        </div>
+        <ul class="categorias-inicio" id="categoriasInicio"></ul>
+      </div>
+    </section>
+
+    <!-- ================= ADELANTO DE NOSOTROS ================= -->
+    <section class="seccion" aria-labelledby="historiaTitulo">
       <div class="container">
         <div class="row g-7 align-items-center">
-          <div class="revelar lg:col-5">
+          <div class="revelar lg:col-6">
             <p class="ceja">Nuestra historia</p>
-            <h2 class="titulo-seccion" id="nosotrosTitulo">Una receta de la abuela que se volvió pastelería</h2>
+            <h2 class="titulo-seccion" id="historiaTitulo">Una receta de la abuela que se volvió pastelería</h2>
             <p class="fg-2">Kuyay nació en una cocina de Barranco con la torta de lúcuma de la familia. Hoy seguimos horneando en lotes pequeños, sin conservantes y con productores peruanos.</p>
+            <a class="btn btn-text theme-primary enlace-flecha" href="nosotros.html">Conoce nuestra historia <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
           </div>
-          <div class="lg:col-7">
+          <div class="lg:col-6">
             <ul class="valores">
-              <li class="revelar valor">
-                <i class="bi bi-flower1" aria-hidden="true"></i>
-                <h3 class="fs-lg">Sabores de aquí</h3>
-                <p>Lúcuma de Huánuco, cacao de Cusco y aguaymanto de Cajamarca.</p>
-              </li>
-              <li class="revelar valor">
-                <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i>
-                <h3 class="fs-lg">Hecho a mano</h3>
-                <p>Lotes pequeños cada mañana. Lo que no se vende, se dona.</p>
-              </li>
-              <li class="revelar valor">
-                <i class="bi bi-heart" aria-hidden="true"></i>
-                <h3 class="fs-lg">Con kuyay</h3>
-                <p>Kuyay significa "amor" en quechua. Es nuestro ingrediente principal.</p>
-              </li>
+              <li class="revelar valor"><i class="bi bi-flower1" aria-hidden="true"></i><h3 class="fs-lg">Sabores de aquí</h3><p>Lúcuma, cacao y aguaymanto de productores peruanos.</p></li>
+              <li class="revelar valor"><i class="bi bi-hand-thumbs-up" aria-hidden="true"></i><h3 class="fs-lg">Hecho a mano</h3><p>Lotes pequeños cada mañana. Lo que no se vende, se dona.</p></li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ================= PEDIDO ESPECIAL ================= -->
-    <section class="seccion" id="pedido" aria-labelledby="pedidoTitulo">
+    <!-- ================= LLAMADO: TORTA PERSONALIZADA ================= -->
+    <section class="seccion">
       <div class="container">
-        <div class="revelar catalogo-cabecera">
+        <div class="revelar banda-cta">
           <div>
             <p class="ceja">Para tu celebración</p>
-            <h2 class="titulo-seccion" id="pedidoTitulo">Diseña tu torta</h2>
+            <h2 class="titulo-seccion">¿Una fecha especial? Diseña tu torta</h2>
+            <p>Elige tamaño, bizcocho, relleno y cobertura, y mira el precio al instante.</p>
+            <a class="btn btn-solid theme-accent btn-lg mt-5" href="pedido.html">Empezar mi diseño <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
           </div>
-          <p class="fg-2 mb-0">Elige tamaño, sabores y detalles. Te mostramos el precio al instante y confirmamos tu pedido por WhatsApp.</p>
-        </div>
-
-        <div class="alert theme-danger mt-7" id="pedidoErrores" role="alert" tabindex="-1" hidden></div>
-
-        <div class="row g-7 mt-1">
-          <!-- ---------- Formulario ---------- -->
-          <div class="lg:col-7">
-            <form class="pedido-form" id="formPedido" novalidate>
-              <!-- Paso 1 -->
-              <fieldset class="paso">
-                <legend class="paso-titulo"><span class="paso-numero">1</span> Tu torta</legend>
-
-                <div class="form-field">
-                  <span class="form-label" id="tamanoEtiqueta">Tamaño</span>
-                  <div class="opciones-tamano" id="opcionesTamano" role="radiogroup" aria-labelledby="tamanoEtiqueta"></div>
-                </div>
-
-                <div class="sabores">
-                  <div>
-                    <div class="form-field">
-                      <label class="form-label" for="bizcocho">Bizcocho</label>
-                      <select class="form-control" id="bizcocho" name="bizcocho"></select>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="form-field">
-                      <label class="form-label" for="relleno">Relleno</label>
-                      <select class="form-control" id="relleno" name="relleno"></select>
-                    </div>
-                  </div>
-                  <div>
-                    <div class="form-field">
-                      <label class="form-label" for="cobertura">Cobertura</label>
-                      <select class="form-control" id="cobertura" name="cobertura"></select>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-
-              <!-- Paso 2 -->
-              <fieldset class="paso">
-                <legend class="paso-titulo"><span class="paso-numero">2</span> Detalles</legend>
-
-                <div class="form-field">
-                  <span class="form-label" id="extrasEtiqueta">Extras <span class="fg-3 fw-normal">(opcional)</span></span>
-                  <div class="opciones-extras" id="opcionesExtras" role="group" aria-labelledby="extrasEtiqueta"></div>
-                </div>
-
-                <div class="row g-5 mt-1">
-                  <div class="md:col-6">
-                    <div class="form-field">
-                      <label class="form-label" for="ocasion">Ocasión</label>
-                      <select class="form-control" id="ocasion" name="ocasion">
-                        <option>Cumpleaños</option>
-                        <option>Aniversario</option>
-                        <option>Baby shower</option>
-                        <option>Graduación</option>
-                        <option>Matrimonio</option>
-                        <option>Otra</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="md:col-6">
-                    <div class="form-field">
-                      <label class="form-label" for="mensaje">Mensaje en la torta <span class="fg-3 fw-normal">(opcional)</span></label>
-                      <input class="form-control" id="mensaje" name="mensaje" maxlength="40" placeholder="¡Feliz cumple, Ana!" aria-describedby="mensajeContador">
-                      <div class="form-text text-end" id="mensajeContador">0 / 40</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-field mt-5">
-                  <label class="form-label" for="alergias">Alergias o indicaciones <span class="fg-3 fw-normal">(opcional)</span></label>
-                  <textarea class="form-control" id="alergias" name="alergias" rows="2" placeholder="Ej.: sin nueces, poco dulce…"></textarea>
-                </div>
-              </fieldset>
-
-              <!-- Paso 3 -->
-              <fieldset class="paso">
-                <legend class="paso-titulo"><span class="paso-numero">3</span> Entrega</legend>
-
-                <div class="row g-5">
-                  <div class="md:col-6">
-                    <div class="form-field">
-                      <label class="form-label" for="fecha">Fecha de entrega</label>
-                      <input class="form-control" type="date" id="fecha" name="fecha" required aria-describedby="fechaAyuda fechaError">
-                      <div class="invalid-feedback" id="fechaError"></div>
-                      <div class="form-text" id="fechaAyuda">Con al menos 2 días de anticipación.</div>
-                    </div>
-                  </div>
-                  <div class="md:col-6">
-                    <div class="form-field">
-                      <label class="form-label" for="franja">Horario</label>
-                      <select class="form-control" id="franja" name="franja" required aria-describedby="franjaError">
-                        <option value="manana">Mañana (9:00 a. m. – 12:00 m.)</option>
-                        <option value="tarde">Tarde (12:00 m. – 6:00 p. m.)</option>
-                      </select>
-                      <div class="invalid-feedback" id="franjaError"></div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="form-field mt-5">
-                  <span class="form-label" id="entregaEtiqueta">¿Cómo la recibes?</span>
-                  <div class="opciones-entrega" role="radiogroup" aria-labelledby="entregaEtiqueta">
-                    <label class="opcion-tarjeta">
-                      <input class="radio" type="radio" name="entrega" value="recojo" checked>
-                      <span><b><i class="bi bi-shop" aria-hidden="true"></i> Recojo en tienda</b><small>Av. Grau 312, Barranco · Gratis</small></span>
-                    </label>
-                    <label class="opcion-tarjeta">
-                      <input class="radio" type="radio" name="entrega" value="delivery">
-                      <span><b><i class="bi bi-truck" aria-hidden="true"></i> Delivery</b><small>Costo según distrito</small></span>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="row g-5 mt-1" id="camposDelivery" hidden>
-                  <div class="md:col-5">
-                    <div class="form-field">
-                      <label class="form-label" for="distrito">Distrito</label>
-                      <select class="form-control" id="distrito" name="distrito" aria-describedby="distritoError">
-                        <option value="">Elige tu distrito</option>
-                        <option>Barranco</option>
-                        <option>Chorrillos</option>
-                        <option>Jesús María</option>
-                        <option>La Molina</option>
-                        <option>Lince</option>
-                        <option>Magdalena</option>
-                        <option>Miraflores</option>
-                        <option>San Borja</option>
-                        <option>San Isidro</option>
-                        <option>San Miguel</option>
-                        <option>Santiago de Surco</option>
-                        <option>Surquillo</option>
-                      </select>
-                      <div class="invalid-feedback" id="distritoError">Elige el distrito de entrega.</div>
-                    </div>
-                  </div>
-                  <div class="md:col-7">
-                    <div class="form-field">
-                      <label class="form-label" for="direccion">Dirección</label>
-                      <input class="form-control" id="direccion" name="direccion" autocomplete="street-address" placeholder="Calle, número y referencia" aria-describedby="direccionError">
-                      <div class="invalid-feedback" id="direccionError">Escribe la dirección de entrega.</div>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-
-              <!-- Paso 4 -->
-              <fieldset class="paso">
-                <legend class="paso-titulo"><span class="paso-numero">4</span> Tus datos</legend>
-                <div class="row g-5">
-                  <div class="md:col-6">
-                    <div class="form-field">
-                      <label class="form-label" for="nombre">Nombre completo</label>
-                      <input class="form-control" id="nombre" name="nombre" required minlength="3" autocomplete="name" aria-describedby="nombreError">
-                      <div class="invalid-feedback" id="nombreError">Escribe tu nombre (mínimo 3 letras).</div>
-                    </div>
-                  </div>
-                  <div class="md:col-6">
-                    <div class="form-field">
-                      <label class="form-label" for="telefono">Celular</label>
-                      <input class="form-control" type="tel" id="telefono" name="telefono" required inputmode="numeric"
-                             pattern="9[0-9]{8}" maxlength="9" autocomplete="tel-national" placeholder="9 dígitos" aria-describedby="telefonoError">
-                      <div class="invalid-feedback" id="telefonoError">Escribe un celular de 9 dígitos que empiece con 9.</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-field mt-5">
-                  <label class="form-label" for="correo">Correo <span class="fg-3 fw-normal">(opcional)</span></label>
-                  <input class="form-control" type="email" id="correo" name="correo" autocomplete="email" placeholder="tu@correo.com" aria-describedby="correoError">
-                  <div class="invalid-feedback" id="correoError">Revisa el formato del correo.</div>
-                </div>
-              </fieldset>
-
-              <button class="btn btn-solid theme-primary btn-lg btn-enviar" type="submit">
-                <i class="bi bi-send" aria-hidden="true"></i> Enviar pedido
-                <span class="precio-boton" id="precioBoton" aria-hidden="true"></span>
-              </button>
-            </form>
-
-            <!-- Confirmación (se muestra al enviar) -->
-            <div class="alert theme-success confirmacion" id="pedidoConfirmacion" role="status" tabindex="-1" hidden>
-              <h3 class="alert-heading"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> ¡Tu pedido está listo para enviar!</h3>
-              <p>Revisa el resumen y envíalo por WhatsApp. Te confirmaremos la disponibilidad y el adelanto en menos de una hora.</p>
-              <pre class="confirmacion-resumen" id="confirmacionResumen"></pre>
-              <div class="d-flex flex-wrap gap-3">
-                <a class="btn btn-solid theme-success" id="confirmacionWhatsApp" href="#" target="_blank" rel="noopener">
-                  <i class="bi bi-whatsapp" aria-hidden="true"></i> Enviar por WhatsApp
-                </a>
-                <button class="btn btn-outline theme-success" type="button" id="btnEditarPedido">Editar pedido</button>
-                <button class="btn btn-text theme-success" type="button" id="btnNuevoPedido">Hacer otro pedido</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- ---------- Resumen en vivo ---------- -->
-          <div class="lg:col-5">
-            <div class="card resumen-pedido" role="region" aria-labelledby="resumenTitulo">
-              <div class="resumen-media" id="resumenMedia"></div>
-              <div class="card-body">
-                <h3 class="fs-lg" id="resumenTitulo">Tu torta</h3>
-                <dl class="resumen-lista" id="resumenLista"></dl>
-                <div class="resumen-total">
-                  <span>Precio estimado</span>
-                  <output id="resumenPrecio" for="formPedido" aria-live="polite">S/ 0.00</output>
-                </div>
-                <p class="fg-3 fs-xs mb-0">Precio referencial. El delivery y el adelanto (50 %) se confirman por WhatsApp.</p>
-              </div>
-            </div>
-          </div>
+          <img class="banda-cta-torta" src="img/hero-torta.svg" alt="" width="260" height="260" loading="lazy">
         </div>
       </div>
     </section>
 
-    <!-- ================= VISÍTANOS ================= -->
-    <section class="seccion seccion-alterna" id="visitanos" aria-labelledby="visitanosTitulo">
-      <div class="container">
-        <div class="row g-7">
-          <div class="revelar lg:col-5">
-            <p class="ceja">Te esperamos</p>
-            <h2 class="titulo-seccion" id="visitanosTitulo">Visítanos</h2>
-
-            <div class="d-flex align-items-center gap-3 mt-5">
-              <h3 class="fs-lg mb-0">Horario</h3>
-              <span class="badge" id="estadoTienda"></span>
-            </div>
-            <table class="table horario mt-3">
-              <caption class="visually-hidden">Horario de atención</caption>
-              <tbody>
-                <tr data-dia="1 2 3 4 5"><th scope="row">Lunes a viernes</th><td>8:00 a. m. – 8:00 p. m.</td></tr>
-                <tr data-dia="6"><th scope="row">Sábado</th><td>8:00 a. m. – 9:00 p. m.</td></tr>
-                <tr data-dia="0"><th scope="row">Domingo</th><td>9:00 a. m. – 2:00 p. m.</td></tr>
-              </tbody>
-            </table>
-
-            <ul class="contacto">
-              <li><i class="bi bi-geo-alt" aria-hidden="true"></i> Av. Grau 312, Barranco, Lima</li>
-              <li><i class="bi bi-telephone" aria-hidden="true"></i> <a href="tel:+51987654321">987 654 321</a></li>
-              <li><i class="bi bi-envelope" aria-hidden="true"></i> <a href="mailto:hola@kuyay.pe">hola@kuyay.pe</a></li>
-            </ul>
-            <a class="btn btn-solid theme-success mt-5" href="https://wa.me/51987654321?text=Hola%20Kuyay%2C%20quisiera%20hacer%20una%20consulta" target="_blank" rel="noopener">
-              <i class="bi bi-whatsapp" aria-hidden="true"></i> Escríbenos por WhatsApp
-            </a>
-          </div>
-          <div class="lg:col-7">
-            <div class="revelar mapa">
-              <iframe src="https://maps.google.com/maps?q=Barranco%2C%20Lima&amp;z=15&amp;output=embed"
-                      title="Mapa de ubicación de Kuyay en Barranco, Lima"
-                      loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
-  <!-- ================= PIE DE PÁGINA ================= -->
+  <!-- ================= PIE DE PÁGINA (se repite en cada página) ================= -->
   <footer class="pie">
     <div class="container">
       <div class="row g-7">
         <div class="md:col-5">
-          <a class="marca" href="#inicio">
+          <a class="marca" href="index.html">
             <img src="img/favicon.svg" alt="" width="36" height="36">
             <span>Kuyay</span>
           </a>
@@ -524,9 +251,10 @@
         <div class="md:col-3">
           <h2 class="pie-titulo">Tienda</h2>
           <ul class="list-unstyled pie-enlaces">
-            <li><a href="#catalogo">Catálogo</a></li>
-            <li><a href="#pedido">Pedido especial</a></li>
-            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="pedido.html">Pedido especial</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="contacto.html">Visítanos</a></li>
           </ul>
         </div>
         <div class="md:col-4">
@@ -542,88 +270,7 @@
     </div>
   </footer>
 
-  <!-- ================= CARRITO ================= -->
-  <dialog class="drawer drawer-end carrito" id="carrito" aria-labelledby="carritoTitulo">
-    <div class="drawer-header">
-      <h2 class="drawer-title fs-xl" id="carritoTitulo">Tu carrito <span class="fg-3 fs-md" id="carritoCantidad"></span></h2>
-      <button class="btn-close" type="button" data-bs-dismiss="drawer" aria-label="Cerrar carrito"></button>
-    </div>
-    <div class="drawer-body">
-      <div class="carrito-vacio" id="carritoVacio">
-        <i class="bi bi-bag-heart" aria-hidden="true"></i>
-        <p class="fw-semibold mb-0">Tu carrito está vacío</p>
-        <p class="fg-3 fs-sm">Agrega algo dulce del catálogo.</p>
-        <a class="btn btn-outline theme-primary" href="#catalogo">Ver catálogo</a>
-      </div>
-      <ul class="list-group list-group-flush" id="carritoLista"></ul>
-    </div>
-    <div class="drawer-footer carrito-pie" id="carritoPie" hidden>
-      <div class="meta-descuento" id="metaDescuento">
-        <p class="meta-texto" id="metaTexto"></p>
-        <div class="meta-pista" aria-hidden="true"><div class="meta-barra" id="metaBarra"></div></div>
-      </div>
-      <dl class="totales">
-        <div><dt>Subtotal</dt><dd id="carritoSubtotal"></dd></div>
-        <div class="fila-descuento" id="filaDescuento" hidden><dt>Descuento 10 %</dt><dd id="carritoDescuento"></dd></div>
-        <div class="fila-total"><dt>Total</dt><dd id="carritoTotal"></dd></div>
-      </dl>
-      <p class="fg-3 fs-xs mb-0">El costo de delivery se coordina por WhatsApp según tu distrito.</p>
-      <a class="btn btn-solid theme-success btn-lg w-100" id="btnWhatsApp" href="#" target="_blank" rel="noopener">
-        <i class="bi bi-whatsapp" aria-hidden="true"></i> Pedir por WhatsApp
-      </a>
-      <button class="btn btn-text theme-secondary btn-sm" type="button" id="btnVaciar">Vaciar carrito</button>
-    </div>
-  </dialog>
-
-  <!-- Avisos flotantes (Toast) -->
-  <div class="toast-container position-fixed bottom-0 end-0 avisos" id="avisos"></div>
-
-  <!-- ================= DETALLE DEL PRODUCTO ================= -->
-  <dialog class="dialog dialog-lg detalle" id="detalleProducto" aria-labelledby="detalleTitulo">
-    <div class="dialog-header">
-      <p class="producto-categoria mb-0" id="detalleCategoria"></p>
-      <button class="btn-close" type="button" data-bs-dismiss="dialog" aria-label="Cerrar"></button>
-    </div>
-    <div class="dialog-body">
-      <div class="row g-7">
-        <div class="md:col-6">
-          <div class="producto-media detalle-media" id="detalleMedia"></div>
-        </div>
-        <div class="md:col-6 detalle-info">
-          <h2 class="detalle-titulo" id="detalleTitulo"></h2>
-          <p class="detalle-precio mb-0"><span id="detallePrecio"></span> <span class="fg-3 fs-sm" id="detallePorcion"></span></p>
-          <p class="detalle-stock" id="detalleStock"></p>
-          <p class="fg-2" id="detalleDescripcion"></p>
-          <h3 class="detalle-subtitulo">Ingredientes</h3>
-          <ul class="detalle-ingredientes" id="detalleIngredientes"></ul>
-
-          <div class="detalle-compra" id="detalleCompra">
-            <div class="cantidad" role="group" aria-label="Cantidad">
-              <button class="btn btn-subtle theme-secondary btn-icon" type="button" id="detalleMenos" aria-label="Quitar uno"><i class="bi bi-dash" aria-hidden="true"></i></button>
-              <input class="form-control" type="number" id="detalleCantidad" value="1" min="1" aria-label="Cantidad" readonly>
-              <button class="btn btn-subtle theme-secondary btn-icon" type="button" id="detalleMas" aria-label="Agregar uno"><i class="bi bi-plus" aria-hidden="true"></i></button>
-            </div>
-            <button class="btn btn-solid theme-primary flex-grow-1" type="button" id="detalleAgregar">
-              <i class="bi bi-bag-plus" aria-hidden="true"></i> Agregar al carrito
-            </button>
-          </div>
-          <p class="detalle-agotado" id="detalleAgotado" hidden>
-            <i class="bi bi-clock-history" aria-hidden="true"></i> Se agotó por hoy. Vuelve mañana temprano o escríbenos para separarlo.
-          </p>
-        </div>
-      </div>
-    </div>
-  </dialog>
-
-  <!-- Degradado compartido por las ilustraciones de productos (definido una sola vez) -->
-  <svg class="defs-svg" aria-hidden="true" focusable="false">
-    <defs>
-      <linearGradient id="brillo" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0" stop-color="#fff" stop-opacity=".35"/>
-        <stop offset=".6" stop-color="#fff" stop-opacity="0"/>
-      </linearGradient>
-    </defs>
-  </svg>
+  <!-- El carrito, los avisos y el detalle de producto los agrega js/componentes.js -->
 
   <!-- JS de Bootstrap 6: es un módulo, type="module" es obligatorio -->
   <script type="module"

@@ -1,34 +1,41 @@
 // =========================================================
 // Kuyay · Pastelería de autor
-// Lógica de la tienda. Es un módulo ES (type="module"):
-// sus variables NO son globales.
-// Este archivo solo conecta los módulos; cada uno hace una cosa.
+// Punto de entrada: todas las páginas cargan este módulo y
+// aquí se inicia solo lo que cada página necesita.
+// Es un módulo ES (type="module"): sus variables NO son globales.
 // =========================================================
 import { Drawer } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { NEGOCIO } from "./config.js";
+import { insertarComponentes } from "./componentes.js";
 import { iniciarTema } from "./tema.js";
-import { iniciarCatalogo } from "./catalogo.js";
+import { iniciarCatalogo, iniciarDestacados, pintarCategorias } from "./catalogo.js";
 import { iniciarCarrito } from "./carrito.js";
 import { iniciarPedido } from "./pedido.js";
 import { iniciarAnimaciones } from "./animaciones.js";
 
-iniciarTema(document.querySelector("#btnTema"));
-iniciarCatalogo();
-iniciarCarrito();
-iniciarPedido();
-iniciarAnimaciones();
+const $ = (selector) => document.querySelector(selector);
+const existe = (selector) => document.querySelector(selector) !== null;
 
-// ---------- Drawers: cerrar al elegir una sección ----------
-// Un enlace interno (#catalogo, #pedido...) dentro del menú o del carrito
-// cierra el panel y deja que el navegador baje a esa sección.
+// ---------- Comunes a todas las páginas ----------
+insertarComponentes({ conDetalle: existe("#grillaProductos") || existe("#grillaDestacados") });
+iniciarTema($("#btnTema"));
+iniciarCarrito();
+
+// ---------- Según la página ----------
+if (existe("#grillaDestacados")) iniciarDestacados(); // Inicio
+if (existe("#categoriasInicio")) pintarCategorias(); // Inicio
+if (existe("#grillaProductos")) iniciarCatalogo(); // Catálogo
+if (existe("#formPedido")) iniciarPedido(); // Pedido especial
+
+// ---------- Drawers: cerrar al elegir un enlace ----------
 // (No usamos data-bs-dismiss en enlaces: Bootstrap cancela la navegación.)
 document.querySelectorAll(".drawer").forEach((drawer) => {
-  drawer.querySelectorAll('a[href^="#"]').forEach((enlace) => {
-    enlace.addEventListener("click", () => Drawer.getInstance(drawer)?.hide());
+  drawer.addEventListener("click", (e) => {
+    if (e.target.closest("a[href]")) Drawer.getInstance(drawer)?.hide();
   });
 });
 
-// ---------- Horario: "Abierto ahora" / "Cerrado" ----------
+// ---------- Horario: "Abierto ahora" / "Cerrado" (página Visítanos) ----------
 // Se calcula con la hora de Lima, aunque el visitante esté en otro país.
 const horaEnLima = (fecha = new Date()) => {
   const partes = new Intl.DateTimeFormat("en-US", {
@@ -48,16 +55,15 @@ function estaAbierto({ dia, hora } = horaEnLima()) {
   return hora >= abre && hora < cierra;
 }
 
-const estado = document.querySelector("#estadoTienda");
-if (estado) {
+if (existe("#estadoTienda")) {
   const abierto = estaAbierto();
-  estado.textContent = abierto ? "Abierto ahora" : "Cerrado ahora";
-  estado.classList.add(abierto ? "theme-success" : "theme-secondary");
+  $("#estadoTienda").textContent = abierto ? "Abierto ahora" : "Cerrado ahora";
+  $("#estadoTienda").classList.add(abierto ? "theme-success" : "theme-secondary");
+  $(`[data-dia~="${horaEnLima().dia}"]`)?.classList.add("hoy");
 }
 
-// Resaltar la fila de hoy en la tabla de horario
-const hoy = horaEnLima().dia;
-document.querySelector(`[data-dia~="${hoy}"]`)?.classList.add("hoy");
-
 // ---------- Pie de página ----------
-document.querySelector("#anio").textContent = new Date().getFullYear();
+$("#anio").textContent = new Date().getFullYear();
+
+// Al final: así también se animan los elementos que se pintaron arriba
+iniciarAnimaciones();
