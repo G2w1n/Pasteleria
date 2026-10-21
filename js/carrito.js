@@ -10,7 +10,7 @@ import { productos } from "./productos.js";
 import { dibujarProducto } from "./ilustraciones.js";
 import { soles } from "./catalogo.js";
 import { NEGOCIO } from "./config.js";
-import { animarNumero, volarAlCarrito } from "./animaciones.js";
+import { animarNumero, volarAlCarrito, confeti } from "./animaciones.js";
 
 // ================= PARTE 1: LÓGICA =================
 
@@ -159,6 +159,7 @@ const filaCarrito = ({ producto: p, cantidad }, nuevo = false) => `
   </li>`;
 
 let idsPintados = null; // para animar solo las filas nuevas
+let teniaDescuento = null; // para celebrar solo cuando se alcanza
 
 function pintarCarrito(carrito) {
   const lista = carrito.lista();
@@ -178,7 +179,18 @@ function pintarCarrito(carrito) {
   $("#carritoLista").innerHTML = lista.map((it) => filaCarrito(it, !anteriores.has(it.producto.id))).join("");
   idsPintados = new Set(lista.map((it) => it.producto.id));
   $("#carritoPie").hidden = vacio;
-  if (vacio) return;
+  if (vacio) {
+    teniaDescuento = false;
+    return;
+  }
+
+  // ¡Confeti la primera vez que el subtotal supera S/ 100!
+  if (teniaDescuento === false && t.conDescuento) {
+    // Con el carrito abierto, sale desde la barra del descuento; si no, desde el centro
+    const meta = $("#metaDescuento").getBoundingClientRect();
+    confeti($("#carrito").open ? { x: meta.left + meta.width / 2, y: meta.top } : {});
+  }
+  teniaDescuento = t.conDescuento;
 
   // Barra de progreso hacia el descuento
   const avance = Math.min((t.subtotal / MINIMO_DESCUENTO) * 100, 100);

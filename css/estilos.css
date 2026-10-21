@@ -1142,14 +1142,8 @@
     .hero-texto { animation-delay: 0.18s; }
     .hero-acciones { animation-delay: 0.28s; }
     .beneficios { animation-delay: 0.38s; }
-    .hero-ilustracion {
-      animation: aparecer-torta 0.9s cubic-bezier(.3, 1.4, .5, 1) 0.2s both;
-    }
     @keyframes subir {
       from { opacity: 0; translate: 0 28px; }
-    }
-    @keyframes aparecer-torta {
-      from { opacity: 0; scale: 0.7; rotate: -6deg; }
     }
   }
 
@@ -1493,6 +1487,311 @@
     #grillaProductos > .col:nth-child(4), #grillaDestacados > .col:nth-child(4) { animation-delay: 0.15s; }
     #grillaProductos > .col:nth-child(n+5) { animation-delay: 0.2s; }
   }
+
+  /* =========================================================
+     ANIMACIONES EXTRA
+     ========================================================= */
+
+  /* ---------- "sabor a Perú" subrayado a mano ---------- */
+  .resalte {
+    position: relative;
+    white-space: nowrap;
+  }
+  .trazo {
+    position: absolute;
+    left: -2%;
+    bottom: -0.12em;
+    width: 104%;
+    height: 0.35em;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .trazo path {
+    fill: none;
+    stroke: var(--kuyay-lucuma);
+    stroke-width: 6;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .trazo path {
+      stroke-dasharray: 400;
+      stroke-dashoffset: 400;
+      animation: trazar 0.9s cubic-bezier(.6, 0, .3, 1) 0.9s forwards;
+    }
+    @keyframes trazar {
+      to { stroke-dashoffset: 0; }
+    }
+  }
+
+  /* ---------- Parallax de la portada (CSS puro, scroll-driven) ---------- */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .hero-ilustracion {
+        animation: parallax-torta linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 90vh;
+      }
+      .hero .lg\:col-7 {
+        animation: parallax-texto linear both;
+        animation-timeline: scroll(root);
+        animation-range: 0 90vh;
+      }
+      @keyframes parallax-torta {
+        to { translate: 0 140px; rotate: 4deg; }
+      }
+      /* Solo movimiento: desvanecer el texto bajaba su contraste */
+      @keyframes parallax-texto {
+        to { translate: 0 50px; }
+      }
+    }
+  }
+
+  /* ---------- Tarjetas 3D (js/animaciones.js) ---------- */
+  .producto,
+  .categoria-tarjeta {
+    transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.45s cubic-bezier(.2, .7, .2, 1), translate 0.25s ease, box-shadow 0.25s ease;
+  }
+  .producto.en-3d,
+  .categoria-tarjeta.en-3d {
+    transition: transform 0.08s linear, translate 0.25s ease, box-shadow 0.25s ease;
+  }
+  /* Reflejo de luz que sigue al mouse */
+  .producto::after,
+  .categoria-tarjeta::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(circle at var(--brillo-x, 50%) var(--brillo-y, 50%), rgba(255, 255, 255, 0.35), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    mix-blend-mode: soft-light;
+  }
+  .categoria-tarjeta {
+    position: relative;
+  }
+  .producto.en-3d::after,
+  .categoria-tarjeta.en-3d::after {
+    opacity: 1;
+  }
+
+  /* ---------- Botón "✓ Agregado" ---------- */
+  .btn-agregado,
+  .btn-agregado:hover {
+    --bs-theme-bg: var(--bs-success-bg);
+    --bs-theme-contrast: #fff;
+    background-color: var(--bs-success-bg);
+    border-color: var(--bs-success-bg);
+    color: #fff;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .btn-agregado {
+      animation: confirmar 0.45s cubic-bezier(.3, 1.6, .5, 1);
+    }
+    .btn-agregado .bi-check-lg {
+      display: inline-block;
+      animation: aparecer-check 0.4s cubic-bezier(.3, 1.8, .5, 1);
+    }
+    @keyframes confirmar {
+      40% { scale: 1.1; }
+    }
+    @keyframes aparecer-check {
+      from { scale: 0; rotate: -45deg; }
+    }
+  }
+
+  /* ---------- Confeti (js/animaciones.js) ---------- */
+  .confeti {
+    position: fixed;
+    inset: 0;
+    z-index: 2100;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .confeti i {
+    position: absolute;
+    width: 9px;
+    height: 14px;
+    border-radius: 2px;
+  }
+
+  /* ---------- Reseñas (Carousel de Bootstrap 6) ---------- */
+  .resenas {
+    --bs-carousel-items: 1;
+    --bs-carousel-items-gap: 1rem;
+    --bs-carousel-indicator-bg: var(--bs-primary-fg);
+  }
+  @media (width >= 768px) {
+    .resenas { --bs-carousel-items: 2; }
+  }
+  @media (width >= 1100px) {
+    .resenas { --bs-carousel-items: 3; }
+  }
+  .resena {
+    /* Ancla los textos ocultos para lectores de pantalla ("5 de 5 estrellas",
+       position: absolute) dentro del carrusel; sin esto, los de las reseñas
+       no visibles estiraban la página hacia la derecha */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    background: var(--bs-bg-body);
+    border: 1px solid color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+  }
+  .resena blockquote {
+    position: relative;
+    margin: 0;
+    flex: 1;
+  }
+  .resena blockquote::before {
+    content: "“";
+    position: absolute;
+    top: -1.4rem;
+    right: 0;
+    font-family: var(--bs-heading-font-family);
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--bs-primary-bg-subtle);
+  }
+  .resena blockquote p {
+    position: relative;
+    margin: 0;
+    font-size: 1.02rem;
+  }
+  .resena figcaption {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .resena figcaption small {
+    display: block;
+    color: var(--bs-fg-3);
+  }
+  .avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    background: var(--bs-primary-bg);
+    color: var(--bs-primary-contrast);
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  .estrellas {
+    margin: 0;
+    display: inline-flex;
+    gap: 0.15rem;
+    color: var(--kuyay-lucuma);
+  }
+  .resenas-resumen {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .resenas .carousel-inner:focus-visible {
+    outline: 3px solid var(--bs-primary-focus-ring);
+    outline-offset: 4px;
+    border-radius: 1.25rem;
+  }
+  .resenas-controles {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  .resenas-controles .carousel-indicators {
+    margin-inline: 0.75rem;
+  }
+
+  /* ---------- Preguntas frecuentes (Accordion de Bootstrap 6) ---------- */
+  .faq .accordion-header {
+    gap: 1rem;
+    font-weight: 700;
+  }
+  .faq .accordion-icon {
+    font-size: 1rem;
+    width: auto;
+    height: auto;
+    transition: rotate 0.3s ease;
+  }
+  .faq [open] .accordion-icon {
+    rotate: 180deg;
+  }
+  .faq .accordion-item {
+    background: var(--bs-bg-body);
+  }
+  .faq .accordion-header:hover {
+    color: var(--bs-primary-fg);
+  }
+  /* Pregunta abierta con el rosado de la marca (Bootstrap usa un gris frío) */
+  .faq [open] > .accordion-header {
+    background: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary-fg-emphasis);
+  }
+  .faq .accordion-body {
+    color: var(--bs-fg-2);
+  }
+
+  /* ---------- Página 404 ---------- */
+  .pagina-404 {
+    padding-block: clamp(3rem, 8vw, 6rem);
+    background:
+      radial-gradient(50% 70% at 85% 30%, var(--bs-accent-bg-subtle), transparent 70%),
+      radial-gradient(40% 60% at 5% 90%, var(--bs-primary-bg-subtle), transparent 70%);
+  }
+  .ilustracion-404 {
+    display: grid;
+    justify-items: center;
+    gap: 0;
+  }
+  .numero-404 {
+    display: flex;
+    align-items: center;
+    font-family: var(--bs-heading-font-family);
+    font-size: clamp(6rem, 4rem + 10vw, 11rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--bs-primary-fg);
+  }
+  .cero-404 img {
+    width: 0.8em;
+    height: 0.8em;
+    margin-inline: 0.05em;
+    display: block;
+  }
+  .torta-caida {
+    width: clamp(160px, 20vw, 240px);
+    height: auto;
+    margin-top: -1rem;
+    rotate: 14deg;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cero-404 img {
+      animation: tambalear 2.6s ease-in-out infinite;
+      transform-origin: 50% 90%;
+    }
+    .torta-caida {
+      animation: caer-torta 1.1s cubic-bezier(.5, 0, .4, 1.4) 0.3s both;
+    }
+    @keyframes tambalear {
+      25% { rotate: -10deg; }
+      75% { rotate: 10deg; }
+    }
+    @keyframes caer-torta {
+      from { rotate: 0deg; translate: 0 -40px; opacity: 0; }
+      60% { rotate: 20deg; opacity: 1; }
+    }
+  }
 }
 
 /* =========================================================
@@ -1516,6 +1815,35 @@
   html:active-view-transition-type(pagina)::view-transition-new(root) {
     animation: entrar-pagina 0.38s cubic-bezier(.2, .7, .2, 1) both;
   }
+  /* Modo oscuro en círculo (js/tema.js): sin el fundido por defecto, y todo
+     en una sola captura para que el círculo cubra también el menú y las tarjetas */
+  html:active-view-transition-type(tema)::view-transition-old(root),
+  html:active-view-transition-type(tema)::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+  html:active-view-transition-type(tema) * {
+    view-transition-name: none !important;
+  }
+
+  /* Detalle que crece desde la tarjeta (js/catalogo.js). Solo el dibujo lleva
+     nombre: si las demás tarjetas y el menú conservan el suyo, se dibujan
+     encima del diálogo mientras dura la animación */
+  html:active-view-transition-type(detalle) .cabecera,
+  html:active-view-transition-type(detalle) #grillaProductos > .col,
+  html:active-view-transition-type(detalle) #grillaDestacados > .col {
+    view-transition-name: none !important;
+  }
+  html:active-view-transition-type(detalle)::view-transition-group(producto-activo) {
+    animation-duration: 0.45s;
+    animation-timing-function: cubic-bezier(.2, .8, .2, 1);
+  }
+  html:active-view-transition-type(detalle)::view-transition-old(producto-activo),
+  html:active-view-transition-type(detalle)::view-transition-new(producto-activo) {
+    height: 100%;
+    object-fit: cover;
+  }
+
   /* Tarjetas que se reacomodan al filtrar: movimiento suave */
   ::view-transition-group(*) {
     animation-duration: 0.4s;

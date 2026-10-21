@@ -5,6 +5,8 @@
 // solo maneja el botón.
 // =========================================================
 
+import { transicionConTipo } from "./animaciones.js";
+
 const CLAVE = "kuyay-tema";
 
 const temaActual = () => document.documentElement.dataset.bsTheme ?? "light";
@@ -30,8 +32,24 @@ export function iniciarTema(boton) {
 
   boton.addEventListener("click", () => {
     const nuevo = temaActual() === "dark" ? "light" : "dark";
-    document.documentElement.dataset.bsTheme = nuevo;
+    const aplicar = () => {
+      document.documentElement.dataset.bsTheme = nuevo;
+      pintarBoton(boton, nuevo);
+    };
     guardar(nuevo);
-    pintarBoton(boton, nuevo);
+
+    // El nuevo tema se expande en un círculo desde el botón
+    const vista = transicionConTipo("tema", aplicar);
+    if (!vista) return;
+    const r = boton.getBoundingClientRect();
+    const x = r.left + r.width / 2;
+    const y = r.top + r.height / 2;
+    const radio = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    vista.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radio}px at ${x}px ${y}px)`] },
+        { duration: 650, easing: "cubic-bezier(.4, 0, .2, 1)", pseudoElement: "::view-transition-new(root)" },
+      );
+    }).catch(() => {}); // si el navegador cancela la transición, el tema ya quedó aplicado
   });
 }

@@ -143,7 +143,7 @@
         <div class="row align-items-center g-7">
           <div class="lg:col-7">
             <p class="ceja">Pastelería de autor · Barranco, Lima</p>
-            <h1 class="hero-titulo" id="heroTitulo">Postres con <span class="resalte">sabor a Perú</span>, hechos con kuyay</h1>
+            <h1 class="hero-titulo" id="heroTitulo">Postres con <span class="resalte">sabor a Perú<svg class="trazo" viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true"><path d="M4 16 C 60 6, 120 4, 180 9 S 270 18, 296 8"/></svg></span>, hechos con kuyay</h1>
             <p class="fs-lg hero-texto">Horneamos cada mañana con lúcuma, cacao de Cusco, aguaymanto y maracuyá. Pide en línea y recíbelo en tu casa.</p>
             <div class="d-flex flex-wrap gap-3 mt-7 hero-acciones">
               <a class="btn btn-solid theme-primary btn-lg" href="catalogo.html">Ver catálogo <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
@@ -210,6 +210,68 @@
               <li class="revelar valor"><i class="bi bi-flower1" aria-hidden="true"></i><h3 class="fs-lg">Sabores de aquí</h3><p>Lúcuma, cacao y aguaymanto de productores peruanos.</p></li>
               <li class="revelar valor"><i class="bi bi-hand-thumbs-up" aria-hidden="true"></i><h3 class="fs-lg">Hecho a mano</h3><p>Lotes pequeños cada mañana. Lo que no se vende, se dona.</p></li>
             </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= RESEÑAS (Carousel de Bootstrap 6) ================= -->
+    <section class="seccion seccion-alterna" aria-labelledby="resenasTitulo">
+      <div class="container">
+        <div class="revelar catalogo-cabecera">
+          <div>
+            <p class="ceja">Lo que dicen</p>
+            <h2 class="titulo-seccion" id="resenasTitulo">Clientes felices</h2>
+          </div>
+          <p class="resenas-resumen mb-0"><span class="estrellas" aria-hidden="true"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></span> <b>4.9 de 5</b> · 320 reseñas en Google</p>
+        </div>
+
+        <div class="carousel resenas mt-7" id="carruselResenas" data-bs-autoplay="true" data-bs-interval="6000"
+             role="region" aria-roledescription="carrusel" aria-label="Reseñas de clientes">
+          <div class="carousel-inner" tabindex="0">
+          <figure class="carousel-item resena active" role="group" aria-roledescription="reseña" aria-label="1 de 6">
+            <p class="estrellas"><span class="visually-hidden">5 de 5 estrellas</span><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i></p>
+            <blockquote><p>La torta de lúcuma sabe exactamente a la de mi abuela. La pedimos para su cumpleaños 80 y lloró de la emoción.</p></blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">AT</span><span><b>Andrea Torres</b><small>Miraflores · Torta de lúcuma</small></span></figcaption>
+          </figure>
+          <figure class="carousel-item resena" role="group" aria-roledescription="reseña" aria-label="2 de 6">
+            <p class="estrellas"><span class="visually-hidden">5 de 5 estrellas</span><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i></p>
+            <blockquote><p>Diseñé la torta en la web, vi el precio al instante y llegó tal cual la imaginé. El topper quedó precioso.</p></blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">DS</span><span><b>Diego Salazar</b><small>Barranco · Torta personalizada</small></span></figcaption>
+          </figure>
+          <figure class="carousel-item resena" role="group" aria-roledescription="reseña" aria-label="3 de 6">
+            <p class="estrellas"><span class="visually-hidden">5 de 5 estrellas</span><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i></p>
+            <blockquote><p>El cheesecake de aguaymanto es otro nivel: cremoso y con ese toque ácido que lo equilibra todo.</p></blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">LR</span><span><b>Lucía Ramos</b><small>San Isidro · Cheesecake de aguaymanto</small></span></figcaption>
+          </figure>
+          <figure class="carousel-item resena" role="group" aria-roledescription="reseña" aria-label="4 de 6">
+            <p class="estrellas"><span class="visually-hidden">4 de 5 estrellas</span><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star" aria-hidden="true"></i></p>
+            <blockquote><p>Las empanadas de ají de gallina son adictivas. Pedimos doce para la oficina y no sobró ninguna.</p></blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">CM</span><span><b>Carlos Mendoza</b><small>Surco · Empanadas</small></span></figcaption>
+          </figure>
+          <figure class="carousel-item resena" role="group" aria-roledescription="reseña" aria-label="5 de 6">
+            <p class="estrellas"><span class="visually-hidden">5 de 5 estrellas</span><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i></p>
+            <blockquote><p>Los alfajores se deshacen en la boca. Ya son mi regalo fijo cuando visito a alguien.</p></blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">VQ</span><span><b>Valeria Quispe</b><small>Jesús María · Alfajores</small></span></figcaption>
+          </figure>
+          <figure class="carousel-item resena" role="group" aria-roledescription="reseña" aria-label="6 de 6">
+            <p class="estrellas"><span class="visually-hidden">5 de 5 estrellas</span><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i><i class="bi bi-star-fill" aria-hidden="true"></i></p>
+            <blockquote><p>El panetón de masa madre no tiene comparación con los de supermercado. Este año compramos tres.</p></blockquote>
+            <figcaption><span class="avatar" aria-hidden="true">MH</span><span><b>Martín Huamán</b><small>Chorrillos · Panetón artesanal</small></span></figcaption>
+          </figure>
+          </div>
+          <div class="resenas-controles">
+            <button class="btn btn-subtle theme-primary btn-icon" type="button" data-bs-target="#carruselResenas" data-bs-slide="prev" aria-label="Reseña anterior"><span class="carousel-icon-prev" aria-hidden="true"></span></button>
+            <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carruselResenas" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Ir a la reseña 1"></button>
+            <button type="button" data-bs-target="#carruselResenas" data-bs-slide-to="1" aria-label="Ir a la reseña 2"></button>
+            <button type="button" data-bs-target="#carruselResenas" data-bs-slide-to="2" aria-label="Ir a la reseña 3"></button>
+            <button type="button" data-bs-target="#carruselResenas" data-bs-slide-to="3" aria-label="Ir a la reseña 4"></button>
+            <button type="button" data-bs-target="#carruselResenas" data-bs-slide-to="4" aria-label="Ir a la reseña 5"></button>
+            <button type="button" data-bs-target="#carruselResenas" data-bs-slide-to="5" aria-label="Ir a la reseña 6"></button>
+            </div>
+            <button class="btn btn-subtle theme-primary btn-icon carousel-control-play-pause" type="button" data-bs-target="#carruselResenas" aria-label="Pausar reseñas"><span class="carousel-icon-pause" aria-hidden="true"></span><span class="carousel-icon-play" aria-hidden="true"></span></button>
+            <button class="btn btn-subtle theme-primary btn-icon" type="button" data-bs-target="#carruselResenas" data-bs-slide="next" aria-label="Reseña siguiente"><span class="carousel-icon-next" aria-hidden="true"></span></button>
           </div>
         </div>
       </div>

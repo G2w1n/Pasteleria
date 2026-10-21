@@ -15,11 +15,12 @@ Es el proyecto de la **Semana 10 de Diseño Web** (Unidad 3: Funciones y módulo
 
 | Página | Archivo | Qué tiene |
 |---|---|---|
-| Inicio | `index.html` | Portada animada, cinta en movimiento, 4 favoritos, categorías, adelanto de la historia y llamado a diseñar una torta |
+| Inicio | `index.html` | Portada con la torta que se arma sola, cinta en movimiento, 4 favoritos, categorías, adelanto de la historia, **reseñas de clientes** y llamado a diseñar una torta |
 | Catálogo | `catalogo.html` | 16 productos, filtros, buscador sin tildes y orden. Los filtros quedan en la URL: `catalogo.html?categoria=tortas` se puede compartir |
 | Nosotros | `nosotros.html` | Historia, cifras que suben al aparecer, valores y proceso con línea que se dibuja |
 | Pedido especial | `pedido.html` | Torta personalizada en 4 pasos con precio y vista previa en vivo |
-| Visítanos | `contacto.html` | Horario con "Abierto ahora" (hora de Lima), contacto y mapa |
+| Visítanos | `contacto.html` | Horario con "Abierto ahora" (hora de Lima), contacto, mapa y **preguntas frecuentes** |
+| Error 404 | `404.html` | "Esta torta no existe… todavía": GitHub Pages la muestra en cualquier dirección que no exista |
 
 En todas las páginas: menú (con la página actual marcada), carrito, modo oscuro y pie de página.
 
@@ -31,6 +32,8 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | Drawer, List group, Toast | Carrito y avisos |
 | Formularios, Radio, Check, validación, Alert | Pedido especial |
 | Table, Badge | Horario |
+| Carousel (con pausa y avance automático) | Reseñas de clientes |
+| Accordion (`<details>` nativo, una pregunta abierta a la vez) | Preguntas frecuentes |
 
 ![Inicio: favoritos y categorías](docs/capturas/inicio.jpg)
 
@@ -41,8 +44,12 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | ![Nosotros con cifras](docs/capturas/nosotros.jpg) | ![Horario y contacto](docs/capturas/contacto.jpg) |
 | **Carrito** | **Detalle del producto** |
 | ![Carrito con descuento](docs/capturas/carrito.jpg) | ![Detalle del producto](docs/capturas/detalle.jpg) |
-| **Modo oscuro** | **Catálogo en modo oscuro** |
-| ![Modo oscuro](docs/capturas/portada-oscuro.jpg) | ![Catálogo oscuro](docs/capturas/catalogo-oscuro.jpg) |
+| **Reseñas** | **Preguntas frecuentes** |
+| ![Carrusel de reseñas](docs/capturas/resenas.jpg) | ![Preguntas frecuentes](docs/capturas/faq.jpg) |
+| **Página 404** | **Modo oscuro** |
+| ![Página 404](docs/capturas/404.jpg) | ![Modo oscuro](docs/capturas/portada-oscuro.jpg) |
+| **Catálogo en modo oscuro** | |
+| ![Catálogo oscuro](docs/capturas/catalogo-oscuro.jpg) | |
 
 | Celular | Catálogo en celular | Menú en celular |
 |---|---|---|
@@ -54,6 +61,14 @@ Todas se desactivan si el sistema pide **reducir movimiento**, y ninguna oculta 
 
 | Efecto | Cómo está hecho |
 |---|---|
+| **La torta de la portada se arma sola:** cae la bandeja, luego los tres pisos (con un leve aplastamiento al aterrizar) y al final saltan las frutas | Animaciones CSS dentro de `hero-torta.svg`, con retrasos escalonados |
+| **"sabor a Perú" subrayado a mano** | Trazo SVG que se dibuja con `stroke-dashoffset` |
+| **Parallax:** la torta y el texto de la portada se mueven a distinta velocidad al hacer scroll | CSS puro: `animation-timeline: scroll()` |
+| **Modo oscuro en círculo:** el nuevo tema se expande desde el botón | View Transition con `clip-path: circle()` sobre `::view-transition-new(root)` (`tema.js`) |
+| **El detalle crece desde la tarjeta** | View Transition: la tarjeta y la ventana comparten un `view-transition-name` (`abrirDetalle()`) |
+| **Tarjetas 3D** que se inclinan con el mouse, con reflejo de luz | Variables CSS `--rx`, `--ry` actualizadas con `pointermove` (solo en computadora) |
+| **Confeti** al superar S/ 100 en el carrito y al confirmar un pedido | Web Animations API, piezas con los colores de la marca (`confeti()`) |
+| **"Agregar" → "✓ Agregado"** por un momento | Cambio de clase y animación del ícono |
 | Transición entre páginas (el contenido se desliza, el menú queda fijo) | View Transitions API entre documentos: `@view-transition { navigation: auto }` en `estilos.css` |
 | Tarjetas que se reacomodan al filtrar u ordenar | `document.startViewTransition()` + un `view-transition-name` único por tarjeta (`transicion()` en `animaciones.js`) |
 | El producto "vuela" al carrito | Web Animations API: copia del dibujo que viaja en curva hasta el ícono (`volarAlCarrito()`) |
@@ -65,7 +80,13 @@ Todas se desactivan si el sistema pide **reducir movimiento**, y ninguna oculta 
 | Barra de progreso de lectura | CSS puro: `animation-timeline: scroll()` |
 | Menú que se compacta al bajar, subrayado que crece, botones que se hunden al presionar, filas del carrito y avisos que entran deslizándose | Transiciones CSS y `@starting-style` |
 
-![Producto volando al carrito](docs/capturas/vuelo.jpg)
+![La torta armándose piso por piso](docs/capturas/torta-armandose.jpg)
+
+| Modo oscuro en círculo | Detalle que crece desde la tarjeta |
+|---|---|
+| ![Cambio de tema en círculo](docs/capturas/tema-circulo.jpg) | ![Detalle creciendo](docs/capturas/detalle-creciendo.jpg) |
+| **Producto volando al carrito** | **Confeti y "✓ Agregado"** |
+| ![Producto volando al carrito](docs/capturas/vuelo.jpg) | ![Confeti al alcanzar el descuento](docs/capturas/confeti.jpg) |
 
 ## Conceptos de la Semana 10 (funciones y módulos)
 
@@ -115,6 +136,7 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 ├── nosotros.html         ← Nosotros
 ├── pedido.html           ← Diseña tu torta
 ├── contacto.html         ← Visítanos
+├── 404.html              ← página de error personalizada
 ├── css/
 │   └── estilos.css       ← colores, tipografía y estilos de la marca
 ├── js/
@@ -151,7 +173,7 @@ Requiere un navegador reciente (Chrome o Edge 130+, Firefox 132+, Safari 18+), i
 
 ## Calidad
 
-- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en las 5 páginas y en 7 estados interactivos (carrito abierto, detalle, aviso, errores y confirmación del pedido, menú móvil), en modo claro y oscuro: **0 problemas**. Para lograrlo se ajustaron tres colores de Bootstrap que no llegaban al contraste mínimo de 4.5:1 (verde de los botones de WhatsApp, verde de textos y gris terciario en modo oscuro). Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
+- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en las 6 páginas y en 9 estados interactivos (carrito abierto, detalle, aviso, errores y confirmación del pedido, pregunta frecuente abierta, reseñas en pausa, menú móvil), en modo claro y oscuro: **0 problemas**. El carrusel de reseñas tiene botón de pausa (WCAG 2.2.2) y se puede recorrer con el teclado. Para lograrlo se ajustaron tres colores de Bootstrap que no llegaban al contraste mínimo de 4.5:1 (verde de los botones de WhatsApp, verde de textos y gris terciario en modo oscuro). Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
 - **Movimiento reducido:** si el sistema lo pide, no hay animaciones.
 - **Sin JavaScript:** se muestra un aviso con el WhatsApp y el contenido sigue visible.
 - **Rendimiento:** sin imágenes pesadas (ilustraciones SVG), mapa con `loading="lazy"`, fuentes con `display=swap`, Bootstrap y los íconos por CDN con verificación SRI.
@@ -189,3 +211,4 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [x] **Fase 5:** Pedido especial: formulario en 4 pasos con validación y precio en vivo
 - [x] **Fase 6:** Animaciones, auditoría de accesibilidad, SEO, imagen para redes y publicación
 - [x] **Fase 7:** Sitio de 5 páginas, transiciones entre páginas, vuelo al carrito, filtros en la URL y más animaciones
+- [x] **Fase 8:** Torta que se arma sola, modo oscuro en círculo, detalle que crece, tarjetas 3D, confeti, parallax, reseñas, preguntas frecuentes y página 404

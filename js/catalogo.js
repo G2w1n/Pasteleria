@@ -6,7 +6,7 @@
 import { Dialog } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { CATEGORIAS, productos } from "./productos.js";
 import { dibujarProducto } from "./ilustraciones.js";
-import { transicion } from "./animaciones.js";
+import { transicion, transicionConTipo } from "./animaciones.js";
 
 // ---------- Utilidades (funciones flecha) ----------
 export const soles = (monto) => `S/ ${monto.toFixed(2)}`;
@@ -96,9 +96,34 @@ function pedirAgregar(id, cantidad = 1, origen = null) {
 // ---------- Detalle del producto (Dialog de Bootstrap) ----------
 let productoAbierto = null;
 
-function abrirDetalle(id) {
+// La imagen de la tarjeta "crece" hasta la ventana de detalle: la tarjeta y el
+// detalle comparten por un momento el mismo view-transition-name
+function abrirDetalle(id, tarjeta = null) {
   const p = productos.find((x) => x.id === id);
   if (!p) return;
+  const dibujo = tarjeta?.querySelector(".producto-media");
+  const dialogo = $("#detalleProducto");
+
+  if (dibujo) dibujo.style.viewTransitionName = "producto-activo";
+  const vista = transicionConTipo("detalle", () => {
+    if (dibujo) dibujo.style.viewTransitionName = "";
+    $("#detalleMedia").style.viewTransitionName = "producto-activo";
+    dialogo.classList.add("dialog-instant"); // sin la animación propia de Bootstrap: la hace la transición
+    llenarDetalle(p);
+    // show() abre el <dialog> al instante; no esperamos su promesa porque
+    // Bootstrap la resuelve con un retardo que frenaría la animación
+    Dialog.getOrCreateInstance(dialogo).show();
+  });
+  // Sin soporte, transicionConTipo ya abrió el detalle; solo queda limpiar
+  const limpiar = () => {
+    $("#detalleMedia").style.viewTransitionName = "";
+    dialogo.classList.remove("dialog-instant");
+  };
+  if (vista) vista.finished.finally(limpiar);
+  else limpiar();
+}
+
+function llenarDetalle(p) {
   productoAbierto = p;
 
   $("#detalleMedia").style.setProperty("--tono", p.ilustracion.fondo);
@@ -117,8 +142,6 @@ function abrirDetalle(id) {
   cantidad.max = Math.max(p.stock, 1);
   $("#detalleCompra").hidden = agotado(p);
   $("#detalleAgotado").hidden = !agotado(p);
-
-  Dialog.getOrCreateInstance($("#detalleProducto")).show();
 }
 
 function cambiarCantidad(delta) {
@@ -139,15 +162,28 @@ function iniciarDetalle() {
   });
 }
 
+// El botón cambia un momento a "✓ Agregado" y luego vuelve a la normalidad
+function confirmarBoton(boton) {
+  if (boton.classList.contains("btn-agregado")) return;
+  const original = boton.innerHTML;
+  boton.classList.add("btn-agregado");
+  boton.innerHTML = `<i class="bi bi-check-lg" aria-hidden="true"></i> Agregado`;
+  setTimeout(() => {
+    boton.classList.remove("btn-agregado");
+    boton.innerHTML = original;
+  }, 1600);
+}
+
 // Delegación de eventos: un solo listener para todas las tarjetas de una grilla
 function activarTarjetas(grilla) {
   grilla.addEventListener("click", (e) => {
     const detalle = e.target.closest("[data-detalle]");
     const agregar = e.target.closest("[data-agregar]");
-    if (detalle) abrirDetalle(detalle.dataset.detalle);
+    if (detalle) abrirDetalle(detalle.dataset.detalle, detalle.closest(".producto"));
     if (agregar) {
       const dibujo = agregar.closest(".producto").querySelector(".producto-media > svg, .producto-media > img");
       pedirAgregar(agregar.dataset.agregar, 1, dibujo);
+      confirmarBoton(agregar);
     }
   });
 }

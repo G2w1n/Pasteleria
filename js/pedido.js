@@ -7,7 +7,7 @@ import { NEGOCIO } from "./config.js";
 import { soles } from "./catalogo.js";
 import { sumar } from "./carrito.js";
 import { dibujarProducto } from "./ilustraciones.js";
-import { animarNumero } from "./animaciones.js";
+import { animarNumero, confeti } from "./animaciones.js";
 
 // ---------- Opciones y precios ----------
 // "color" se usa para pintar la vista previa de la torta
@@ -284,6 +284,7 @@ export function iniciarPedido() {
     form.hidden = true;
     $("#pedidoConfirmacion").hidden = false;
     $("#pedidoConfirmacion").focus();
+    confeti();
   });
 
   $("#btnEditarPedido").addEventListener("click", () => {

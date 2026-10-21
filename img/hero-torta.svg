@@ -1,55 +1,89 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 480" role="img">
   <title>Torta de tres pisos de lúcuma y cacao con aguaymantos</title>
-  <!-- Destellos que titilan y puntos que flotan (se desactiva con "reducir movimiento") -->
+  <!--
+    Animación al cargar: la torta se "arma" sola.
+    1. Aparece la bandeja  2. Caen los tres pisos, uno tras otro, y se aplastan
+    un poco al aterrizar  3. Saltan los aguaymantos y la hoja  4. Los destellos
+    empiezan a titilar y los puntos a flotar.
+    Con "reducir movimiento" activado, la torta se muestra completa y quieta.
+  -->
   <style>
-    .destello, .punto { transform-box: fill-box; transform-origin: center; }
+    .pieza, .destello, .punto { transform-box: fill-box; }
+    .pieza { transform-origin: 50% 100%; }
+    .destello, .punto { transform-origin: center; }
     @media (prefers-reduced-motion: no-preference) {
-      .destello { animation: titilar 2.4s ease-in-out infinite; }
-      .destello:nth-child(2) { animation-delay: .8s; }
-      .destello:nth-child(3) { animation-delay: 1.6s; }
-      .punto { animation: flotar 4s ease-in-out infinite; }
-      .punto:nth-child(2) { animation-delay: 1.3s; }
-      .punto:nth-child(3) { animation-delay: 2.6s; }
+      .bandeja { animation: aparecer .5s ease-out both; }
+      .piso { animation: caer .75s cubic-bezier(.3, 1.3, .5, 1) both; }
+      .piso-1 { animation-delay: .25s; }
+      .piso-2 { animation-delay: .55s; }
+      .piso-3 { animation-delay: .85s; }
+      .fruta { animation: saltar .55s cubic-bezier(.3, 1.8, .5, 1) both; }
+      .fruta-1 { animation-delay: 1.25s; }
+      .fruta-2 { animation-delay: 1.38s; }
+      .hoja { animation-delay: 1.5s; }
+      .destello { animation: aparecer .4s 1.7s both, titilar 2.4s 2.1s ease-in-out infinite; }
+      .destello:nth-child(2) { animation-delay: 1.85s, 2.9s; }
+      .destello:nth-child(3) { animation-delay: 2s, 3.7s; }
+      .punto { animation: aparecer .4s 1.8s both, flotar 4s 2.2s ease-in-out infinite; }
+      .punto:nth-child(2) { animation-delay: 1.9s, 3.5s; }
+      .punto:nth-child(3) { animation-delay: 2s, 4.8s; }
     }
+    @keyframes aparecer { from { opacity: 0; transform: scale(.6); } }
+    @keyframes caer {
+      0% { opacity: 0; transform: translateY(-340px); }
+      15% { opacity: 1; }
+      65% { transform: translateY(0) scale(1, 1); }
+      80% { transform: translateY(0) scale(1.05, .9); }
+      100% { transform: none; }
+    }
+    @keyframes saltar { from { opacity: 0; transform: translateY(-40px) scale(.3); } }
     @keyframes titilar { 50% { transform: scale(.55) rotate(45deg); opacity: .5; } }
     @keyframes flotar { 50% { transform: translateY(-8px); } }
   </style>
 
   <!-- Base de la torta (bandeja) -->
-  <ellipse cx="240" cy="418" rx="168" ry="22" fill="#3a2420" opacity=".12"/>
-  <path d="M96 392h288l-14 18H110z" fill="#e7d9c9"/>
-  <rect x="84" y="380" width="312" height="14" rx="7" fill="#f3e7d8"/>
-  <rect x="226" y="410" width="28" height="26" rx="4" fill="#e7d9c9"/>
+  <g class="pieza bandeja">
+    <ellipse cx="240" cy="418" rx="168" ry="22" fill="#3a2420" opacity=".12"/>
+    <path d="M96 392h288l-14 18H110z" fill="#e7d9c9"/>
+    <rect x="84" y="380" width="312" height="14" rx="7" fill="#f3e7d8"/>
+    <rect x="226" y="410" width="28" height="26" rx="4" fill="#e7d9c9"/>
+  </g>
 
   <!-- Piso inferior: cacao -->
-  <rect x="112" y="290" width="256" height="92" rx="14" fill="#5a352c"/>
-  <rect x="112" y="322" width="256" height="12" fill="#e0a03a"/>
-  <path d="M112 304c0-8 6-14 14-14h228c8 0 14 6 14 14v6c-10 0-10 16-21 16s-11-12-22-12-11 22-22 22-11-18-22-18-11 12-22 12-11-20-22-20-11 14-22 14-11-10-22-10-11 18-22 18-11-14-22-14-11 8-22 8-10-12-21-12z" fill="#8e2c4e"/>
+  <g class="pieza piso piso-1">
+    <rect x="112" y="290" width="256" height="92" rx="14" fill="#5a352c"/>
+    <rect x="112" y="322" width="256" height="12" fill="#e0a03a"/>
+    <path d="M112 304c0-8 6-14 14-14h228c8 0 14 6 14 14v6c-10 0-10 16-21 16s-11-12-22-12-11 22-22 22-11-18-22-18-11 12-22 12-11-20-22-20-11 14-22 14-11-10-22-10-11 18-22 18-11-14-22-14-11 8-22 8-10-12-21-12z" fill="#8e2c4e"/>
+  </g>
 
   <!-- Piso medio: lúcuma -->
-  <rect x="146" y="206" width="188" height="86" rx="12" fill="#e9b25a"/>
-  <rect x="146" y="238" width="188" height="10" fill="#fbf6ef" opacity=".85"/>
-  <path d="M146 218c0-7 5-12 12-12h164c7 0 12 5 12 12v4c-8 0-8 14-17 14s-9-10-18-10-9 18-18 18-9-14-18-14-9 10-18 10-9-16-18-16-9 12-18 12-9-8-18-8-8 12-17 12z" fill="#fbf6ef"/>
+  <g class="pieza piso piso-2">
+    <rect x="146" y="206" width="188" height="86" rx="12" fill="#e9b25a"/>
+    <rect x="146" y="238" width="188" height="10" fill="#fbf6ef" opacity=".85"/>
+    <path d="M146 218c0-7 5-12 12-12h164c7 0 12 5 12 12v4c-8 0-8 14-17 14s-9-10-18-10-9 18-18 18-9-14-18-14-9 10-18 10-9-16-18-16-9 12-18 12-9-8-18-8-8 12-17 12z" fill="#fbf6ef"/>
+  </g>
 
   <!-- Piso superior: mora -->
-  <rect x="178" y="134" width="124" height="74" rx="10" fill="#8e2c4e"/>
-  <rect x="178" y="162" width="124" height="8" fill="#e0a03a"/>
-  <path d="M178 144c0-6 4-10 10-10h104c6 0 10 4 10 10v4c-7 0-7 12-14 12s-7-8-14-8-7 14-14 14-7-10-14-10-7 8-14 8-7-12-14-12-7 8-14 8-6-6-12-6z" fill="#6b1f3a"/>
+  <g class="pieza piso piso-3">
+    <rect x="178" y="134" width="124" height="74" rx="10" fill="#8e2c4e"/>
+    <rect x="178" y="162" width="124" height="8" fill="#e0a03a"/>
+    <path d="M178 144c0-6 4-10 10-10h104c6 0 10 4 10 10v4c-7 0-7 12-14 12s-7-8-14-8-7 14-14 14-7-10-14-10-7 8-14 8-7-12-14-12-7 8-14 8-6-6-12-6z" fill="#6b1f3a"/>
+  </g>
 
   <!-- Aguaymantos con su capuchón -->
-  <g>
+  <g class="pieza fruta fruta-1">
     <path d="M214 132c-6-14 2-26 12-28-2 10 4 20 4 28z" fill="#c9b48a"/>
     <circle cx="224" cy="124" r="12" fill="#f2a516"/>
     <circle cx="220" cy="120" r="3" fill="#fff" opacity=".6"/>
   </g>
-  <g>
+  <g class="pieza fruta fruta-2">
     <path d="M250 126c-4-16 6-28 16-28-4 10 0 20-2 28z" fill="#c9b48a"/>
     <circle cx="258" cy="118" r="14" fill="#f2a516"/>
     <circle cx="253" cy="113" r="3.5" fill="#fff" opacity=".6"/>
   </g>
 
   <!-- Hoja de menta -->
-  <path d="M280 124c10-14 26-14 34-8-8 10-22 14-34 8z" fill="#5a8f5e"/>
+  <path class="pieza fruta hoja" d="M280 124c10-14 26-14 34-8-8 10-22 14-34 8z" fill="#5a8f5e"/>
 
   <!-- Chispas decorativas -->
   <g fill="#e0a03a">
