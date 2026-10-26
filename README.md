@@ -206,6 +206,29 @@ Requiere un navegador reciente (Chrome o Edge 130+, Firefox 132+, Safari 18+), i
 
 El archivo `.nojekyll` le indica a GitHub que publique los archivos tal cual.
 
+## Base de datos (Neon · PostgreSQL)
+
+Los archivos están en la carpeta `sql/` y se ejecutan **en orden** en el *SQL Editor* de Neon:
+
+| Archivo | Qué hace |
+|---|---|
+| `01-esquema.sql` | Crea las tablas, las reglas automáticas y las vistas de reportes. **Borra todo lo anterior** si se vuelve a ejecutar |
+| `02-datos.sql` | Carga las 4 categorías, los 16 productos de la web, la configuración del negocio y el cupón `KUYAY10` |
+| `03-datos-demo.sql` | *(Opcional)* 6 clientes y ~300 ventas de los últimos 90 días para que los reportes muestren datos |
+
+**Tablas:** `usuarios` (con rol: cliente, empleado o administrador), `direcciones`, `categorias`, `productos`, `cupones`, `pedidos`, `pedido_detalle`, `historial_estados`, `pedidos_especiales`, `movimientos_stock`, `resenas` y `configuracion`.
+
+**Reglas que cumple la propia base de datos:**
+- Vender descuenta el stock y **no permite vender más de lo que hay** (la venta se cancela completa).
+- Cancelar un pedido **devuelve los productos al stock**.
+- Cada cambio de estado queda en el historial, con quién lo hizo.
+- El correo es único (sin importar mayúsculas), el celular debe tener 9 dígitos y empezar con 9, un delivery exige dirección, y las tortas personalizadas de domingo solo se entregan en la mañana.
+- Las contraseñas **nunca** se guardan: solo su hash (bcrypt), que calcula la API.
+
+**Vistas de reportes:** `reporte_resumen`, `reporte_ventas_diarias`, `reporte_ventas_mensuales`, `reporte_productos`, `reporte_categorias`, `reporte_distritos`, `reporte_horas`, `reporte_clientes` y `reporte_stock_bajo`.
+
+> La cadena de conexión de Neon vive **solo** en las variables de entorno de Vercel (`DATABASE_URL`). Nunca se escribe en el código ni se sube a GitHub.
+
 ## Fotos de los productos
 
 Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraciones.js`
