@@ -4,17 +4,22 @@
 // aquí se inicia solo lo que cada página necesita.
 // Es un módulo ES (type="module"): sus variables NO son globales.
 // =========================================================
-import { Drawer } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
+import { Drawer, Tooltip } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { NEGOCIO } from "./config.js";
 import { insertarComponentes } from "./componentes.js";
 import { iniciarTema } from "./tema.js";
 import { iniciarCatalogo, iniciarDestacados, pintarCategorias } from "./catalogo.js";
 import { iniciarCarrito } from "./carrito.js";
 import { iniciarPedido } from "./pedido.js";
+import { iniciarCuenta } from "./cuenta.js";
 import { iniciarAnimaciones } from "./animaciones.js";
+import { cargarCatalogo, obtenerSesion } from "./api.js";
 
 const $ = (selector) => document.querySelector(selector);
 const existe = (selector) => document.querySelector(selector) !== null;
+
+// ---------- Datos: base de datos (Neon) si la API responde; si no, js/productos.js ----------
+await cargarCatalogo();
 
 // ---------- Comunes a todas las páginas ----------
 insertarComponentes({ conDetalle: existe("#grillaProductos") || existe("#grillaDestacados"), whatsapp: NEGOCIO.whatsapp });
@@ -26,6 +31,18 @@ if (existe("#grillaDestacados")) iniciarDestacados(); // Inicio
 if (existe("#categoriasInicio")) pintarCategorias(); // Inicio
 if (existe("#grillaProductos")) iniciarCatalogo(); // Catálogo
 if (existe("#formPedido")) iniciarPedido(); // Pedido especial
+if (existe("#cuentaPanel")) iniciarCuenta(); // Mi cuenta
+
+// ---------- Botón de cuenta: saluda si hay sesión ----------
+obtenerSesion().then((usuario) => {
+  if (!usuario) return;
+  const boton = $("#btnCuenta");
+  const saludo = `Hola, ${usuario.nombre.split(" ")[0]}`;
+  boton.setAttribute("aria-label", `Mi cuenta (${saludo})`);
+  boton.dataset.bsTitle = saludo;
+  boton.classList.add("con-sesion");
+  Tooltip.getInstance(boton)?.dispose(); // se vuelve a crear con el texto nuevo
+});
 
 // ---------- Drawers: cerrar al elegir un enlace ----------
 // (No usamos data-bs-dismiss en enlaces: Bootstrap cancela la navegación.)

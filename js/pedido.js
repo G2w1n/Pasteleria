@@ -10,43 +10,12 @@ import { soles } from "./catalogo.js";
 import { sumar } from "./carrito.js";
 import { crearTortaViva } from "./torta-viva.js";
 import { animarNumero, confeti } from "./animaciones.js";
+import { api, apiDisponible } from "./api.js";
 
-// ---------- Opciones y precios ----------
-// "color" se usa para pintar la vista previa de la torta
-const TAMANOS = [
-  { id: "mini", nombre: "Mini", detalle: "6 porciones", precio: 65 },
-  { id: "mediana", nombre: "Mediana", detalle: "12 porciones", precio: 110 },
-  { id: "grande", nombre: "Grande", detalle: "20 porciones", precio: 170 },
-  { id: "fiesta", nombre: "Fiesta", detalle: "30 porciones · 2 pisos", precio: 240 },
-];
-const BIZCOCHOS = [
-  { id: "vainilla", nombre: "Vainilla", precio: 0, color: "#f6e4c3" },
-  { id: "chocolate", nombre: "Cacao 70 %", precio: 10, color: "#5a352c" },
-  { id: "lucuma", nombre: "Lúcuma", precio: 8, color: "#f0c27a" },
-  { id: "red-velvet", nombre: "Red velvet de betarraga", precio: 12, color: "#9b2335" },
-];
-const RELLENOS = [
-  { id: "manjar", nombre: "Manjar blanco", precio: 0, color: "#c98a4b" },
-  { id: "fudge", nombre: "Fudge de chocolate", precio: 0, color: "#3a2420" },
-  { id: "crema-lucuma", nombre: "Crema de lúcuma", precio: 8, color: "#e9a23b" },
-  { id: "maracuya", nombre: "Mousse de maracuyá", precio: 6, color: "#f2b705" },
-  { id: "frutos-rojos", nombre: "Frutos rojos", precio: 10, color: "#b3264f" },
-];
-const COBERTURAS = [
-  { id: "chantilly", nombre: "Chantilly", precio: 0, color: "#fffaf2" },
-  { id: "buttercream", nombre: "Buttercream de mora", precio: 8, color: "#d98fb0" },
-  { id: "ganache", nombre: "Ganache de cacao", precio: 10, color: "#4a2a22" },
-  { id: "fondant", nombre: "Fondant decorado", precio: 25, color: "#f8e6ec" },
-];
-const EXTRAS = [
-  { id: "topper", nombre: "Topper personalizado", precio: 18 },
-  { id: "flores", nombre: "Flores comestibles", precio: 15 },
-  { id: "aguaymanto", nombre: "Aguaymantos frescos", precio: 10 },
-  { id: "foto", nombre: "Foto comestible", precio: 25 },
-  { id: "velas", nombre: "Velas y número", precio: 6 },
-];
+// Opciones y precios: compartidos con la API (api/pedidos-especiales.js),
+// que recalcula el precio para que no se pueda alterar desde el navegador
+import { TAMANOS, BIZCOCHOS, RELLENOS, COBERTURAS, EXTRAS, PRECIO_REGALO } from "./opciones-torta.js";
 
-const PRECIO_REGALO = 8; // tarjeta con dedicatoria y caja de regalo
 const DIAS_ANTICIPACION = 2;
 const DIAS_MAXIMO = 60;
 const DOMINGO = 0;
@@ -350,8 +319,10 @@ export function iniciarPedido() {
     }
   });
 
-  form.addEventListener("submit", (e) => {
+  let enviando = false;
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (enviando) return;
     intentoEnviar = true;
     actualizar();
 
@@ -362,7 +333,29 @@ export function iniciarPedido() {
     }
 
     const pedido = leerPedido(form);
-    const texto = mensajePedido(pedido);
+    let texto = mensajePedido(pedido);
+
+    // Con la API disponible, la torta se guarda en la base de datos y recibe un código
+    $("#pedidoCodigo").hidden = true;
+    if (apiDisponible()) {
+      const boton = form.querySelector(".btn-enviar");
+      enviando = boton.disabled = true;
+      boton.classList.add("enviando");
+      try {
+        const { torta } = await api("pedidos-especiales", { metodo: "POST", datos: pedido, espera: 15000 });
+        texto = `Código de pedido: ${torta.codigo}\n\n${texto}`;
+        $("#pedidoCodigo").innerHTML = `Código de tu pedido: <strong>${torta.codigo}</strong>. Guárdalo para consultarlo.`;
+        $("#pedidoCodigo").hidden = false;
+      } catch (err) {
+        $("#pedidoErrores").innerHTML = `<i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> ${err.message}`;
+        $("#pedidoErrores").hidden = false;
+        $("#pedidoErrores").focus();
+        return;
+      } finally {
+        enviando = boton.disabled = false;
+        boton.classList.remove("enviando");
+      }
+    }
     $("#confirmacionResumen").textContent = texto;
     $("#confirmacionWhatsApp").href = `https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(texto)}`;
     form.hidden = true;

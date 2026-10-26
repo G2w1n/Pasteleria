@@ -1,0 +1,15 @@
+{
+  "name": "kuyay-pasteleria",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kuyay · Pastelería de autor: tienda con Bootstrap 6 y API en Vercel conectada a Neon (PostgreSQL)",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "1.2.0",
+    "bcryptjs": "3.0.3",
+    "jose": "6.2.12"
+  }
+}

@@ -5,12 +5,13 @@
 //          recursividad y closure.
 // Parte 2: interfaz (drawer, contador, Toast y WhatsApp).
 // =========================================================
-import { Drawer, Toast } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
+import { Dialog, Drawer, Toast } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { productos } from "./productos.js";
 import { dibujarProducto } from "./ilustraciones.js";
 import { soles } from "./catalogo.js";
 import { NEGOCIO } from "./config.js";
 import { animarNumero, volarAlCarrito, confeti, sacudirCarrito, prefiereQuieto } from "./animaciones.js";
+import { api, apiDisponible, costoDeliveryDe, distritosConDelivery, obtenerSesion } from "./api.js";
 
 // ================= PARTE 1: LÓGICA =================
 
@@ -291,5 +292,116 @@ export function iniciarCarrito() {
     if (e.target.closest("[data-ver-carrito]")) abrirCarrito();
   });
 
+  if (apiDisponible()) iniciarCheckout(carrito);
   return carrito;
+}
+
+// ================= PARTE 3: CONFIRMAR PEDIDO (API + Neon) =================
+// Solo se activa si la API responde. El pedido se guarda en la base de datos,
+// que descuenta el stock y lo muestra en "Mis pedidos" y en los reportes.
+
+function iniciarCheckout(carrito) {
+  const dialogo = $("#checkout");
+  const form = $("#formCheckout");
+  const listo = $("#checkoutListo");
+  const error = $("#checkoutError");
+  let enviando = false;
+
+  form.distrito.innerHTML =
+    `<option value="">Elige tu distrito</option>` +
+    distritosConDelivery().map((d) => `<option value="${d}">${d} · ${soles(costoDeliveryDe(d))}</option>`).join("");
+
+  const esDelivery = () => form.tipo_entrega.value === "delivery";
+
+  function pintarTotales() {
+    const t = carrito.totales();
+    const costo = esDelivery() ? (costoDeliveryDe(form.distrito.value) ?? 0) : 0;
+    $("#ckDelivery").hidden = !esDelivery();
+    form.distrito.required = form.direccion.required = esDelivery();
+    $("#ckCostoDelivery").textContent = form.distrito.value ? `${form.distrito.value} · ${soles(costo)}` : "Elige tu distrito";
+    $("#ckSubtotal").textContent = soles(t.subtotal);
+    $("#ckFilaDescuento").hidden = !t.conDescuento;
+    $("#ckDescuento").textContent = `−${soles(t.descuento)}`;
+    $("#ckDeliveryMonto").textContent = soles(costo);
+    animarNumero($("#ckTotal"), Math.round((t.total + costo) * 100) / 100, soles);
+  }
+
+  const mostrarError = (texto) => {
+    error.textContent = texto;
+    error.hidden = !texto;
+    if (texto) error.scrollIntoView({ block: "nearest" });
+  };
+
+  const cargando = (si) => {
+    enviando = si;
+    $("#ckEnviar").disabled = si;
+    $("#ckEnviar .spinner-border").hidden = !si;
+    $("#ckEnviar .ck-texto").textContent = si ? "Guardando tu pedido…" : "Confirmar pedido";
+  };
+
+  // Abrir: primero se cierra el carrito y luego se muestra el diálogo
+  $("#btnCheckout").addEventListener("click", async () => {
+    if (carrito.unidades() === 0) return;
+    Drawer.getInstance($("#carrito"))?.hide();
+    form.hidden = false;
+    listo.hidden = true;
+    mostrarError("");
+    const usuario = await obtenerSesion();
+    if (usuario) {
+      form.nombre.value ||= usuario.nombre;
+      form.telefono.value ||= usuario.telefono ?? "";
+    }
+    pintarTotales();
+    Dialog.getOrCreateInstance(dialogo).show();
+  });
+
+  form.telefono.addEventListener("input", () => {
+    form.telefono.value = form.telefono.value.replace(/\D/g, "");
+  });
+  form.addEventListener("change", pintarTotales);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (enviando) return;
+    const invalido = [...form.elements].find((c) => c.willValidate && !c.checkValidity());
+    form.querySelectorAll(".is-invalid").forEach((c) => c.classList.remove("is-invalid"));
+    if (invalido) {
+      invalido.classList.add("is-invalid");
+      mostrarError(
+        invalido === form.nombre ? "Escribe tu nombre (mínimo 3 letras)."
+        : invalido === form.telefono ? "El celular debe tener 9 dígitos y empezar con 9."
+        : invalido === form.distrito ? "Elige el distrito de entrega."
+        : "Escribe la dirección de entrega.",
+      );
+      invalido.focus();
+      return;
+    }
+
+    const lista = carrito.lista();
+    const datos = Object.fromEntries(new FormData(form));
+    mostrarError("");
+    cargando(true);
+    try {
+      const { pedido } = await api("pedidos", {
+        metodo: "POST",
+        datos: { ...datos, items: lista.map((it) => ({ id: it.producto.id, cantidad: it.cantidad })) },
+        espera: 15000,
+      });
+      const usuario = await obtenerSesion();
+      $("#ckCodigo").textContent = pedido.codigo;
+      $("#ckResumenListo").textContent = `Total ${soles(pedido.total)} · ${datos.tipo_entrega === "delivery" ? `delivery a ${datos.distrito}` : "recojo en tienda"} · pago con ${datos.metodo_pago}.`;
+      $("#ckVerPedidos").hidden = !usuario;
+      const texto = `¡Hola ${NEGOCIO.nombre}! Acabo de hacer el pedido *${pedido.codigo}* en la web por ${soles(pedido.total)}. A nombre de ${datos.nombre}.`;
+      $("#ckWhatsApp").href = `https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(texto)}`;
+      form.hidden = true;
+      listo.hidden = false;
+      listo.focus();
+      carrito.vaciar();
+      confeti();
+    } catch (err) {
+      mostrarError(err.message);
+    } finally {
+      cargando(false);
+    }
+  });
 }

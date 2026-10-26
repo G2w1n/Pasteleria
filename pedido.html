@@ -86,6 +86,10 @@
 
         <!-- Acciones: siempre visibles, también en celular -->
         <div class="acciones">
+          <a class="btn btn-text btn-icon solo-con-api" href="cuenta.html" id="btnCuenta" aria-label="Mi cuenta"
+             data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Mi cuenta">
+            <i class="bi bi-person-circle" aria-hidden="true"></i>
+          </a>
           <button class="btn btn-text btn-icon" type="button" id="btnTema" aria-label="Activar modo oscuro" aria-pressed="false">
             <i class="bi bi-moon-stars" aria-hidden="true"></i>
           </button>
@@ -332,6 +336,7 @@
             <!-- Confirmación (se muestra al enviar) -->
             <div class="alert theme-success confirmacion" id="pedidoConfirmacion" role="status" tabindex="-1" hidden>
               <h2 class="alert-heading"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> ¡Tu pedido está listo para enviar!</h2>
+              <p class="pedido-codigo" id="pedidoCodigo" hidden></p>
               <p>Revisa el resumen y envíalo por WhatsApp. Te confirmaremos la disponibilidad y el adelanto en menos de una hora.</p>
               <pre class="confirmacion-resumen" id="confirmacionResumen"></pre>
               <div class="d-flex flex-wrap gap-3">
@@ -387,6 +392,7 @@
             <li><a href="pedido.html">Pedido especial</a></li>
             <li><a href="nosotros.html">Nosotros</a></li>
             <li><a href="contacto.html">Visítanos</a></li>
+            <li class="solo-con-api"><a href="cuenta.html">Mi cuenta</a></li>
           </ul>
         </div>
         <div class="md:col-4">

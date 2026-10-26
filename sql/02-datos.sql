@@ -120,7 +120,7 @@ insert into cupones (codigo, porcentaje, vence, usos_max) values
 
 -- =========================================================
 -- PRIMER ADMINISTRADOR
--- 1. Regístrate en la web con tu correo (cuando la API esté lista).
+-- 1. Crea tu cuenta en la página "Mi cuenta" (cuenta.html) de Vercel.
 -- 2. Vuelve aquí y ejecuta (cambiando el correo por el tuyo):
 --
 --    update usuarios set rol = 'administrador' where lower(correo) = lower('tu@correo.com');

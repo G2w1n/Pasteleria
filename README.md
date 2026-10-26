@@ -20,6 +20,7 @@ Es el proyecto de la **Semana 10 de Diseño Web** (Unidad 3: Funciones y módulo
 | Nosotros | `nosotros.html` | Historia, cifras que suben al aparecer, valores y proceso con línea que se dibuja |
 | Pedido especial | `pedido.html` | Torta personalizada en 4 pasos con precio y vista previa en vivo |
 | Visítanos | `contacto.html` | Horario con "Abierto ahora" (hora de Lima), contacto, mapa y **preguntas frecuentes** |
+| Mi cuenta | `cuenta.html` | Ingresar / crear cuenta y **seguimiento de mis pedidos** (requiere la API en Vercel) |
 | Error 404 | `404.html` | "Esta torta no existe… todavía": GitHub Pages la muestra en cualquier dirección que no exista |
 
 En todas las páginas: menú (con la página actual marcada), carrito, modo oscuro y pie de página.
@@ -40,6 +41,8 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | **Datepicker** (calendario incluido en Bootstrap 6) | Fecha de entrega: bloquea los días con menos de 2 o más de 60 días de anticipación |
 | **Stepper** | Pasos del pedido: el actual late y los completos se convierten en ✓ |
 | **Switch** | "¿Es un regalo?": suma S/ 8 y muestra la dedicatoria |
+| **Form floating** + **Strength** (medidor de contraseña) + Spinner | Confirmar pedido y Mi cuenta |
+| **Stepper** + Badge | Seguimiento de cada pedido en "Mis pedidos" |
 
 ![Inicio: favoritos y categorías](docs/capturas/inicio.jpg)
 
@@ -54,6 +57,10 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | ![Carrusel de reseñas](docs/capturas/resenas.jpg) | ![Preguntas frecuentes](docs/capturas/faq.jpg) |
 | **Página 404** | **Modo oscuro** |
 | ![Página 404](docs/capturas/404.jpg) | ![Modo oscuro](docs/capturas/portada-oscuro.jpg) |
+| **Confirmar pedido** (se guarda en Neon) | **Pedido recibido** |
+| ![Confirmar pedido](docs/capturas/checkout.jpg) | ![Pedido recibido con su código](docs/capturas/checkout-listo.jpg) |
+| **Mi cuenta: seguimiento de pedidos** | **Crear cuenta** |
+| ![Mis pedidos](docs/capturas/cuenta.jpg) | ![Crear cuenta](docs/capturas/cuenta-registro.jpg) |
 | **Catálogo en modo oscuro** | |
 | ![Catálogo oscuro](docs/capturas/catalogo-oscuro.jpg) | |
 
@@ -154,7 +161,16 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 ├── nosotros.html         ← Nosotros
 ├── pedido.html           ← Diseña tu torta
 ├── contacto.html         ← Visítanos
+├── cuenta.html           ← Mi cuenta (ingresar, registro y mis pedidos)
 ├── 404.html              ← página de error personalizada
+├── api/                  ← funciones de Vercel (el "servidor")
+│   ├── _lib/             ← conexión a Neon, sesiones y respuestas
+│   ├── productos.js      ← GET catálogo y costos de delivery
+│   ├── auth.js           ← registro, ingreso y salida
+│   ├── pedidos.js        ← crear pedido / mis pedidos
+│   └── pedidos-especiales.js ← guardar una torta personalizada
+├── sql/                  ← tablas, datos y reportes para Neon
+├── package.json          ← dependencias de la API
 ├── css/
 │   └── estilos.css       ← colores, tipografía y estilos de la marca
 ├── js/
@@ -167,6 +183,9 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 │   ├── catalogo.js       ← filtros, buscador, orden y detalle
 │   ├── carrito.js        ← carrito, descuento, Toast y WhatsApp
 │   ├── pedido.js         ← formulario de torta personalizada
+│   ├── opciones-torta.js ← tamaños, sabores y precios (los usa también la API)
+│   ├── api.js            ← conexión con la API; si no responde, usa productos.js
+│   ├── cuenta.js         ← página "Mi cuenta"
 │   ├── torta-viva.js     ← vista previa animada de la torta del pedido
 │   └── animaciones.js    ← transiciones, vuelo al carrito, números y scroll
 ├── img/
@@ -192,7 +211,7 @@ Requiere un navegador reciente (Chrome o Edge 130+, Firefox 132+, Safari 18+), i
 
 ## Calidad
 
-- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en las 6 páginas y en 14 estados interactivos (carrito abierto, detalle, pestañas con tooltip, popover, calendario abierto, regalo activado, aviso, burbuja de WhatsApp, errores y confirmación del pedido, pregunta frecuente abierta, reseñas en pausa, menú móvil), en modo claro y oscuro: **0 problemas**. El carrusel de reseñas tiene botón de pausa (WCAG 2.2.2) y se puede recorrer con el teclado. Para lograrlo se ajustaron tres colores de Bootstrap que no llegaban al contraste mínimo de 4.5:1 (verde de los botones de WhatsApp, verde de textos y gris terciario en modo oscuro). Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
+- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en las 7 páginas y en 20 estados interactivos (incluye confirmar pedido, pedido recibido, registro con error y "Mis pedidos") (carrito abierto, detalle, pestañas con tooltip, popover, calendario abierto, regalo activado, aviso, burbuja de WhatsApp, errores y confirmación del pedido, pregunta frecuente abierta, reseñas en pausa, menú móvil), en modo claro y oscuro: **0 problemas**. El carrusel de reseñas tiene botón de pausa (WCAG 2.2.2) y se puede recorrer con el teclado. Para lograrlo se ajustaron tres colores de Bootstrap que no llegaban al contraste mínimo de 4.5:1 (verde de los botones de WhatsApp, verde de textos y gris terciario en modo oscuro). Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
 - **Movimiento reducido:** si el sistema lo pide, no hay animaciones.
 - **Sin JavaScript:** se muestra un aviso con el WhatsApp y el contenido sigue visible.
 - **Rendimiento:** sin imágenes pesadas (ilustraciones SVG), mapa con `loading="lazy"`, fuentes con `display=swap`, Bootstrap y los íconos por CDN con verificación SRI.
@@ -229,6 +248,45 @@ Los archivos están en la carpeta `sql/` y se ejecutan **en orden** en el *SQL E
 
 > La cadena de conexión de Neon vive **solo** en las variables de entorno de Vercel (`DATABASE_URL`). Nunca se escribe en el código ni se sube a GitHub.
 
+## API en Vercel (conecta la página con Neon)
+
+La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página las llama con `fetch` desde `js/api.js`.
+
+| Ruta | Qué hace |
+|---|---|
+| `GET /api/productos` | Catálogo y **stock real** desde la base de datos, y el costo de delivery por distrito |
+| `POST /api/auth?accion=registro` · `login` · `salir` | Cuentas de cliente. La sesión es una cookie `HttpOnly` (JavaScript no puede leerla) |
+| `GET /api/auth` | Usuario que inició sesión |
+| `POST /api/pedidos` | Guarda el pedido del carrito, descuenta el stock y devuelve su código (`KY-000123`) |
+| `GET /api/pedidos` | "Mis pedidos" con su estado |
+| `POST /api/pedidos-especiales` | Guarda la torta personalizada y devuelve su código (`TP-00012`) |
+
+**Qué cambia en la página cuando la API responde:**
+- El catálogo muestra los productos y el stock de Neon (si se agota algo, se ve "Agotado").
+- En el carrito aparece **Confirmar pedido**: nombre, celular, recojo o delivery por distrito, método de pago (Yape, Plin, efectivo o tarjeta) y total con delivery. El pedido queda guardado con un código y se puede avisar por WhatsApp.
+- Aparece el botón de **Mi cuenta** (saluda con tu nombre) y la página `cuenta.html`.
+- La torta personalizada se guarda y recibe un código.
+
+**Seguridad:** el servidor recalcula precios, descuento y delivery (no confía en lo que mande el navegador), las contraseñas se guardan con bcrypt y la sesión es un JWT firmado en una cookie `HttpOnly`.
+
+**Si la API no responde** (Live Server o GitHub Pages), la página funciona igual que antes: catálogo de `js/productos.js` y pedidos por WhatsApp.
+
+### Configurar Vercel
+
+1. En Vercel: **Settings → Environment Variables** y crea:
+   - `DATABASE_URL`: la cadena de conexión de Neon (*Connection string*).
+   - `JWT_SECRET`: un texto secreto largo (mínimo 32 caracteres) para firmar las sesiones.
+2. **Redeploy** para que tome las variables.
+3. Abre `https://tu-proyecto.vercel.app/api/productos`: si ves los productos en JSON, la conexión funciona.
+
+### Crear el primer administrador
+
+1. Crea tu cuenta en `cuenta.html`.
+2. En el SQL Editor de Neon ejecuta (con tu correo):
+   ```sql
+   update usuarios set rol = 'administrador' where lower(correo) = lower('tu@correo.com');
+   ```
+
 ## Fotos de los productos
 
 Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraciones.js`
@@ -243,6 +301,7 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [Bootstrap Icons 1.13.1](https://icons.getbootstrap.com/)
 - HTML5, CSS3 (variables, `@layer`, `light-dark()`, `:has()`, container queries de Bootstrap) y JavaScript (módulos ES, `IntersectionObserver`, `Intl`)
 - Fuentes: [Fraunces](https://fonts.google.com/specimen/Fraunces) y [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans)
+- Base de datos [Neon](https://neon.tech) (PostgreSQL) y funciones de [Vercel](https://vercel.com) en Node.js, con `@neondatabase/serverless`, `bcryptjs` y `jose`
 
 ## Avance
 
@@ -255,3 +314,4 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [x] **Fase 7:** Sitio de 5 páginas, transiciones entre páginas, vuelo al carrito, filtros en la URL y más animaciones
 - [x] **Fase 8:** Torta que se arma sola, modo oscuro en círculo, detalle que crece, tarjetas 3D, confeti, parallax, reseñas, preguntas frecuentes y página 404
 - [x] **Fase 9:** Switch, pestañas, Popover, Tooltip, Datepicker y Stepper de Bootstrap 6; torta viva, palabras que rotan, chocolate que gotea, filtros deslizantes, botones flotantes, línea de tiempo y sorpresa
+- [x] **Fase 10:** Base de datos en Neon y API en Vercel: catálogo con stock real, confirmar pedido, cuentas de cliente, "Mis pedidos" con seguimiento y tortas guardadas con código

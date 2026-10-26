@@ -30,7 +30,11 @@ const CARRITO = `
         <div class="fila-descuento" id="filaDescuento" hidden><dt>Descuento 10 %</dt><dd id="carritoDescuento"></dd></div>
         <div class="fila-total"><dt>Total</dt><dd id="carritoTotal"></dd></div>
       </dl>
-      <p class="fg-3 fs-xs mb-0">El costo de delivery se coordina por WhatsApp según tu distrito.</p>
+      <p class="fg-3 fs-xs mb-0">El costo de delivery se calcula al confirmar, según tu distrito.</p>
+      <!-- Solo aparece si la API (base de datos) está disponible -->
+      <button class="btn btn-solid theme-primary btn-lg w-100 solo-con-api" type="button" id="btnCheckout">
+        <i class="bi bi-bag-check" aria-hidden="true"></i> Confirmar pedido
+      </button>
       <a class="btn btn-solid theme-success btn-lg w-100" id="btnWhatsApp" href="#" target="_blank" rel="noopener">
         <i class="bi bi-whatsapp" aria-hidden="true"></i> Pedir por WhatsApp
       </a>
@@ -134,6 +138,93 @@ const DETALLE = `
     </div>
   </dialog>`;
 
+
+// Confirmar pedido: guarda la venta en la base de datos (Neon) a través de la API
+const CHECKOUT = `
+  <dialog class="dialog checkout" id="checkout" aria-labelledby="checkoutTitulo">
+    <div class="dialog-header">
+      <h2 class="dialog-title fs-xl" id="checkoutTitulo">Confirmar pedido</h2>
+      <button class="btn-close" type="button" data-bs-dismiss="dialog" aria-label="Cerrar"></button>
+    </div>
+    <div class="dialog-body">
+      <form id="formCheckout" novalidate>
+        <div class="alert theme-danger" id="checkoutError" role="alert" hidden></div>
+
+        <div class="checkout-fila">
+          <div class="form-floating">
+            <label for="ckNombre">Nombre completo</label>
+            <input class="form-control" id="ckNombre" name="nombre" autocomplete="name" placeholder=" " required minlength="3">
+          </div>
+          <div class="form-floating">
+            <label for="ckTelefono">Celular (9 dígitos)</label>
+            <input class="form-control" id="ckTelefono" name="telefono" type="tel" inputmode="numeric" maxlength="9"
+                   pattern="9[0-9]{8}" autocomplete="tel-national" placeholder=" " required>
+          </div>
+        </div>
+
+        <fieldset class="mt-5">
+          <legend class="form-label">¿Cómo lo recibes?</legend>
+          <div class="opciones-entrega">
+            <label class="opcion-tarjeta"><input class="radio" type="radio" name="tipo_entrega" value="recojo" checked>
+              <span><b><i class="bi bi-shop" aria-hidden="true"></i> Recojo en tienda</b><small>Av. Grau 312, Barranco · Gratis</small></span></label>
+            <label class="opcion-tarjeta"><input class="radio" type="radio" name="tipo_entrega" value="delivery">
+              <span><b><i class="bi bi-truck" aria-hidden="true"></i> Delivery</b><small id="ckCostoDelivery">Elige tu distrito</small></span></label>
+          </div>
+        </fieldset>
+
+        <div class="checkout-fila mt-3" id="ckDelivery" hidden>
+          <div class="form-floating">
+            <label for="ckDistrito">Distrito</label>
+            <select class="form-control" id="ckDistrito" name="distrito"></select>
+          </div>
+          <div class="form-floating">
+            <label for="ckDireccion">Dirección y referencia</label>
+            <input class="form-control" id="ckDireccion" name="direccion" autocomplete="street-address" placeholder=" ">
+          </div>
+        </div>
+
+        <fieldset class="mt-5">
+          <legend class="form-label">Método de pago</legend>
+          <div class="opciones-pago">
+            <label><input type="radio" name="metodo_pago" value="yape" checked><span><i class="bi bi-phone" aria-hidden="true"></i> Yape</span></label>
+            <label><input type="radio" name="metodo_pago" value="plin"><span><i class="bi bi-phone-vibrate" aria-hidden="true"></i> Plin</span></label>
+            <label><input type="radio" name="metodo_pago" value="efectivo"><span><i class="bi bi-cash-coin" aria-hidden="true"></i> Efectivo</span></label>
+            <label><input type="radio" name="metodo_pago" value="tarjeta"><span><i class="bi bi-credit-card" aria-hidden="true"></i> Tarjeta</span></label>
+          </div>
+        </fieldset>
+
+        <div class="form-floating mt-5">
+          <label for="ckNotas">Notas para la tienda (opcional)</label>
+          <textarea class="form-control" id="ckNotas" name="notas" placeholder=" " maxlength="200"></textarea>
+        </div>
+
+        <dl class="totales mt-5">
+          <div><dt>Subtotal</dt><dd id="ckSubtotal"></dd></div>
+          <div class="fila-descuento" id="ckFilaDescuento" hidden><dt>Descuento 10 %</dt><dd id="ckDescuento"></dd></div>
+          <div><dt>Delivery</dt><dd id="ckDeliveryMonto">S/ 0.00</dd></div>
+          <div class="fila-total"><dt>Total</dt><dd id="ckTotal"></dd></div>
+        </dl>
+
+        <button class="btn btn-solid theme-primary btn-lg w-100 mt-5" type="submit" id="ckEnviar">
+          <span class="spinner-border spinner-sm" aria-hidden="true" hidden></span>
+          <span class="ck-texto">Confirmar pedido</span>
+        </button>
+      </form>
+
+      <div class="checkout-listo" id="checkoutListo" role="status" tabindex="-1" hidden>
+        <i class="bi bi-bag-check-fill" aria-hidden="true"></i>
+        <h3 class="fs-2xl">¡Pedido recibido!</h3>
+        <p class="checkout-codigo" id="ckCodigo"></p>
+        <p class="fg-2" id="ckResumenListo"></p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+          <a class="btn btn-solid theme-primary" href="cuenta.html" id="ckVerPedidos" hidden><i class="bi bi-receipt" aria-hidden="true"></i> Ver mis pedidos</a>
+          <a class="btn btn-solid theme-success" href="#" id="ckWhatsApp" target="_blank" rel="noopener"><i class="bi bi-whatsapp" aria-hidden="true"></i> Avisar por WhatsApp</a>
+          <button class="btn btn-outline theme-primary" type="button" data-bs-dismiss="dialog">Seguir comprando</button>
+        </div>
+      </div>
+    </div>
+  </dialog>`;
+
 // Degradado de las ilustraciones de productos (un solo id en toda la página)
 const DEFS_SVG = `
   <svg class="defs-svg" aria-hidden="true" focusable="false">
@@ -148,5 +239,5 @@ const DEFS_SVG = `
 export function insertarComponentes({ conDetalle = false, whatsapp } = {}) {
   const pie = document.querySelector("footer.pie");
   pie.insertAdjacentHTML("afterbegin", CHOCOLATE);
-  pie.insertAdjacentHTML("afterend", CARRITO + (conDetalle ? DETALLE : "") + FLOTANTES(whatsapp) + DEFS_SVG);
+  pie.insertAdjacentHTML("afterend", CARRITO + CHECKOUT + (conDetalle ? DETALLE : "") + FLOTANTES(whatsapp) + DEFS_SVG);
 }
