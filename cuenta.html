@@ -82,15 +82,16 @@
               <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
               <li class="nav-item"><a class="nav-link" href="pedido.html">Pedido especial</a></li>
               <li class="nav-item"><a class="nav-link" href="contacto.html">Visítanos</a></li>
+              <li class="nav-item md:d-none"><a class="nav-link" href="cuenta.html" aria-current="page"><i class="bi bi-person-circle" aria-hidden="true"></i> Ingresar / Crear cuenta</a></li>
             </ul>
           </div>
         </dialog>
 
         <!-- Acciones: siempre visibles, también en celular -->
         <div class="acciones">
-          <a class="btn btn-text btn-icon solo-con-api" href="cuenta.html" id="btnCuenta" aria-current="page" aria-label="Mi cuenta"
-             data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Mi cuenta">
+          <a class="btn btn-subtle theme-primary btn-sm boton-cuenta" href="cuenta.html" id="btnCuenta" aria-current="page">
             <i class="bi bi-person-circle" aria-hidden="true"></i>
+            <span class="texto-cuenta">Ingresar</span>
           </a>
           <button class="btn btn-text btn-icon" type="button" id="btnTema" aria-label="Activar modo oscuro" aria-pressed="false">
             <i class="bi bi-moon-stars" aria-hidden="true"></i>
@@ -140,9 +141,10 @@
 
         <!-- Sin API: Live Server o GitHub Pages -->
         <div class="alert theme-warning cuenta-sin-api" id="cuentaSinApi" hidden>
-          <h2 class="alert-heading fs-lg"><i class="bi bi-cloud-slash" aria-hidden="true"></i> Las cuentas no están disponibles aquí</h2>
-          <p class="mb-0">Esta versión de la página no está conectada a la base de datos. Las cuentas y el seguimiento de pedidos
-            funcionan en la versión publicada en Vercel. Mientras tanto, puedes pedir por WhatsApp desde el carrito.</p>
+          <h2 class="alert-heading fs-lg"><i class="bi bi-cloud-slash" aria-hidden="true"></i> Las cuentas no están disponibles en este momento</h2>
+          <p class="mb-0">La página no pudo conectarse con la base de datos, así que por ahora no se puede ingresar ni crear cuentas.
+            Mientras tanto, puedes pedir por WhatsApp desde el carrito.</p>
+          <p class="fs-sm mb-0 mt-2" id="cuentaMotivo"></p>
         </div>
 
         <!-- Ingresar / Crear cuenta -->
@@ -255,7 +257,7 @@
             <li><a href="pedido.html">Pedido especial</a></li>
             <li><a href="nosotros.html">Nosotros</a></li>
             <li><a href="contacto.html">Visítanos</a></li>
-            <li class="solo-con-api"><a href="cuenta.html">Mi cuenta</a></li>
+            <li><a href="cuenta.html">Mi cuenta</a></li>
           </ul>
         </div>
         <div class="md:col-4">

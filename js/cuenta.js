@@ -4,7 +4,7 @@
 // este archivo nunca ve ni guarda la contraseña o el token.
 // =========================================================
 import { Strength } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
-import { api, apiDisponible, obtenerSesion, olvidarSesion } from "./api.js";
+import { api, apiDisponible, motivoSinConexion, obtenerSesion, olvidarSesion } from "./api.js";
 import { soles } from "./catalogo.js";
 import { confeti } from "./animaciones.js";
 
@@ -131,7 +131,10 @@ function mensajeCampo(campo) {
 }
 
 export async function iniciarCuenta() {
-  if (!apiDisponible()) return mostrar("cuentaSinApi");
+  if (!apiDisponible()) {
+    if (motivoSinConexion()) $("#cuentaMotivo").textContent = `Detalle técnico: ${motivoSinConexion()}`;
+    return mostrar("cuentaSinApi");
+  }
 
   // Mostrar u ocultar la contraseña
   document.querySelectorAll("[data-ver]").forEach((boton) => {

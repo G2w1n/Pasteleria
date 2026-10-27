@@ -9,8 +9,10 @@ import { CATEGORIAS, productos } from "./productos.js";
 let disponible = false;
 let sesion; // undefined = aún no se consultó; null = sin sesión
 let costosDelivery = {};
+let motivoSinApi = ""; // por qué no se pudo conectar (se muestra en "Mi cuenta")
 
 export const apiDisponible = () => disponible;
+export const motivoSinConexion = () => motivoSinApi;
 export const costoDeliveryDe = (distrito) => costosDelivery[distrito];
 export const distritosConDelivery = () => Object.keys(costosDelivery).sort((a, b) => a.localeCompare(b, "es"));
 
@@ -50,8 +52,9 @@ export async function cargarCatalogo() {
     productos.splice(0, productos.length, ...datos.productos);
     costosDelivery = datos.delivery ?? {};
     disponible = true;
-  } catch {
+  } catch (error) {
     disponible = false; // seguimos con js/productos.js
+    motivoSinApi = error.estado === 404 ? "No se encontró la API (/api/productos)." : error.message;
   }
   document.documentElement.classList.toggle("con-api", disponible);
   return disponible;

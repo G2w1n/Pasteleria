@@ -4,7 +4,7 @@
 // aquí se inicia solo lo que cada página necesita.
 // Es un módulo ES (type="module"): sus variables NO son globales.
 // =========================================================
-import { Drawer, Tooltip } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
+import { Drawer } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { NEGOCIO } from "./config.js";
 import { insertarComponentes } from "./componentes.js";
 import { iniciarTema } from "./tema.js";
@@ -33,15 +33,9 @@ if (existe("#grillaProductos")) iniciarCatalogo(); // Catálogo
 if (existe("#formPedido")) iniciarPedido(); // Pedido especial
 if (existe("#cuentaPanel")) iniciarCuenta(); // Mi cuenta
 
-// ---------- Botón de cuenta: saluda si hay sesión ----------
+// ---------- Botón de cuenta: muestra el nombre si hay sesión ----------
 obtenerSesion().then((usuario) => {
-  if (!usuario) return;
-  const boton = $("#btnCuenta");
-  const saludo = `Hola, ${usuario.nombre.split(" ")[0]}`;
-  boton.setAttribute("aria-label", `Mi cuenta (${saludo})`);
-  boton.dataset.bsTitle = saludo;
-  boton.classList.add("con-sesion");
-  Tooltip.getInstance(boton)?.dispose(); // se vuelve a crear con el texto nuevo
+  if (usuario) $("#btnCuenta .texto-cuenta").textContent = usuario.nombre.split(" ")[0];
 });
 
 // ---------- Drawers: cerrar al elegir un enlace ----------
