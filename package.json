@@ -5,7 +5,7 @@
   "description": "Kuyay · Pastelería de autor: tienda con Bootstrap 6 y API en Vercel conectada a Neon (PostgreSQL)",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": "22.x"
   },
   "dependencies": {
     "@neondatabase/serverless": "1.2.0",
