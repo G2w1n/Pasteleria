@@ -18,6 +18,9 @@ export default defineConfig(({ command }) => ({
     lib: {
       entry: {
         catalogo: "src/islas/catalogo.jsx",
+        buscador: "src/islas/buscador.jsx",
+        seguimiento: "src/islas/seguimiento.jsx",
+        resenas: "src/islas/resenas.jsx",
       },
       formats: ["es"],
       fileName: (_formato, nombre) => `${nombre}.js`,

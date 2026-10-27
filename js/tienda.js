@@ -13,11 +13,13 @@ import { iniciarCarrito } from "./carrito.js";
 import { iniciarPedido } from "./pedido.js";
 import { iniciarCuenta } from "./cuenta.js";
 import { iniciarAnimaciones } from "./animaciones.js";
-import { cargarCatalogo, obtenerSesion } from "./api.js";
+import { api, apiDisponible, cargarCatalogo, obtenerSesion } from "./api.js";
 import { CATEGORIAS, productos } from "./productos.js";
 
 const $ = (selector) => document.querySelector(selector);
 const existe = (selector) => document.querySelector(selector) !== null;
+// Los componentes React usan "unidad" e "imagen" (como en la práctica de la Semana 11)
+const productosParaReact = () => productos.map((p) => ({ ...p, unidad: p.porcion, imagen: p.foto ?? `img/productos/${p.id}.svg` }));
 
 // ---------- Datos: base de datos (Neon) si la API responde; si no, js/productos.js ----------
 await cargarCatalogo();
@@ -46,7 +48,7 @@ async function montarCatalogoReact() {
   try {
     const { montarCatalogo } = await import("./react/catalogo.js");
     montarCatalogo(contenedor, {
-      productos: productos.map((p) => ({ ...p, unidad: p.porcion, imagen: p.foto ?? `img/productos/${p.id}.svg` })),
+      productos: productosParaReact(),
       categorias: [{ id: "todos", nombre: "Todos" }, ...CATEGORIAS],
       onAgregar: (producto, cantidad, origen) =>
         document.dispatchEvent(new CustomEvent("kuyay:agregar", { detail: { producto, cantidad, origen } })),
@@ -61,6 +63,40 @@ async function montarCatalogoReact() {
     contenedor.innerHTML = `<div class="alert theme-danger">No se pudo cargar el catálogo. Recarga la página.</div>`;
   }
 }
+
+// ---------- Buscador del menú (React), en todas las páginas ----------
+
+async function montarBuscadorReact() {
+  const { montarBuscador } = await import("./react/buscador.js");
+  montarBuscador($("#islaBuscador"), {
+    productos: productosParaReact(),
+    categorias: CATEGORIAS,
+    // En el catálogo el detalle se abre ahí mismo; en otras páginas se va al catálogo
+    onElegir: (producto) =>
+      existe("#islaCatalogo") ? abrirDetalle(producto.id) : (location.href = `catalogo.html?producto=${producto.id}`),
+    urlResultados: (texto) => `catalogo.html?q=${encodeURIComponent(texto)}`,
+  });
+}
+if (existe("#islaBuscador")) montarBuscadorReact().catch(console.error);
+
+// ---------- Seguimiento sin cuenta (React) en "Mi cuenta" ----------
+if (existe("#islaSeguimiento") && apiDisponible()) {
+  import("./react/seguimiento.js").then(({ montarSeguimiento }) =>
+    montarSeguimiento($("#islaSeguimiento"), { api, codigoInicial: new URLSearchParams(location.search).get("seguir") ?? "" }),
+  ).catch(console.error);
+}
+
+// ---------- Reseñas (React) en la pestaña del detalle ----------
+document.addEventListener("kuyay:detalle", async ({ detail: { producto } }) => {
+  if (!apiDisponible()) return;
+  const [{ mostrarResenas }, usuario] = await Promise.all([import("./react/resenas.js"), obtenerSesion()]);
+  mostrarResenas($("#islaResenas"), {
+    productoId: producto.id,
+    usuario,
+    api,
+    onTotal: (total) => ($("#pestanaResenas").textContent = total ? `Reseñas (${total})` : "Reseñas"),
+  });
+});
 
 // ---------- Drawers: cerrar al elegir un enlace ----------
 // (No usamos data-bs-dismiss en enlaces: Bootstrap cancela la navegación.)

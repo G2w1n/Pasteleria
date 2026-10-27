@@ -1,7 +1,9 @@
 // =========================================================
 // Pedidos del carrito.
-//   POST /api/pedidos  → crea un pedido (con o sin cuenta)
+//   POST /api/pedidos  → crea un pedido (con o sin cuenta; acepta un cupón)
 //   GET  /api/pedidos  → los pedidos del cliente que inició sesión
+//   GET  /api/pedidos?codigo=KY-000123&telefono=987654321 → seguimiento sin cuenta
+//        (también sirve para tortas personalizadas: TP-00012)
 //
 // El servidor recalcula TODO: precios (de la base de datos),
 // descuento y delivery. Lo que mande el navegador no se cree.
@@ -11,6 +13,7 @@
 import { ErrorApi, obtenerSql } from "./_lib/db.js";
 import { leerCuerpo, responder, ruta } from "./_lib/http.js";
 import { exigirUsuario, usuarioActual } from "./_lib/sesion.js";
+import { cuponVigente } from "./_lib/cupones.js";
 
 const CELULAR = /^9\d{8}$/;
 const PAGOS = ["yape", "plin", "efectivo", "tarjeta"];
@@ -63,7 +66,16 @@ async function crear(req, res) {
   const subtotal = lineas.reduce((total, l) => total + l.precio * l.cantidad, 0);
   const minimo = Number(config.minimo_descuento ?? 100);
   const porcentaje = Number(config.porcentaje_descuento ?? 10);
-  const descuento = subtotal > minimo ? Math.round(subtotal * porcentaje) / 100 : 0;
+  const descuentoAutomatico = subtotal > minimo ? Math.round(subtotal * porcentaje) / 100 : 0;
+  // Cupón: se usa solo si descuenta más que el 10 % automático (no se suman)
+  let cupon = null;
+  if (datos.cupon) {
+    cupon = await cuponVigente(sql, datos.cupon);
+    if (!cupon) throw new ErrorApi(400, "El cupón no existe o ya venció. Quítalo para continuar.");
+  }
+  const descuentoCupon = cupon ? Math.round(subtotal * cupon.porcentaje) / 100 : 0;
+  const usarCupon = descuentoCupon > descuentoAutomatico;
+  const descuento = Math.max(descuentoAutomatico, descuentoCupon);
   let costoDelivery = 0;
   if (delivery) {
     costoDelivery = config.delivery_por_distrito?.[datos.distrito];
@@ -74,15 +86,18 @@ async function crear(req, res) {
   const items = JSON.stringify(lineas.map((l) => ({ producto_id: l.id, cantidad: l.cantidad, precio: l.precio })));
   // Una sola transacción: quién hizo el pedido (para el historial), el pedido y sus productos.
   // Si un producto no tiene stock, la base de datos rechaza TODO.
-  const [, [pedido]] = await sql.transaction([
+  const [, , [pedido]] = await sql.transaction([
     sql`select set_config('kuyay.usuario_id', ${usuario?.id ?? ""}, true)`,
+    // El cupón gasta un uso (si no aplica, esta consulta no cambia nada)
+    sql`update cupones set usos = usos + 1 where codigo = ${usarCupon ? cupon.codigo : ""}`,
     sql`with nuevo as (
           insert into pedidos (usuario_id, nombre_contacto, telefono, canal, tipo_entrega, distrito, direccion,
-                               metodo_pago, descuento, costo_delivery, notas)
+                               metodo_pago, descuento, costo_delivery, notas, cupon_codigo)
           values (${usuario?.id ?? null}, ${nombre}, ${telefono}, 'web',
                   ${delivery ? "delivery" : "recojo"}, ${delivery ? datos.distrito : null},
                   ${delivery ? datos.direccion.trim() : null}, ${datos.metodo_pago},
-                  ${descuento}, ${costoDelivery}, ${(datos.notas ?? "").trim() || null})
+                  ${descuento}, ${costoDelivery}, ${(datos.notas ?? "").trim() || null},
+                  ${usarCupon ? cupon.codigo : null})
           returning id, codigo
         ), detalle as (
           insert into pedido_detalle (pedido_id, producto_id, cantidad, precio_unitario)
@@ -100,12 +115,44 @@ async function crear(req, res) {
       subtotal,
       descuento,
       costo_delivery: costoDelivery,
+      cupon: usarCupon ? cupon.codigo : null,
       total: Math.round((subtotal - descuento + costoDelivery) * 100) / 100,
     },
   });
 }
 
+// Seguimiento sin cuenta: hace falta el código Y el celular del pedido,
+// así nadie puede ver pedidos ajenos probando códigos.
+async function seguimiento(req, res) {
+  const codigo = String(req.query.codigo ?? "").trim().toUpperCase();
+  const telefono = String(req.query.telefono ?? "").replace(/\D/g, "");
+  if (!/^(KY-\d{6}|TP-\d{5})$/.test(codigo)) throw new ErrorApi(400, "Escribe el código como aparece en tu pedido, por ejemplo KY-000123.");
+  if (!CELULAR.test(telefono)) throw new ErrorApi(400, "Escribe el celular con el que hiciste el pedido.");
+  const sql = obtenerSql();
+  const noEncontrado = new ErrorApi(404, "No encontramos un pedido con ese código y celular.");
+
+  if (codigo.startsWith("TP-")) {
+    const [torta] = await sql`
+      select codigo, estado, tipo_entrega, fecha_entrega::text, franja, precio_estimado::float as total, creado_en,
+             tamano, bizcocho, relleno, cobertura
+      from pedidos_especiales where codigo = ${codigo} and telefono = ${telefono}`;
+    if (!torta) throw noEncontrado;
+    return responder(res, 200, { pedido: { ...torta, especial: true, productos: [], historial: [] } });
+  }
+
+  const [pedido] = await sql`
+    select p.codigo, p.estado, p.tipo_entrega, p.distrito, p.total::float, p.creado_en,
+           coalesce((select json_agg(json_build_object('nombre', pr.nombre, 'cantidad', d.cantidad) order by pr.nombre)
+                     from pedido_detalle d join productos pr on pr.id = d.producto_id where d.pedido_id = p.id), '[]') as productos,
+           coalesce((select json_agg(json_build_object('estado', h.estado, 'fecha', h.creado_en) order by h.id)
+                     from historial_estados h where h.pedido_id = p.id), '[]') as historial
+    from pedidos p where p.codigo = ${codigo} and p.telefono = ${telefono}`;
+  if (!pedido) throw noEncontrado;
+  responder(res, 200, { pedido });
+}
+
 async function misPedidos(req, res) {
+  if (req.query?.codigo) return seguimiento(req, res);
   const usuario = await exigirUsuario(req);
   const sql = obtenerSql();
   const pedidos = await sql`

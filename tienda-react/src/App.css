@@ -36,7 +36,7 @@
   }
   .producto-estrellas small { color: var(--bs-fg-3); letter-spacing: 0; margin-inline-start: 0.25rem; }
   .producto-unidad { margin: 0; font-size: 0.82rem; color: var(--bs-fg-3); }
-  .producto-pocos { margin: 0; font-size: 0.82rem; font-weight: 700; color: var(--bs-warning-fg); }
+  .producto-pocos { margin: 0; font-size: 0.82rem; font-weight: 700; color: light-dark(#875900, #f0b84a); }
 
   /* ---------- Barra de herramientas ---------- */
   .boton-mas-filtros { gap: 0.35rem; }
@@ -136,6 +136,93 @@
     .chips-activos .chip,
     .filtros-extra { animation: none; }
   }
+}
+
+/* ---------- Buscador del menú ---------- */
+@layer custom {
+  .isla-buscador { display: contents; }
+  .buscador-menu { position: relative; }
+  .buscador-panel {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    right: 0;
+    z-index: 1080;
+    width: min(26rem, calc(100vw - 2rem));
+    padding: 0.75rem;
+    border-radius: 1rem;
+    background: var(--bs-bg-body);
+    border: 1px solid color-mix(in oklch, var(--bs-fg-body) 12%, transparent);
+    box-shadow: 0 24px 48px -16px color-mix(in oklch, var(--kuyay-cacao) 45%, transparent);
+    animation: desplegar 0.2s ease-out;
+  }
+  @media (width < 576px) {
+    .buscador-panel { position: fixed; top: 4.25rem; left: 1rem; right: 1rem; width: auto; }
+  }
+  .buscador-atajo {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.3rem;
+    background: color-mix(in oklch, var(--bs-fg-body) 8%, transparent);
+    color: var(--bs-fg-2);
+  }
+  .buscador-titulo { margin: 0.75rem 0.25rem 0.35rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--bs-fg-3); }
+  .buscador-resultados { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; max-height: min(22rem, 60vh); overflow-y: auto; }
+  .buscador-opcion {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem;
+    border-radius: 0.7rem;
+    cursor: pointer;
+  }
+  .buscador-opcion.activa { background: var(--bs-primary-bg-subtle); }
+  .buscador-opcion img { width: 3.5rem; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0.5rem; flex: none; }
+  .buscador-texto { display: grid; flex: 1; min-width: 0; }
+  .buscador-nombre { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .buscador-nombre mark { padding: 0; background: color-mix(in oklch, var(--kuyay-lucuma) 45%, transparent); color: inherit; border-radius: 0.2rem; }
+  .buscador-categoria { font-size: 0.8rem; color: var(--bs-fg-3); }
+  .buscador-precio { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .buscador-vacio { margin: 0.5rem 0.25rem; color: var(--bs-fg-2); }
+  .buscador-todos { display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin-top: 0.5rem; padding: 0.55rem; border-radius: 0.7rem; font-weight: 700; text-decoration: none; }
+  .buscador-todos:hover { background: var(--bs-primary-bg-subtle); }
+}
+
+/* ---------- Seguimiento sin cuenta ---------- */
+@layer custom {
+  .cuenta-seguimiento { max-width: 46rem; margin: 3rem auto 0; scroll-margin-top: 5rem; }
+  .seguimiento { border-radius: 1.25rem; }
+  .seguimiento-form { display: grid; grid-template-columns: 1fr 1fr auto; gap: 0.75rem; align-items: stretch; }
+  .seguimiento-form .btn { display: inline-flex; align-items: center; gap: 0.4rem; }
+  @media (width < 576px) {
+    .seguimiento-form { grid-template-columns: 1fr; }
+  }
+  .seguimiento-resultado { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px dashed color-mix(in oklch, var(--bs-fg-body) 20%, transparent); animation: desplegar 0.3s ease-out; }
+}
+
+/* ---------- Reseñas ---------- */
+@layer custom {
+  .resenas { display: grid; gap: 1rem; }
+  .resenas-resumen { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: center; }
+  .resenas-promedio { display: grid; justify-items: center; line-height: 1.2; }
+  .resenas-promedio strong { font-family: var(--bs-heading-font-family); font-size: 2.4rem; }
+  .resenas-estrellas { color: var(--kuyay-lucuma); letter-spacing: 0.08em; }
+  .resenas-reparto { flex: 1; min-width: 12rem; list-style: none; margin: 0; padding: 0; display: grid; gap: 0.2rem; font-size: 0.8rem; }
+  .resenas-reparto li { display: grid; grid-template-columns: 2.2rem 1fr 1.5rem; align-items: center; gap: 0.5rem; }
+  .resenas-reparto .progress { height: 0.45rem; }
+  .resenas-reparto .progress-bar { background: var(--kuyay-lucuma); }
+  .resenas-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; max-height: 14rem; overflow-y: auto; }
+  .resena-item { padding: 0.75rem; border-radius: 0.8rem; background: color-mix(in oklch, var(--bs-fg-body) 4%, transparent); }
+  .resena-cabecera { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem; }
+  .resena-avatar { background: var(--bs-primary-bg); color: var(--bs-primary-contrast); font-weight: 700; }
+  .resena-form fieldset { border: 0; padding: 0; margin: 0; }
+  .estrellas-input { display: flex; align-items: center; }
+  .estrellas-input label { position: relative; cursor: pointer; font-size: 1.8rem; line-height: 1; color: color-mix(in oklch, var(--bs-fg-body) 22%, transparent); transition: color 0.15s, scale 0.15s; }
+  .estrellas-input label.llena { color: var(--kuyay-lucuma); }
+  .estrellas-input label:hover { scale: 1.15; }
+  .estrellas-input input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .estrellas-input label:has(input:focus-visible) { outline: 3px solid var(--bs-primary-focus-ring); outline-offset: 2px; border-radius: 0.3rem; }
+  .resena-acciones { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+  .resena-acciones .btn { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 
 /* ---------- Solo la página de práctica (npm run dev) ---------- */

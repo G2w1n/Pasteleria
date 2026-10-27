@@ -124,6 +124,10 @@ export function abrirDetalle(id, tarjeta = null) {
 
 function llenarDetalle(p) {
   productoAbierto = p;
+  // Aviso para las reseñas de React: se cargan las de este producto
+  document.dispatchEvent(new CustomEvent("kuyay:detalle", { detail: { producto: p } }));
+  const resenas = p.calificacion?.total ?? 0;
+  $("#pestanaResenas").textContent = resenas ? `Reseñas (${resenas})` : "Reseñas";
 
   $("#detalleMedia").style.setProperty("--tono", p.ilustracion.fondo);
   $("#detalleMedia").innerHTML = imagenProducto(p, true) + `<div class="producto-insignias">${insignias(p)}</div>`;

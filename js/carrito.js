@@ -314,15 +314,51 @@ function iniciarCheckout(carrito) {
     distritosConDelivery().map((d) => `<option value="${d}">${d} · ${soles(costoDeliveryDe(d))}</option>`).join("");
 
   const esDelivery = () => form.tipo_entrega.value === "delivery";
+  let cupon = null; // { codigo, porcentaje } si se aplicó uno válido
+
+  // El cupón no se suma al 10 % automático: se usa el que descuente más
+  function totalesConCupon() {
+    const t = carrito.totales();
+    const conCupon = cupon ? Math.round(t.subtotal * cupon.porcentaje) / 100 : 0;
+    if (conCupon <= t.descuento) return { ...t, usaCupon: false };
+    return { ...t, descuento: conCupon, total: Math.round((t.subtotal - conCupon) * 100) / 100, conDescuento: true, usaCupon: true };
+  }
+
+  async function aplicarCupon() {
+    const codigo = form.cupon_texto.value.trim();
+    const estado = $("#ckCuponEstado");
+    if (!codigo) {
+      cupon = null;
+      estado.textContent = "";
+      return pintarTotales();
+    }
+    $("#ckAplicarCupon").disabled = true;
+    try {
+      ({ cupon } = await api(`cupones?codigo=${encodeURIComponent(codigo)}`));
+      const t = totalesConCupon();
+      estado.className = "form-text mb-0 fg-success";
+      estado.textContent = t.usaCupon
+        ? `✓ Cupón ${cupon.codigo}: ${cupon.porcentaje} % de descuento.`
+        : `✓ Cupón válido, pero tu descuento automático ya es igual o mayor.`;
+    } catch (error) {
+      cupon = null;
+      estado.className = "form-text mb-0 fg-danger";
+      estado.textContent = error.message;
+    } finally {
+      $("#ckAplicarCupon").disabled = false;
+      pintarTotales();
+    }
+  }
 
   function pintarTotales() {
-    const t = carrito.totales();
+    const t = totalesConCupon();
     const costo = esDelivery() ? (costoDeliveryDe(form.distrito.value) ?? 0) : 0;
     $("#ckDelivery").hidden = !esDelivery();
     form.distrito.required = form.direccion.required = esDelivery();
     $("#ckCostoDelivery").textContent = form.distrito.value ? `${form.distrito.value} · ${soles(costo)}` : "Elige tu distrito";
     $("#ckSubtotal").textContent = soles(t.subtotal);
     $("#ckFilaDescuento").hidden = !t.conDescuento;
+    $("#ckDescuentoTexto").textContent = t.usaCupon ? `Cupón ${cupon.codigo} (${cupon.porcentaje} %)` : `Descuento ${PORCENTAJE_DESCUENTO} %`;
     $("#ckDescuento").textContent = `−${soles(t.descuento)}`;
     $("#ckDeliveryMonto").textContent = soles(costo);
     animarNumero($("#ckTotal"), Math.round((t.total + costo) * 100) / 100, soles);
@@ -360,7 +396,15 @@ function iniciarCheckout(carrito) {
   form.telefono.addEventListener("input", () => {
     form.telefono.value = form.telefono.value.replace(/\D/g, "");
   });
-  form.addEventListener("change", pintarTotales);
+  form.addEventListener("change", (e) => e.target !== form.cupon_texto && pintarTotales());
+  $("#ckAplicarCupon").addEventListener("click", aplicarCupon);
+  // Enter dentro del cupón lo aplica (no envía el pedido)
+  form.cupon_texto.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      aplicarCupon();
+    }
+  });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -380,7 +424,8 @@ function iniciarCheckout(carrito) {
     }
 
     const lista = carrito.lista();
-    const datos = Object.fromEntries(new FormData(form));
+    const { cupon_texto, ...datos } = Object.fromEntries(new FormData(form));
+    if (totalesConCupon().usaCupon) datos.cupon = cupon.codigo;
     mostrarError("");
     cargando(true);
     try {
@@ -393,6 +438,8 @@ function iniciarCheckout(carrito) {
       $("#ckCodigo").textContent = pedido.codigo;
       $("#ckResumenListo").textContent = `Total ${soles(pedido.total)} · ${datos.tipo_entrega === "delivery" ? `delivery a ${datos.distrito}` : "recojo en tienda"} · pago con ${datos.metodo_pago}.`;
       $("#ckVerPedidos").hidden = !usuario;
+      $("#ckSeguir").hidden = Boolean(usuario);
+      $("#ckSeguir").href = `cuenta.html?seguir=${pedido.codigo}#seguimiento`;
       const texto = `¡Hola ${NEGOCIO.nombre}! Acabo de hacer el pedido *${pedido.codigo}* en la web por ${soles(pedido.total)}. A nombre de ${datos.nombre}.`;
       $("#ckWhatsApp").href = `https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(texto)}`;
       form.hidden = true;

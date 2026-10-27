@@ -219,6 +219,15 @@
   .acciones .btn-icon {
     font-size: 1.25rem;
   }
+  /* Celulares: logo + 5 botones deben caber en una sola línea */
+  @media (width < 430px) {
+    .navbar > .container { column-gap: 0.5rem; }
+    .navbar-brand.marca { margin-inline-end: 0; }
+    .acciones { gap: 0; }
+  }
+  @media (width < 350px) {
+    .navbar-brand.marca > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  }
   .contador-carrito {
     position: absolute;
     top: 0;
@@ -490,6 +499,9 @@
     overflow: hidden;
     height: 100%;
     min-height: 240px;
+    max-height: 26rem; /* con reseñas largas, la imagen no se estira */
+    position: sticky;
+    top: 0;
   }
   .detalle-titulo {
     font-size: clamp(1.6rem, 1.3rem + 1vw, 2rem);
@@ -2064,8 +2076,14 @@
     margin-top: 0.5rem;
     --bs-nav-underline-link-active-color: var(--bs-primary-fg);
   }
+  .detalle-pestanas {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
   .detalle-pestanas .nav-link {
     font-weight: 600;
+    white-space: nowrap;
   }
   .detalle-pestanas .nav-link.active {
     color: var(--bs-primary-fg);
@@ -2431,6 +2449,10 @@
   .opciones-pago label:active span {
     transform: scale(0.97);
   }
+  /* "¡Quedan solo 3!": el amarillo de Bootstrap no llega a 4.5:1 sobre fondo claro */
+  .detalle-stock.fg-warning { color: light-dark(#875900, #f0b84a); }
+  .cupon-fila { display: flex; gap: 0.5rem; }
+  .cupon-fila .form-control { text-transform: uppercase; }
   #ckEnviar {
     display: flex;
     align-items: center;

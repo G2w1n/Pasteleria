@@ -101,6 +101,7 @@ const DETALLE = `
             <button class="nav-link active" type="button" role="tab" id="pestanaDescripcion" data-bs-toggle="tab" data-bs-target="#panelDescripcion" aria-controls="panelDescripcion" aria-selected="true">Descripción</button>
             <button class="nav-link" type="button" role="tab" id="pestanaIngredientes" data-bs-toggle="tab" data-bs-target="#panelIngredientes" aria-controls="panelIngredientes" aria-selected="false">Ingredientes</button>
             <button class="nav-link" type="button" role="tab" id="pestanaAlergenos" data-bs-toggle="tab" data-bs-target="#panelAlergenos" aria-controls="panelAlergenos" aria-selected="false">Alérgenos</button>
+            <button class="nav-link solo-con-api" type="button" role="tab" id="pestanaResenas" data-bs-toggle="tab" data-bs-target="#panelResenas" aria-controls="panelResenas" aria-selected="false">Reseñas</button>
           </nav>
           <div class="tab-content detalle-paneles">
             <div class="tab-pane active" id="panelDescripcion" role="tabpanel" aria-labelledby="pestanaDescripcion" tabindex="0">
@@ -117,6 +118,10 @@ const DETALLE = `
             </div>
             <div class="tab-pane" id="panelAlergenos" role="tabpanel" aria-labelledby="pestanaAlergenos" tabindex="0">
               <ul class="detalle-alergenos" id="detalleAlergenos"></ul>
+            </div>
+            <!-- Reseñas: las dibuja React (tienda-react/src/components/Resenas.jsx) -->
+            <div class="tab-pane" id="panelResenas" role="tabpanel" aria-labelledby="pestanaResenas" tabindex="0">
+              <div id="islaResenas"></div>
             </div>
           </div>
 
@@ -198,9 +203,18 @@ const CHECKOUT = `
           <textarea class="form-control" id="ckNotas" name="notas" placeholder=" " maxlength="200"></textarea>
         </div>
 
+        <div class="cupon mt-5">
+          <label class="form-label" for="ckCupon">¿Tienes un cupón?</label>
+          <div class="cupon-fila">
+            <input class="form-control" id="ckCupon" name="cupon_texto" placeholder="Ej.: KUYAY10" autocomplete="off" maxlength="20" aria-describedby="ckCuponEstado">
+            <button class="btn btn-outline theme-primary" type="button" id="ckAplicarCupon">Aplicar</button>
+          </div>
+          <p class="form-text mb-0" id="ckCuponEstado" aria-live="polite"></p>
+        </div>
+
         <dl class="totales mt-5">
           <div><dt>Subtotal</dt><dd id="ckSubtotal"></dd></div>
-          <div class="fila-descuento" id="ckFilaDescuento" hidden><dt>Descuento 10 %</dt><dd id="ckDescuento"></dd></div>
+          <div class="fila-descuento" id="ckFilaDescuento" hidden><dt id="ckDescuentoTexto">Descuento 10 %</dt><dd id="ckDescuento"></dd></div>
           <div><dt>Delivery</dt><dd id="ckDeliveryMonto">S/ 0.00</dd></div>
           <div class="fila-total"><dt>Total</dt><dd id="ckTotal"></dd></div>
         </dl>
@@ -218,6 +232,7 @@ const CHECKOUT = `
         <p class="fg-2" id="ckResumenListo"></p>
         <div class="d-flex flex-wrap gap-3 justify-content-center">
           <a class="btn btn-solid theme-primary" href="cuenta.html" id="ckVerPedidos" hidden><i class="bi bi-receipt" aria-hidden="true"></i> Ver mis pedidos</a>
+          <a class="btn btn-solid theme-primary" href="cuenta.html#seguimiento" id="ckSeguir"><i class="bi bi-geo-alt" aria-hidden="true"></i> Seguir mi pedido</a>
           <a class="btn btn-solid theme-success" href="#" id="ckWhatsApp" target="_blank" rel="noopener"><i class="bi bi-whatsapp" aria-hidden="true"></i> Avisar por WhatsApp</a>
           <button class="btn btn-outline theme-primary" type="button" data-bs-dismiss="dialog">Seguir comprando</button>
         </div>
