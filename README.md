@@ -20,7 +20,7 @@ Es el proyecto de la **Semana 10 de Diseño Web** (Unidad 3: Funciones y módulo
 | Nosotros | `nosotros.html` | Historia, cifras que suben al aparecer, valores y proceso con línea que se dibuja |
 | Pedido especial | `pedido.html` | Torta personalizada en 4 pasos con precio y vista previa en vivo |
 | Visítanos | `contacto.html` | Horario con "Abierto ahora" (hora de Lima), contacto, mapa y **preguntas frecuentes** |
-| Mi cuenta | `cuenta.html` | Ingresar / crear cuenta, **mis pedidos** y **sigue tu pedido sin cuenta** (código + celular) |
+| Mi cuenta | `cuenta.html` | Ingresar / crear cuenta **interactivo** (tarjeta que gira, cupcake, validación en vivo, registro en 3 pasos, Google), **mis pedidos** y **sigue tu pedido sin cuenta** |
 | Panel | `admin.html` | Para el equipo: **reportes con gráficos, pedidos, productos y stock, usuarios y reseñas** (hecho con React) |
 | Error 404 | `404.html` | "Esta torta no existe… todavía": GitHub Pages la muestra en cualquier dirección que no exista |
 
@@ -55,6 +55,7 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | `Buscador.jsx` | Menú de todas las páginas: sugerencias mientras escribes, teclado y atajo **/** |
 | `Resenas.jsx` | Pestaña "Reseñas" del detalle: estrellas, reparto y formulario |
 | `Seguimiento.jsx` | Mi cuenta: "Sigue tu pedido" con código y celular |
+| `acceso/Acceso.jsx` (+ `Mascota`, `Registro`, `ChecklistClave`, `Bienvenida`, `BotonGoogle`) | Mi cuenta: Ingresar / Crear cuenta |
 | `EnVivo.jsx` | Inicio: "Hoy en Kuyay" con números en vivo y productos que se están acabando |
 | `panel/PanelAdmin.jsx` | Panel: reportes, pedidos, productos, usuarios y reseñas |
 
@@ -312,8 +313,17 @@ La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página l
 1. En Vercel: **Settings → Environment Variables** y crea:
    - `DATABASE_URL`: la cadena de conexión de Neon (*Connection string*).
    - `JWT_SECRET`: un texto secreto largo (mínimo 32 caracteres) para firmar las sesiones.
+   - *(Opcional)* `GOOGLE_CLIENT_ID`: para el botón **Continuar con Google** (ver abajo).
 2. **Redeploy** para que tome las variables.
 3. Abre `https://tu-proyecto.vercel.app/api/productos`: si ves los productos en JSON, la conexión funciona.
+
+### Activar "Continuar con Google" (opcional)
+
+1. En [Google Cloud Console](https://console.cloud.google.com/apis/credentials): **Crear credenciales → ID de cliente de OAuth → Aplicación web**.
+2. En **Orígenes de JavaScript autorizados** agrega `https://pasteleria-three-steel.vercel.app`.
+3. Copia el **ID de cliente** (termina en `.apps.googleusercontent.com`; no es secreto) y créalo en Vercel como `GOOGLE_CLIENT_ID`. Haz **Redeploy**.
+
+Sin esa variable el botón simplemente no aparece. La API verifica la firma del token con las claves públicas de Google antes de confiar en el correo.
 
 ### Crear el primer administrador
 
@@ -355,3 +365,4 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [x] **Fase 12:** Buscador en el menú, seguimiento sin cuenta, cupones y reseñas con estrellas
 - [x] **Fase 13:** Panel de administrador y empleado con reportes y gráficos
 - [x] **Fase 14:** "Hoy en Kuyay" en vivo en el Inicio
+- [x] **Fase 15:** Acceso interactivo: tarjeta que gira, validación en vivo, checklist de contraseña, Bloq Mayús, avatar, registro en 3 pasos, cupcake, bienvenida con cupón y Google

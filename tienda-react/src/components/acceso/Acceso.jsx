@@ -5,15 +5,23 @@ import { useEffect, useRef, useState } from "react";
 import Ingresar from "./Ingresar.jsx";
 import Registro from "./Registro.jsx";
 import Mascota from "./Mascota.jsx";
+import Bienvenida from "./Bienvenida.jsx";
+import BotonGoogle from "./BotonGoogle.jsx";
 import { prefiereQuieto } from "../../utilidades.js";
 
-export default function Acceso({ api, onIngreso, inicio = "ingresar" }) {
+export default function Acceso({ api, onIngreso, onBienvenida, productos = [], inicio = "ingresar" }) {
   const [cara, setCara] = useState(inicio);
   const [correo, setCorreo] = useState("");
   const [mascota, setMascota] = useState({ modo: "mirar", mirada: 0.5 });
   const primerCampo = { ingresar: useRef(null), registro: useRef(null) };
+  const [bienvenida, setBienvenida] = useState(null); // { usuario, gustos } al crear la cuenta
+  const [google, setGoogle] = useState(null); // ID de cliente de Google (si está configurado en Vercel)
   const yaGiro = useRef(false);
   const reloj = useRef(null);
+
+  useEffect(() => {
+    api("auth").then((r) => setGoogle(r.google ?? null)).catch(() => {});
+  }, [api]);
 
   const girar = (destino) => (correoActual = "") => {
     setCorreo(correoActual);
@@ -45,11 +53,25 @@ export default function Acceso({ api, onIngreso, inicio = "ingresar" }) {
     clearTimeout(reloj.current);
     reloj.current = setTimeout(() => setMascota({ modo: "mirar", mirada: 0.5 }), 1800);
   };
-  // Al entrar, salta de alegría y luego se muestra la cuenta
-  const entrar = (usuario, extra) => {
+  // Al entrar, salta de alegría; si la cuenta es nueva, primero va la bienvenida
+  const entrar = (usuario, extra = {}) => {
     setMascota({ modo: "feliz", mirada: 0.5 });
-    setTimeout(() => onIngreso(usuario, extra), prefiereQuieto() ? 0 : 700);
+    setTimeout(() => {
+      if (extra.nuevo) {
+        setBienvenida({ usuario, gustos: extra.gustos ?? [] });
+        onBienvenida?.(usuario);
+      } else onIngreso(usuario, extra);
+    }, prefiereQuieto() ? 0 : 700);
   };
+
+  if (bienvenida) {
+    return (
+      <div className="acceso-escena">
+        <Mascota modo="feliz" />
+        <Bienvenida {...bienvenida} productos={productos} api={api} onContinuar={() => onIngreso(bienvenida.usuario, { nuevo: true })} />
+      </div>
+    );
+  }
 
   return (
     <div className={`acceso-escena ${cara === "registro" ? "girada" : ""}`}
@@ -61,12 +83,14 @@ export default function Acceso({ api, onIngreso, inicio = "ingresar" }) {
           <div className="card-body">
             <Ingresar key={`i-${correo}`} api={api} correoInicial={correo} onIngreso={entrar} onError={ponerTriste}
                       onIrRegistro={girar("registro")} enfocar={primerCampo.ingresar} />
+            <BotonGoogle clienteId={google} api={api} onIngreso={entrar} onError={ponerTriste} />
           </div>
         </section>
         <section className="card acceso-cara acceso-dorso" inert={cara !== "registro"} aria-hidden={cara !== "registro"}>
           <div className="card-body">
             <Registro key={`r-${correo}`} api={api} correoInicial={correo} onIngreso={entrar} onError={ponerTriste}
                       onIrIngresar={girar("ingresar")} enfocar={primerCampo.registro} />
+            <BotonGoogle clienteId={google} api={api} onIngreso={entrar} onError={ponerTriste} />
           </div>
         </section>
       </div>

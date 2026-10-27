@@ -3,11 +3,13 @@
 //   POST /api/auth?accion=registro  { nombre, correo, telefono?, clave }
 //   POST /api/auth?accion=login     { correo, clave }
 //   POST /api/auth?accion=salir
-//   GET  /api/auth                  → usuario de la sesión (o null)
+//   POST /api/auth?accion=google    { credential } → entra con Google (si GOOGLE_CLIENT_ID está en Vercel)
+//   GET  /api/auth                  → usuario de la sesión (o null) y el ID de Google para el botón
 //   GET  /api/auth?correo=ana@x.pe  → { disponible } (aviso en vivo al crear cuenta)
 // Las contraseñas se guardan con bcrypt: ni la base de datos conoce la real.
 // =========================================================
 import bcrypt from "bcryptjs";
+import { createRemoteJWKSet, jwtVerify } from "jose";
 import { ErrorApi, obtenerSql } from "./_lib/db.js";
 import { leerCuerpo, responder, ruta } from "./_lib/http.js";
 import { cerrarSesion, iniciarSesion, usuarioActual } from "./_lib/sesion.js";
@@ -52,6 +54,44 @@ async function login(req, res) {
   responder(res, 200, { usuario: publico(usuario) });
 }
 
+// ---------- Entrar con Google ----------
+// El navegador recibe de Google un token firmado (JWT). Aquí se verifica la firma con las
+// claves públicas de Google y que sea para NUESTRA app; recién entonces se confía en el correo.
+const CLIENTE_GOOGLE = () => process.env.GOOGLE_CLIENT_ID || null;
+let clavesGoogle = null;
+const llavesGoogle = () =>
+  globalThis.__llavesGoogleDePrueba ?? (clavesGoogle ??= createRemoteJWKSet(new URL("https://www.googleapis.com/oauth2/v3/certs")));
+
+async function google(req, res) {
+  if (!CLIENTE_GOOGLE()) throw new ErrorApi(400, "El ingreso con Google no está configurado.");
+  const { credential = "" } = await leerCuerpo(req);
+  let datos;
+  try {
+    ({ payload: datos } = await jwtVerify(credential, llavesGoogle(), {
+      issuer: ["https://accounts.google.com", "accounts.google.com"],
+      audience: CLIENTE_GOOGLE(),
+    }));
+  } catch {
+    throw new ErrorApi(401, "No pudimos comprobar tu cuenta de Google. Intenta de nuevo.");
+  }
+  if (!datos.email || !datos.email_verified) throw new ErrorApi(401, "Tu correo de Google no está verificado.");
+
+  const sql = obtenerSql();
+  let [usuario] = await sql`select id, nombre, correo, telefono, rol, activo from usuarios where lower(correo) = lower(${datos.email})`;
+  let nuevo = false;
+  if (usuario && !usuario.activo) throw new ErrorApi(403, "Tu cuenta está desactivada.");
+  if (!usuario) {
+    // Cuenta nueva: no tiene contraseña propia (solo puede entrar con Google)
+    const nombre = (datos.name ?? "").trim().length >= 3 ? datos.name.trim() : datos.email.split("@")[0].padEnd(3, "_");
+    [usuario] = await sql`
+      insert into usuarios (nombre, correo, clave_hash) values (${nombre}, ${datos.email}, 'google-sin-clave')
+      returning id, nombre, correo, telefono, rol`;
+    nuevo = true;
+  }
+  await iniciarSesion(res, usuario);
+  responder(res, nuevo ? 201 : 200, { usuario: publico(usuario), nuevo });
+}
+
 export default ruta({
   async GET(req, res) {
     if (req.query?.correo !== undefined) {
@@ -61,12 +101,13 @@ export default ruta({
       return responder(res, 200, { disponible: !fila });
     }
     const usuario = await usuarioActual(req);
-    responder(res, 200, { usuario: usuario ? publico(usuario) : null });
+    responder(res, 200, { usuario: usuario ? publico(usuario) : null, google: CLIENTE_GOOGLE() });
   },
   async POST(req, res) {
     const accion = req.query?.accion;
     if (accion === "registro") return registro(req, res);
     if (accion === "login") return login(req, res);
+    if (accion === "google") return google(req, res);
     if (accion === "salir") {
       cerrarSesion(res);
       return responder(res, 200, { ok: true });

@@ -6,6 +6,7 @@
 import { api, apiDisponible, motivoSinConexion, obtenerSesion, olvidarSesion } from "./api.js";
 import { soles } from "./catalogo.js";
 import { confeti } from "./animaciones.js";
+import { productos } from "./productos.js";
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -101,14 +102,17 @@ export async function iniciarCuenta() {
 
   // Ingresar / Crear cuenta (React): al entrar se muestra el panel de la cuenta
   const { montarAcceso } = await import("./react/acceso.js");
-  const mostrarAcceso = () => {
+  // cuenta.html#registro abre directo en "Crear cuenta" (solo la primera vez; al cerrar sesión, "Ingresar")
+  const mostrarAcceso = (inicio = location.hash === "#registro" ? "registro" : "ingresar") => {
     montarAcceso($("#islaAcceso"), {
       api,
-      inicio: location.hash === "#registro" ? "registro" : "ingresar",
-      onIngreso: async (usuario, { nuevo }) => {
+      inicio,
+      // Para las recomendaciones de la bienvenida (según los gustos elegidos)
+      productos: productos.map((p) => ({ ...p, imagen: p.foto ?? `img/productos/${p.id}.svg` })),
+      onBienvenida: () => confeti(), // cuenta nueva: confeti con el cupón de regalo
+      onIngreso: async (usuario) => {
         await obtenerSesion({ recargar: true });
         pintarPanel(usuario);
-        if (nuevo) confeti();
         $("#cuentaPanel").scrollIntoView({ block: "start", behavior: "smooth" });
       },
     });
@@ -118,7 +122,7 @@ export async function iniciarCuenta() {
   $("#btnSalir").addEventListener("click", async () => {
     await api("auth?accion=salir", { metodo: "POST" }).catch(() => {});
     olvidarSesion();
-    mostrarAcceso();
+    mostrarAcceso("ingresar");
   });
 
   const usuario = await obtenerSesion();

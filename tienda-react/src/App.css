@@ -474,6 +474,43 @@
   }
 }
 
+/* ---------- Bienvenida y Google ---------- */
+@layer custom {
+  .bienvenida { max-width: 30rem; margin-inline: auto; border-radius: 1.5rem; animation: crecer-bienvenida 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  .bienvenida .card-body { padding: 2.5rem clamp(1.25rem, 4vw, 2.25rem) 2rem; }
+  @keyframes crecer-bienvenida { from { opacity: 0; scale: 0.9; } }
+  .bienvenida-emoji { font-size: 2.6rem; text-align: center; margin: 0; }
+  .cupon-regalo {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
+    margin-top: 1.25rem; padding: 1rem 1.25rem; border-radius: 1rem;
+    border: 2px dashed var(--kuyay-lucuma);
+    background: color-mix(in oklch, var(--kuyay-lucuma) 14%, transparent);
+  }
+  .cupon-regalo p { margin: 0; }
+  .cupon-regalo-titulo { font-size: 0.75rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: light-dark(#875900, #f0b84a); }
+  .cupon-codigo {
+    display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.55rem 1rem; border: 0; border-radius: 0.7rem; cursor: pointer;
+    background: var(--bs-primary-bg); color: var(--bs-primary-contrast); font-family: var(--bs-heading-font-family); font-size: 1.25rem; font-weight: 800; letter-spacing: 0.06em;
+    transition: scale 0.15s;
+  }
+  .cupon-codigo:hover { scale: 1.04; }
+  .cupon-codigo:focus-visible { outline: 3px solid var(--bs-primary-focus-ring); outline-offset: 2px; }
+  .bienvenida-productos { list-style: none; margin: 0.5rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+  .bienvenida-productos a { display: grid; gap: 0.15rem; text-decoration: none; color: inherit; font-size: 0.85rem; line-height: 1.25; }
+  .bienvenida-productos img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 0.7rem; transition: translate 0.2s; }
+  .bienvenida-productos a:hover img { translate: 0 -3px; }
+  .bienvenida-productos a:focus-visible { outline: 3px solid var(--bs-primary-focus-ring); outline-offset: 3px; border-radius: 0.7rem; }
+  .bienvenida-botones { display: grid; gap: 0.6rem; margin-top: 1.5rem; }
+  .bienvenida-botones .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; }
+  .acceso-google { margin-top: 1rem; }
+  .acceso-separador { display: flex; align-items: center; gap: 0.75rem; margin: 0 0 1rem; color: var(--bs-fg-3); font-size: 0.85rem; }
+  .acceso-separador::before, .acceso-separador::after { content: ""; flex: 1; height: 1px; background: color-mix(in oklch, var(--bs-fg-body) 14%, transparent); }
+  .google-boton { display: flex; justify-content: center; min-height: 44px; }
+  @media (prefers-reduced-motion: reduce) {
+    .bienvenida { animation: none; }
+  }
+}
+
 /* ---------- Solo la página de práctica (npm run dev) ---------- */
 @layer custom {
   .nav-practica { flex-direction: row; gap: 0.5rem; margin-inline: auto 0.5rem; }
