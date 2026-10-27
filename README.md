@@ -169,7 +169,6 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 │   ├── auth.js           ← registro, ingreso y salida
 │   ├── pedidos.js        ← crear pedido / mis pedidos
 │   └── pedidos-especiales.js ← guardar una torta personalizada
-├── sql/                  ← tablas, datos y reportes para Neon
 ├── package.json          ← dependencias de la API
 ├── css/
 │   └── estilos.css       ← colores, tipografía y estilos de la marca
@@ -227,13 +226,7 @@ El archivo `.nojekyll` le indica a GitHub que publique los archivos tal cual.
 
 ## Base de datos (Neon · PostgreSQL)
 
-Los archivos están en la carpeta `sql/` y se ejecutan **en orden** en el *SQL Editor* de Neon:
-
-| Archivo | Qué hace |
-|---|---|
-| `01-esquema.sql` | Crea las tablas, las reglas automáticas y las vistas de reportes. **Borra todo lo anterior** si se vuelve a ejecutar |
-| `02-datos.sql` | Carga las 4 categorías, los 16 productos de la web, la configuración del negocio y el cupón `KUYAY10` |
-| `03-datos-demo.sql` | *(Opcional)* 6 clientes y ~300 ventas de los últimos 90 días para que los reportes muestren datos |
+Las tablas, los productos y los reportes ya están creados directamente en Neon (no hay archivos SQL en el repositorio).
 
 **Tablas:** `usuarios` (con rol: cliente, empleado o administrador), `direcciones`, `categorias`, `productos`, `cupones`, `pedidos`, `pedido_detalle`, `historial_estados`, `pedidos_especiales`, `movimientos_stock`, `resenas` y `configuracion`.
 

@@ -45,7 +45,7 @@ export function ruta(manejadores) {
   };
 }
 
-// Mensajes para las reglas que valida la base de datos (01-esquema.sql)
+// Mensajes para las reglas que valida la base de datos
 function traducirErrorBd(error) {
   const texto = `${error?.message ?? ""} ${error?.constraint ?? ""}`;
   if (texto.includes("productos_stock_check")) return { estado: 409, mensaje: "Uno de los productos ya no tiene stock suficiente. Revisa tu carrito." };

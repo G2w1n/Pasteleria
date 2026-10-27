@@ -6,7 +6,7 @@
 // El servidor recalcula TODO: precios (de la base de datos),
 // descuento y delivery. Lo que mande el navegador no se cree.
 // El stock lo descuenta la base de datos; si no alcanza, la venta
-// entera se cancela (ver 01-esquema.sql).
+// entera se cancela.
 // =========================================================
 import { ErrorApi, obtenerSql } from "./_lib/db.js";
 import { leerCuerpo, responder, ruta } from "./_lib/http.js";
