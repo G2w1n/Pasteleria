@@ -4,6 +4,7 @@
 //   POST /api/auth?accion=login     { correo, clave }
 //   POST /api/auth?accion=salir
 //   GET  /api/auth                  → usuario de la sesión (o null)
+//   GET  /api/auth?correo=ana@x.pe  → { disponible } (aviso en vivo al crear cuenta)
 // Las contraseñas se guardan con bcrypt: ni la base de datos conoce la real.
 // =========================================================
 import bcrypt from "bcryptjs";
@@ -53,6 +54,12 @@ async function login(req, res) {
 
 export default ruta({
   async GET(req, res) {
+    if (req.query?.correo !== undefined) {
+      const correo = String(req.query.correo).trim();
+      if (!CORREO.test(correo)) throw new ErrorApi(400, "Revisa el formato del correo.");
+      const [fila] = await obtenerSql()`select 1 from usuarios where lower(correo) = lower(${correo})`;
+      return responder(res, 200, { disponible: !fila });
+    }
     const usuario = await usuarioActual(req);
     responder(res, 200, { usuario: usuario ? publico(usuario) : null });
   },

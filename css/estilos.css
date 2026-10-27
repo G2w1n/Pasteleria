@@ -2511,23 +2511,6 @@
     max-width: 30rem;
     margin-inline: auto;
   }
-  .cuenta-pestanas {
-    margin-bottom: 1.5rem;
-  }
-  .campo-clave {
-    position: relative;
-  }
-  .campo-clave .form-control {
-    padding-inline-end: 3rem;
-  }
-  .ver-clave {
-    position: absolute;
-    inset-block-start: 50%;
-    inset-inline-end: 0.4rem;
-    translate: 0 -50%;
-    z-index: 3;
-  }
-  .cuenta-acceso [type=submit],
   .btn-enviar.enviando {
     display: flex;
     align-items: center;

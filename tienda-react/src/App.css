@@ -332,6 +332,83 @@
   .en-vivo-acabando .bi-fire { color: light-dark(#b0400e, #ffb38a); }
 }
 
+/* ---------- Ingresar / Crear cuenta ---------- */
+@layer custom {
+  .acceso-escena { max-width: 30rem; margin-inline: auto; perspective: 1600px; }
+  .acceso-tarjeta {
+    display: grid;
+    transform-style: preserve-3d;
+    transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+  }
+  .acceso-cara {
+    grid-area: 1 / 1;
+    backface-visibility: hidden;
+    border-radius: 1.5rem;
+    border-color: color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+    box-shadow: 0 30px 60px -30px color-mix(in oklch, var(--kuyay-cacao) 40%, transparent);
+  }
+  .acceso-cara .card-body { padding: clamp(1.25rem, 4vw, 2.25rem); }
+  .acceso-dorso { transform: rotateY(180deg); }
+  .acceso-escena.girada .acceso-tarjeta { transform: rotateY(180deg); }
+  @media (prefers-reduced-motion: reduce) {
+    .acceso-tarjeta, .acceso-escena.girada .acceso-tarjeta { transform: none; transition: none; }
+    .acceso-dorso { transform: none; }
+    .acceso-cara[aria-hidden="true"] { visibility: hidden; }
+  }
+  .acceso-titulo { font-size: clamp(1.6rem, 4vw, 2rem); margin: 0 0 0.25rem; }
+  .acceso-form { display: grid; }
+  .acceso-error { animation: sacudir 0.4s; }
+  @keyframes sacudir { 20%, 60% { translate: -6px 0; } 40%, 80% { translate: 6px 0; } }
+  .acceso-enviar { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1rem; }
+  .acceso-cambiar { margin: 1rem 0 0; text-align: center; color: var(--bs-fg-2); }
+  .btn-enlace { all: unset; cursor: pointer; font-weight: 700; color: var(--bs-primary-fg); text-decoration: underline; text-underline-offset: 3px; }
+  .btn-enlace:focus-visible { outline: 3px solid var(--bs-primary-focus-ring); outline-offset: 2px; border-radius: 0.2rem; }
+
+  /* Campo con validación en vivo */
+  .campo { margin-bottom: 0.35rem; }
+  .campo .form-floating { position: relative; }
+  .campo-control { padding-inline-end: 2.75rem; transition: border-color 0.2s, box-shadow 0.2s; }
+  .campo:has(.ver-clave) .campo-control, .campo:has(.campo-accion) .campo-control { padding-inline-end: 5.25rem; }
+  .campo-icono { position: absolute; top: 50%; right: 0.9rem; translate: 0 -50%; display: flex; pointer-events: none; font-size: 1.1rem; }
+  .campo:has(.ver-clave) .campo-icono, .campo:has(.campo-accion) .campo-icono { right: 3.1rem; }
+  .campo:has(.campo-accion) .campo-icono { right: 4.8rem; }
+  .campo-ok .campo-icono { color: var(--bs-success-fg); }
+  .campo-error .campo-icono { color: var(--bs-danger-fg); }
+  .campo-icono i { animation: aparecer-icono 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes aparecer-icono { from { scale: 0; } }
+  .campo-mensaje { min-height: 1.25rem; margin: 0.2rem 0.25rem 0; font-size: 0.8rem; color: var(--bs-fg-3); }
+  .campo-ok .campo-mensaje { color: var(--bs-success-fg); }
+  .campo-error .campo-mensaje { color: var(--bs-danger-fg); }
+  .campo-accion { position: absolute; top: 50%; right: 0.9rem; translate: 0 -50%; z-index: 3; font-size: 0.85rem; }
+  .ver-clave {
+    position: absolute; top: 50%; right: 0.5rem; translate: 0 -50%; z-index: 3;
+    display: grid; place-items: center; width: 2.3rem; height: 2.3rem; border: 0; border-radius: 50%;
+    background: transparent; color: var(--bs-fg-2); font-size: 1.15rem; cursor: pointer; transition: background-color 0.2s;
+  }
+  .ver-clave:hover { background: color-mix(in oklch, var(--bs-fg-body) 7%, transparent); }
+  .ver-clave:focus-visible { outline: 3px solid var(--bs-primary-focus-ring); }
+  .ver-clave i { transition: rotate 0.3s; }
+  .ver-clave.visible i { rotate: 180deg; color: var(--bs-primary-fg); }
+  .aviso-mayus { margin: -0.1rem 0 0.5rem; font-size: 0.82rem; font-weight: 700; color: light-dark(#875900, #f0b84a); animation: aparecer-icono 0.25s; }
+
+  /* Checklist de la contraseña */
+  .checklist-clave { margin: 0.1rem 0 0.25rem; }
+  .fuerza { display: flex; align-items: center; gap: 0.75rem; }
+  .fuerza .progress { flex: 1; height: 0.4rem; }
+  .fuerza .progress-bar { transition: width 0.35s ease, background-color 0.35s; }
+  .fuerza-1 { background: light-dark(#c0392b, #ff8a7a); }
+  .fuerza-2 { background: light-dark(#d68910, #f0b84a); }
+  .fuerza-3, .fuerza-4 { background: light-dark(#15804c, #5fd39a); }
+  .fuerza-texto { min-width: 6rem; font-size: 0.8rem; font-weight: 700; text-align: end; color: var(--bs-fg-2); }
+  .reglas { list-style: none; margin: 0.6rem 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem 0.75rem; font-size: 0.82rem; color: var(--bs-fg-3); }
+  .reglas li { display: flex; align-items: center; gap: 0.35rem; transition: color 0.2s; }
+  .reglas li.cumple { color: var(--bs-success-fg); }
+  .reglas li.cumple i { animation: aparecer-icono 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @media (prefers-reduced-motion: reduce) {
+    .acceso-error, .campo-icono i, .reglas li.cumple i, .aviso-mayus { animation: none; }
+  }
+}
+
 /* ---------- Solo la página de práctica (npm run dev) ---------- */
 @layer custom {
   .nav-practica { flex-direction: row; gap: 0.5rem; margin-inline: auto 0.5rem; }

@@ -3,7 +3,6 @@
 // La sesión vive en una cookie HttpOnly que crea la API:
 // este archivo nunca ve ni guarda la contraseña o el token.
 // =========================================================
-import { Strength } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { api, apiDisponible, motivoSinConexion, obtenerSesion, olvidarSesion } from "./api.js";
 import { soles } from "./catalogo.js";
 import { confeti } from "./animaciones.js";
@@ -94,92 +93,35 @@ function pintarPanel(usuario) {
   pintarPedidos();
 }
 
-// ---------- Formularios ----------
-function enviarFormulario(form, error, alEnviar) {
-  const boton = form.querySelector("[type=submit]");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    error.hidden = true;
-    form.querySelectorAll(".is-invalid").forEach((c) => c.classList.remove("is-invalid"));
-    const invalido = [...form.elements].find((c) => c.willValidate && !c.checkValidity());
-    if (invalido) {
-      invalido.classList.add("is-invalid");
-      error.textContent = mensajeCampo(invalido);
-      error.hidden = false;
-      invalido.focus();
-      return;
-    }
-    boton.disabled = true;
-    boton.querySelector(".spinner-border").hidden = false;
-    try {
-      await alEnviar(Object.fromEntries(new FormData(form)));
-    } catch (err) {
-      error.textContent = err.message;
-      error.hidden = false;
-    } finally {
-      boton.disabled = false;
-      boton.querySelector(".spinner-border").hidden = true;
-    }
-  });
-}
-
-function mensajeCampo(campo) {
-  if (campo.name === "nombre") return "Escribe tu nombre (mínimo 3 letras).";
-  if (campo.name === "correo") return campo.value ? "Revisa el formato del correo." : "Escribe tu correo.";
-  if (campo.name === "telefono") return "El celular debe tener 9 dígitos y empezar con 9.";
-  if (campo.name === "clave") return campo.value ? "La contraseña debe tener al menos 8 caracteres." : "Escribe tu contraseña.";
-  return "Revisa este campo.";
-}
-
 export async function iniciarCuenta() {
   if (!apiDisponible()) {
     if (motivoSinConexion()) $("#cuentaMotivo").textContent = `Detalle técnico: ${motivoSinConexion()}`;
     return mostrar("cuentaSinApi");
   }
 
-  // Mostrar u ocultar la contraseña
-  document.querySelectorAll("[data-ver]").forEach((boton) => {
-    boton.addEventListener("click", () => {
-      const campo = document.getElementById(boton.dataset.ver);
-      const visible = campo.type === "password";
-      campo.type = visible ? "text" : "password";
-      boton.setAttribute("aria-pressed", visible);
-      boton.setAttribute("aria-label", visible ? "Ocultar contraseña" : "Mostrar contraseña");
-      boton.querySelector("i").className = `bi ${visible ? "bi-eye-slash" : "bi-eye"}`;
+  // Ingresar / Crear cuenta (React): al entrar se muestra el panel de la cuenta
+  const { montarAcceso } = await import("./react/acceso.js");
+  const mostrarAcceso = () => {
+    montarAcceso($("#islaAcceso"), {
+      api,
+      inicio: location.hash === "#registro" ? "registro" : "ingresar",
+      onIngreso: async (usuario, { nuevo }) => {
+        await obtenerSesion({ recargar: true });
+        pintarPanel(usuario);
+        if (nuevo) confeti();
+        $("#cuentaPanel").scrollIntoView({ block: "start", behavior: "smooth" });
+      },
     });
-  });
-
-  // Medidor de seguridad de la contraseña (Strength de Bootstrap 6)
-  Strength.getOrCreateInstance($("#fuerzaClave"), {
-    input: "#reClave",
-    messages: { weak: "Débil: agrega más caracteres", fair: "Regular: mezcla mayúsculas y números", good: "Buena", strong: "¡Muy segura!" },
-  });
-
-  $("#reTelefono").addEventListener("input", (e) => {
-    e.target.value = e.target.value.replace(/\D/g, "");
-  });
-
-  enviarFormulario($("#formIngresar"), $("#errorIngresar"), async (datos) => {
-    const { usuario } = await api("auth?accion=login", { metodo: "POST", datos });
-    await obtenerSesion({ recargar: true });
-    pintarPanel(usuario);
-  });
-
-  enviarFormulario($("#formRegistro"), $("#errorRegistro"), async (datos) => {
-    const { usuario } = await api("auth?accion=registro", { metodo: "POST", datos });
-    await obtenerSesion({ recargar: true });
-    pintarPanel(usuario);
-    confeti();
-  });
+    mostrar("cuentaAcceso");
+  };
 
   $("#btnSalir").addEventListener("click", async () => {
     await api("auth?accion=salir", { metodo: "POST" }).catch(() => {});
     olvidarSesion();
-    $("#formIngresar").reset();
-    mostrar("cuentaAcceso");
+    mostrarAcceso();
   });
 
   const usuario = await obtenerSesion();
   if (usuario) pintarPanel(usuario);
-  else mostrar("cuentaAcceso");
+  else mostrarAcceso();
 }

@@ -151,70 +151,9 @@
           <p class="fs-sm mb-0 mt-2" id="cuentaMotivo"></p>
         </div>
 
-        <!-- Ingresar / Crear cuenta -->
-        <div class="card cuenta-acceso" id="cuentaAcceso" hidden>
-          <div class="card-body">
-            <nav class="nav nav-underline cuenta-pestanas" role="tablist" aria-label="Acceso">
-              <button class="nav-link active" type="button" role="tab" id="pestanaIngresar" data-bs-toggle="tab" data-bs-target="#panelIngresar" aria-controls="panelIngresar" aria-selected="true">Ingresar</button>
-              <button class="nav-link" type="button" role="tab" id="pestanaRegistro" data-bs-toggle="tab" data-bs-target="#panelRegistro" aria-controls="panelRegistro" aria-selected="false">Crear cuenta</button>
-            </nav>
-            <div class="tab-content">
-              <div class="tab-pane active" id="panelIngresar" role="tabpanel" aria-labelledby="pestanaIngresar">
-                <form id="formIngresar" novalidate>
-                  <div class="alert theme-danger" id="errorIngresar" role="alert" hidden></div>
-                  <div class="form-floating">
-                    <label for="inCorreo">Correo</label>
-                    <input class="form-control" type="email" id="inCorreo" name="correo" autocomplete="email" placeholder=" " required>
-                  </div>
-                  <div class="campo-clave mt-3">
-                    <div class="form-floating">
-                      <label for="inClave">Contraseña</label>
-                      <input class="form-control" type="password" id="inClave" name="clave" autocomplete="current-password" placeholder=" " required>
-                    </div>
-                    <button class="btn btn-text btn-icon ver-clave" type="button" data-ver="inClave" aria-label="Mostrar contraseña" aria-pressed="false"><i class="bi bi-eye" aria-hidden="true"></i></button>
-                  </div>
-                  <button class="btn btn-solid theme-primary btn-lg w-100 mt-5" type="submit">
-                    <span class="spinner-border spinner-sm" aria-hidden="true" hidden></span>
-                    <span class="btn-texto">Ingresar</span>
-                  </button>
-                </form>
-              </div>
-              <div class="tab-pane" id="panelRegistro" role="tabpanel" aria-labelledby="pestanaRegistro">
-                <form id="formRegistro" novalidate>
-                  <div class="alert theme-danger" id="errorRegistro" role="alert" hidden></div>
-                  <div class="form-floating">
-                    <label for="reNombre">Nombre completo</label>
-                    <input class="form-control" id="reNombre" name="nombre" autocomplete="name" placeholder=" " required minlength="3">
-                  </div>
-                  <div class="form-floating mt-3">
-                    <label for="reCorreo">Correo</label>
-                    <input class="form-control" type="email" id="reCorreo" name="correo" autocomplete="email" placeholder=" " required>
-                  </div>
-                  <div class="form-floating mt-3">
-                    <label for="reTelefono">Celular (opcional)</label>
-                    <input class="form-control" type="tel" id="reTelefono" name="telefono" inputmode="numeric" maxlength="9" pattern="9[0-9]{8}" autocomplete="tel-national" placeholder=" ">
-                  </div>
-                  <div class="campo-clave mt-3">
-                    <div class="form-floating">
-                      <label for="reClave">Contraseña (mínimo 8)</label>
-                      <input class="form-control" type="password" id="reClave" name="clave" autocomplete="new-password" placeholder=" " required minlength="8" aria-describedby="reClaveTexto">
-                    </div>
-                    <button class="btn btn-text btn-icon ver-clave" type="button" data-ver="reClave" aria-label="Mostrar contraseña" aria-pressed="false"><i class="bi bi-eye" aria-hidden="true"></i></button>
-                  </div>
-                  <!-- Strength (medidor de contraseña de Bootstrap 6) -->
-                  <div class="strength mt-2" id="fuerzaClave" aria-hidden="true">
-                    <div class="strength-segment"></div><div class="strength-segment"></div>
-                    <div class="strength-segment"></div><div class="strength-segment"></div>
-                  </div>
-                  <p class="strength-text fs-xs fg-3 mb-0" id="reClaveTexto" aria-live="polite"></p>
-                  <button class="btn btn-solid theme-primary btn-lg w-100 mt-5" type="submit">
-                    <span class="spinner-border spinner-sm" aria-hidden="true" hidden></span>
-                    <span class="btn-texto">Crear cuenta</span>
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
+        <!-- Ingresar / Crear cuenta: lo dibuja React (tienda-react/src/components/acceso/Acceso.jsx) -->
+        <div class="cuenta-acceso" id="cuentaAcceso" hidden>
+          <div id="islaAcceso"></div>
         </div>
 
         <!-- Seguimiento sin cuenta (React: tienda-react/src/components/Seguimiento.jsx) -->
