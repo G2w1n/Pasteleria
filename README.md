@@ -77,8 +77,8 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | ![Mis pedidos](docs/capturas/cuenta.jpg) | ![Crear cuenta](docs/capturas/cuenta-registro.jpg) |
 | **Catálogo con React** (filtros y chips) | **Buscador del menú** |
 | ![Catálogo React](docs/capturas/catalogo-react.jpg) | ![Buscador](docs/capturas/buscador.jpg) |
-| **Hoy en Kuyay** (en vivo) | **Reseñas** |
-| ![Hoy en Kuyay](docs/capturas/en-vivo.jpg) | ![Reseñas](docs/capturas/resenas.jpg) |
+| **Hoy en Kuyay** (en vivo) | **Reseñas de un producto** |
+| ![Hoy en Kuyay](docs/capturas/en-vivo.jpg) | ![Reseñas de un producto](docs/capturas/resenas-producto.jpg) |
 | **Panel: reportes** | **Panel: pedidos** |
 | ![Panel reportes](docs/capturas/panel-reportes.jpg) | ![Panel pedidos](docs/capturas/panel-pedidos.jpg) |
 | **Catálogo en modo oscuro** | |
