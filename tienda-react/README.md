@@ -1,7 +1,11 @@
-# Kuyay · Tienda React (Semana 11)
+# Kuyay · React (Semana 11)
 
-Catálogo de Kuyay hecho con **React 19 + Vite**: imágenes, filtros, buscador, orden y carrito.
-Publicado en **https://pasteleria-three-steel.vercel.app/react/**
+Los componentes React de la tienda, con la **estructura de la práctica**.
+Se usan de dos formas:
+
+1. **Dentro de la tienda principal** (Bootstrap 6 + Neon): el catálogo de
+   `catalogo.html` lo dibuja React. Es una "isla": React solo donde hay interacción.
+2. **Como la práctica completa** con `npm run dev` (index + catálogo + contador del carrito).
 
 ## Cómo ejecutarlo
 
@@ -10,50 +14,59 @@ Requisito: Node.js 20.19+ o 22.12+ (`node -v`).
 ```bash
 cd tienda-react
 npm install
-npm run dev        # http://localhost:5173
+npm run dev        # práctica en http://localhost:5173
+npm run build      # compila las islas en ../js/react/ (lo que usa la tienda)
 ```
 
-Para publicar los cambios: `npm run build`. Esto actualiza la carpeta `../react/`, que es la que sirve Vercel. Luego haz commit y push.
+> Después de cambiar un componente, corre `npm run build` y haz commit: así Vercel publica el cambio.
+
+## Estructura (la de la práctica)
+
+```
+tienda-react/
+├── index.html            ← lang="es", título, Bootstrap 6
+├── package.json
+├── vite.config.js        ← islas + proxy de /api a Vercel
+├── public/
+│   └── img/              ← imágenes del catálogo (16 productos + sin-imagen.svg)
+└── src/
+    ├── main.jsx          ← monta App (página de práctica)
+    ├── index.css         ← vacío
+    ├── App.jsx           ← el carrito vive aquí (estado elevado)
+    ├── App.css           ← estilos, transiciones y animaciones de los componentes
+    ├── data/
+    │   └── productos.js  ← los productos (luego vienen de Neon)
+    ├── components/
+    │   ├── ProductoCard.jsx  ← tarjeta (props)
+    │   ├── Catalogo.jsx      ← filtros, buscador y orden (estado)
+    │   ├── Encabezado.jsx    ← contador del carrito
+    │   ├── Carrito.jsx       ← drawer del carrito (práctica)
+    │   └── ProductoDetalle.jsx
+    ├── hooks/            ← useLocalStorage, useDialogo
+    ├── utilidades.js
+    └── islas/
+        └── catalogo.jsx  ← monta <Catalogo /> dentro de catalogo.html
+```
 
 ## Lista de cotejo
 
 | Criterio | Dónde está |
 |---|---|
 | **Proyecto corre** | `npm run dev` (Vite) |
-| **Imágenes** | `public/img/` (16 productos + `sin-imagen.svg`), con `onError` en `ProductoCard.jsx` |
-| **Props** | `ProductoCard` recibe `producto`, `onAgregar`, `onVerDetalle`; `Encabezado` recibe `cantidad` |
-| **Estado** | `Catalogo.jsx`: `useState` para categoría, búsqueda, orden y "solo disponibles"; la lista visible es estado derivado |
-| **Orden** | Precio menor/mayor y nombre A → Z (`toSorted`) |
-| **Carrito** | Vive en `App.jsx` (estado elevado), el contador del encabezado salta con `key={cantidad}` |
+| **Imágenes** | `public/img/` y `img/productos/` de la tienda, con `onError` → `sin-imagen.svg` |
+| **Props** | `ProductoCard` recibe `producto`, `onAgregar`, `onVerDetalle`, `onFavorito`; `Encabezado` recibe `cantidad` |
+| **Estado** | `Catalogo.jsx`: `useState` de filtros; la lista visible es estado derivado (`filter` + `toSorted`) |
+| **Orden** | Destacados, precio menor/mayor, nombre A–Z y mejor valorados |
+| **Carrito** | Vive en `App.jsx`; el contador salta con `key={cantidad}` |
 
-**Extensiones opcionales (todas hechas):** Vaciar carrito · carrito guardado con `useEffect` + `localStorage` (hook `useLocalStorage`) · "Agotado" con el botón deshabilitado.
+**Extensiones opcionales:** Vaciar carrito · carrito guardado con `useEffect` + `localStorage` · "Agotado" con el botón deshabilitado.
 
-## Además de lo que pide la práctica
+## Lo que agrega el catálogo React a la tienda
 
-- **Datos en vivo desde Neon:** `hooks/useProductos.js` pide `/api/productos` (Vercel + Neon). Si no responde, usa `src/data/productos.js`. Mientras carga, se ven tarjetas "esqueleto".
-- **Carrito completo** en un panel lateral (`<dialog>`): cantidades + / −, respeta el stock, 10 % de descuento sobre S/ 100 con barra de avance, y pedido por WhatsApp.
-- **Detalle del producto** en una ventana: ingredientes, alérgenos y cantidad.
-- **Buscador sin tildes** ("lucuma" encuentra "lúcuma"), contador por categoría y botón "Quitar filtros".
-- **Modo oscuro** guardado en el navegador.
-- **Animaciones:** tarjetas que aparecen escalonadas, zoom en la foto, la foto vuela al carrito, aviso flotante, collage que flota. Respeta `prefers-reduced-motion`.
-- **Accesibilidad:** auditada con axe-core (0 problemas en claro, oscuro y celular), navegable con teclado.
-
-## Estructura
-
-```
-tienda-react/
-├── index.html            ← lang="es", título y fuentes
-├── vite.config.js        ← base relativa y proxy de /api a Vercel
-├── public/img/           ← imágenes del catálogo
-└── src/
-    ├── main.jsx
-    ├── index.css         ← vacío (paso 2)
-    ├── App.jsx           ← estado del carrito, tema y ventanas
-    ├── App.css           ← estilos, transiciones y animaciones
-    ├── utilidades.js     ← soles(), sinTildes(), datos del negocio
-    ├── animaciones.js    ← la foto vuela al carrito
-    ├── data/productos.js ← catálogo local
-    ├── hooks/            ← useLocalStorage, useProductos, useDialogo
-    └── components/       ← Encabezado, Portada, Catalogo, ProductoCard,
-                             ProductoDetalle, Carrito, Aviso, Pie
-```
+- Filtros por **categoría** (pastilla que se desliza), **precio** (Range), **alérgenos** (Chips) y **solo disponibles** (Switch).
+- **Chips de filtros activos** que se quitan con un clic, y "Limpiar todo".
+- **Favoritos** ❤ guardados en el navegador, con su propia pestaña.
+- **Vista grilla o lista** y **Cargar más** con barra de progreso.
+- **Vistos recientemente**, y los filtros quedan en la URL para compartirlos.
+- **Esqueleto** (Placeholder) mientras carga, y transiciones al filtrar (View Transitions).
+- Se conecta con la tienda: el **carrito**, el **detalle** y el **checkout con Neon** son los mismos de Bootstrap.

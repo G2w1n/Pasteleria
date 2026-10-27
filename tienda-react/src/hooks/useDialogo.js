@@ -1,6 +1,6 @@
 // src/hooks/useDialogo.js
-// Conecta un <dialog> nativo con el estado de React:
-// abierto = true lo muestra (con fondo oscuro, Esc y foco atrapado); false lo cierra.
+// Conecta un <dialog> nativo (Dialog y Drawer de Bootstrap 6) con el estado de React:
+// abierto = true lo muestra con fondo oscuro, Esc y foco atrapado; false lo cierra.
 import { useEffect, useRef } from "react";
 
 export function useDialogo(abierto, alCerrar) {
@@ -14,12 +14,8 @@ export function useDialogo(abierto, alCerrar) {
 
   useEffect(() => {
     const dialogo = ref.current;
-    // "close" ocurre con Esc o con dialog.close(): avisamos al padre
-    const cerrar = () => alCerrar();
-    // Clic en el fondo oscuro (fuera del contenido) también cierra
-    const clicFuera = (e) => {
-      if (e.target === dialogo) dialogo.close();
-    };
+    const cerrar = () => alCerrar(); // "close" ocurre con Esc o con dialog.close()
+    const clicFuera = (e) => e.target === dialogo && dialogo.close(); // clic en el fondo
     dialogo.addEventListener("close", cerrar);
     dialogo.addEventListener("click", clicFuera);
     return () => {

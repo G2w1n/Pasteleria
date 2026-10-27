@@ -1084,6 +1084,7 @@
   .avisos {
     padding: 1rem;
     z-index: 1090;
+    top: 4.25rem !important; /* debajo del menú: así el aviso no tapa sus botones */
   }
   .avisos .toast {
     pointer-events: auto;

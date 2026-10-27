@@ -8,12 +8,13 @@ import { Drawer } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dis
 import { NEGOCIO } from "./config.js";
 import { insertarComponentes } from "./componentes.js";
 import { iniciarTema } from "./tema.js";
-import { iniciarCatalogo, iniciarDestacados, pintarCategorias } from "./catalogo.js";
+import { abrirDetalle, iniciarDetalle, iniciarDestacados, pintarCategorias } from "./catalogo.js";
 import { iniciarCarrito } from "./carrito.js";
 import { iniciarPedido } from "./pedido.js";
 import { iniciarCuenta } from "./cuenta.js";
 import { iniciarAnimaciones } from "./animaciones.js";
 import { cargarCatalogo, obtenerSesion } from "./api.js";
+import { CATEGORIAS, productos } from "./productos.js";
 
 const $ = (selector) => document.querySelector(selector);
 const existe = (selector) => document.querySelector(selector) !== null;
@@ -22,14 +23,14 @@ const existe = (selector) => document.querySelector(selector) !== null;
 await cargarCatalogo();
 
 // ---------- Comunes a todas las páginas ----------
-insertarComponentes({ conDetalle: existe("#grillaProductos") || existe("#grillaDestacados"), whatsapp: NEGOCIO.whatsapp });
+insertarComponentes({ conDetalle: existe("#islaCatalogo") || existe("#grillaDestacados"), whatsapp: NEGOCIO.whatsapp });
 iniciarTema($("#btnTema"));
 iniciarCarrito();
 
 // ---------- Según la página ----------
 if (existe("#grillaDestacados")) iniciarDestacados(); // Inicio
 if (existe("#categoriasInicio")) pintarCategorias(); // Inicio
-if (existe("#grillaProductos")) iniciarCatalogo(); // Catálogo
+if (existe("#islaCatalogo")) montarCatalogoReact(); // Catálogo (React)
 if (existe("#formPedido")) iniciarPedido(); // Pedido especial
 if (existe("#cuentaPanel")) iniciarCuenta(); // Mi cuenta
 
@@ -37,6 +38,29 @@ if (existe("#cuentaPanel")) iniciarCuenta(); // Mi cuenta
 obtenerSesion().then((usuario) => {
   if (usuario) $("#btnCuenta .texto-cuenta").textContent = usuario.nombre.split(" ")[0];
 });
+
+// ---------- Catálogo hecho con React (isla dentro de la página Bootstrap) ----------
+// React dibuja la grilla y los filtros; el carrito y el detalle siguen siendo los de la tienda.
+async function montarCatalogoReact() {
+  const contenedor = $("#islaCatalogo");
+  try {
+    const { montarCatalogo } = await import("./react/catalogo.js");
+    montarCatalogo(contenedor, {
+      productos: productos.map((p) => ({ ...p, unidad: p.porcion, imagen: p.foto ?? `img/productos/${p.id}.svg` })),
+      categorias: [{ id: "todos", nombre: "Todos" }, ...CATEGORIAS],
+      onAgregar: (producto, cantidad, origen) =>
+        document.dispatchEvent(new CustomEvent("kuyay:agregar", { detail: { producto, cantidad, origen } })),
+      onVerDetalle: (producto, tarjeta) => abrirDetalle(producto.id, tarjeta),
+    });
+    iniciarDetalle();
+    // ?producto=torta-lucuma abre su detalle (lo usa el buscador del menú)
+    const pedido = new URLSearchParams(location.search).get("producto");
+    if (pedido) requestAnimationFrame(() => abrirDetalle(pedido));
+  } catch (error) {
+    console.error(error);
+    contenedor.innerHTML = `<div class="alert theme-danger">No se pudo cargar el catálogo. Recarga la página.</div>`;
+  }
+}
 
 // ---------- Drawers: cerrar al elegir un enlace ----------
 // (No usamos data-bs-dismiss en enlaces: Bootstrap cancela la navegación.)

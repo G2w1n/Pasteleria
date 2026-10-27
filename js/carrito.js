@@ -164,6 +164,8 @@ let teniaDescuento = null; // para celebrar solo cuando se alcanza
 
 function pintarCarrito(carrito) {
   const lista = carrito.lista();
+  // Aviso para el catálogo de React ("Agregar (2)", "Sin stock")
+  document.dispatchEvent(new CustomEvent("kuyay:carrito", { detail: lista.map((it) => ({ id: it.producto.id, cantidad: it.cantidad })) }));
   const unidades = carrito.unidades();
   const t = carrito.totales();
   const vacio = lista.length === 0;

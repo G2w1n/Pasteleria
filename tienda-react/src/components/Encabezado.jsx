@@ -1,31 +1,28 @@
 // src/components/Encabezado.jsx
-import { sitio } from "../utilidades.js";
-export default function Encabezado({ cantidad, tema, onCambiarTema, onAbrirCarrito }) {
-  const oscuro = tema === "oscuro";
+// Navbar de Bootstrap 6. Solo MUESTRA la cantidad: el carrito vive en App.
+export default function Encabezado({ cantidad, onAbrirCarrito }) {
   return (
-    <header className="encabezado">
-      <a href="#inicio" className="marca">
-        <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width="34" height="34" />
-        Kuyay <span>React</span>
-      </a>
-      <nav aria-label="Menú">
-        <a href="#catalogo">Catálogo</a>
-        <a href="#contacto">Contacto</a>
-        <a href={sitio("/")} className="nav-principal">Tienda principal</a>
+    <header className="cabecera sticky-top">
+      <nav className="navbar navbar-translucent" aria-label="Menú principal">
+        <div className="container">
+          <a className="navbar-brand marca" href="#inicio">
+            <img src="/favicon.svg" alt="" width="36" height="36" />
+            <span>Kuyay</span>
+          </a>
+          <ul className="navbar-nav nav-practica">
+            <li className="nav-item"><a className="nav-link" href="#catalogo">Catálogo</a></li>
+            <li className="nav-item"><a className="nav-link" href="#contacto">Contacto</a></li>
+          </ul>
+          <div className="acciones">
+            <button className="btn btn-text btn-icon position-relative" type="button" onClick={onAbrirCarrito}
+                    aria-label={`Abrir carrito (${cantidad} ${cantidad === 1 ? "producto" : "productos"})`}>
+              <i className="bi bi-bag-heart" aria-hidden="true" />
+              {/* key cambia con la cantidad: el contador se vuelve a montar y "salta" */}
+              <b key={cantidad} className="badge theme-accent contador-carrito contador-salta" data-cantidad={cantidad} aria-hidden="true">{cantidad}</b>
+            </button>
+          </div>
+        </div>
       </nav>
-      <div className="acciones">
-        <button type="button" className="boton-icono" onClick={onCambiarTema}
-                aria-label={oscuro ? "Activar modo claro" : "Activar modo oscuro"} aria-pressed={oscuro}>
-          {oscuro ? "☀️" : "🌙"}
-        </button>
-        <button type="button" className="carrito" onClick={onAbrirCarrito}
-                aria-label={`Abrir carrito (${cantidad} ${cantidad === 1 ? "producto" : "productos"})`}>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z" /><path d="M9 8V6a3 3 0 0 1 6 0v2" /></svg>
-          <span className="carrito-texto">Carrito</span>
-          {/* key cambia con la cantidad: el contador se vuelve a montar y "salta" */}
-          <b key={cantidad}>{cantidad}</b>
-        </button>
-      </div>
     </header>
   );
 }

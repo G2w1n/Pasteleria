@@ -2,15 +2,15 @@
 // Catálogo local de Kuyay. Se usa al empezar y cuando no hay conexión:
 // si la API responde, los datos llegan en vivo desde Neon (ver hooks/useProductos.js).
 
-// Lo que está en public/ se sirve desde la raíz de la app. BASE_URL es "/" con
-// "npm run dev" y "./" al publicar, así la ruta funciona en los dos casos.
+// Lo que está en public/ se sirve desde la raíz del sitio. BASE_URL es "/" con
+// "npm run dev" y "/react/" al publicar, así la ruta funciona en los dos casos.
 export const imagen = (id) => `${import.meta.env.BASE_URL}img/${id}.svg`;
 
 export const productos = [
   {
     id: "torta-lucuma",
     nombre: "Torta de lúcuma",
-    categoria: "Tortas",
+    categoria: "tortas",
     precio: 89,
     unidad: "Entera · 12 porciones",
     imagen: imagen("torta-lucuma"),
@@ -23,7 +23,7 @@ export const productos = [
   {
     id: "torta-cacao",
     nombre: "Torta de cacao de Cusco",
-    categoria: "Tortas",
+    categoria: "tortas",
     precio: 95,
     unidad: "Entera · 12 porciones",
     imagen: imagen("torta-cacao"),
@@ -36,7 +36,7 @@ export const productos = [
   {
     id: "tres-leches-maracuya",
     nombre: "Tres leches de maracuyá",
-    categoria: "Tortas",
+    categoria: "tortas",
     precio: 79,
     unidad: "Entera · 10 porciones",
     imagen: imagen("tres-leches-maracuya"),
@@ -49,7 +49,7 @@ export const productos = [
   {
     id: "cheesecake-aguaymanto",
     nombre: "Cheesecake de aguaymanto",
-    categoria: "Tortas",
+    categoria: "tortas",
     precio: 85,
     unidad: "Entero · 10 porciones",
     imagen: imagen("cheesecake-aguaymanto"),
@@ -62,7 +62,7 @@ export const productos = [
   {
     id: "suspiro-limena",
     nombre: "Suspiro a la limeña",
-    categoria: "Postres",
+    categoria: "postres",
     precio: 12,
     unidad: "Vaso individual",
     imagen: imagen("suspiro-limena"),
@@ -75,7 +75,7 @@ export const productos = [
   {
     id: "alfajores",
     nombre: "Alfajores de maicena (x6)",
-    categoria: "Postres",
+    categoria: "postres",
     precio: 18,
     unidad: "Caja de 6 unidades",
     imagen: imagen("alfajores"),
@@ -88,7 +88,7 @@ export const productos = [
   {
     id: "mazamorra-morada",
     nombre: "Mazamorra morada",
-    categoria: "Postres",
+    categoria: "postres",
     precio: 10,
     unidad: "Vaso individual",
     imagen: imagen("mazamorra-morada"),
@@ -101,7 +101,7 @@ export const productos = [
   {
     id: "crema-volteada",
     nombre: "Crema volteada",
-    categoria: "Postres",
+    categoria: "postres",
     precio: 11,
     unidad: "Porción individual",
     imagen: imagen("crema-volteada"),
@@ -114,7 +114,7 @@ export const productos = [
   {
     id: "pan-yema",
     nombre: "Pan de yema",
-    categoria: "Panes",
+    categoria: "panes",
     precio: 6,
     unidad: "Bolsa de 4 unidades",
     imagen: imagen("pan-yema"),
@@ -127,7 +127,7 @@ export const productos = [
   {
     id: "pan-chancay",
     nombre: "Pan chancay",
-    categoria: "Panes",
+    categoria: "panes",
     precio: 5,
     unidad: "Bolsa de 4 unidades",
     imagen: imagen("pan-chancay"),
@@ -140,7 +140,7 @@ export const productos = [
   {
     id: "paneton-artesanal",
     nombre: "Panetón artesanal",
-    categoria: "Panes",
+    categoria: "panes",
     precio: 45,
     unidad: "1 kg",
     imagen: imagen("paneton-artesanal"),
@@ -153,7 +153,7 @@ export const productos = [
   {
     id: "pan-masa-madre-quinua",
     nombre: "Pan de masa madre con quinua",
-    categoria: "Panes",
+    categoria: "panes",
     precio: 14,
     unidad: "Hogaza de 700 g",
     imagen: imagen("pan-masa-madre-quinua"),
@@ -166,7 +166,7 @@ export const productos = [
   {
     id: "empanada-carne",
     nombre: "Empanada de carne",
-    categoria: "Salados",
+    categoria: "salados",
     precio: 9,
     unidad: "1 unidad",
     imagen: imagen("empanada-carne"),
@@ -179,7 +179,7 @@ export const productos = [
   {
     id: "empanada-aji-gallina",
     nombre: "Empanada de ají de gallina",
-    categoria: "Salados",
+    categoria: "salados",
     precio: 9,
     unidad: "1 unidad",
     imagen: imagen("empanada-aji-gallina"),
@@ -192,7 +192,7 @@ export const productos = [
   {
     id: "pan-chicharron",
     nombre: "Pan con chicharrón",
-    categoria: "Salados",
+    categoria: "salados",
     precio: 14,
     unidad: "1 sánguche",
     imagen: imagen("pan-chicharron"),
@@ -205,7 +205,7 @@ export const productos = [
   {
     id: "tequenos-queso",
     nombre: "Tequeños de queso (x8)",
-    categoria: "Salados",
+    categoria: "salados",
     precio: 16,
     unidad: "8 unidades + guacamole",
     imagen: imagen("tequenos-queso"),
@@ -217,6 +217,11 @@ export const productos = [
   },
 ];
 
-// "Todos" + cada categoría una sola vez (Set elimina repetidos)
-export const categoriasDe = (lista) => ["Todos", ...new Set(lista.map((p) => p.categoria))];
-export const categorias = categoriasDe(productos);
+// "Todos" + las categorías de la tienda
+export const categorias = [
+  { id: "todos", nombre: "Todos" },
+  { id: "tortas", nombre: "Tortas" },
+  { id: "postres", nombre: "Postres" },
+  { id: "panes", nombre: "Panes" },
+  { id: "salados", nombre: "Salados" },
+];

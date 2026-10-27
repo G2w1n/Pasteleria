@@ -53,6 +53,8 @@
 
   <!-- Estilos de la marca, SIEMPRE después de Bootstrap -->
   <link href="css/estilos.css" rel="stylesheet">
+  <!-- Estilos de los componentes React (tienda-react/src/App.css compilado) -->
+  <link href="js/react/kuyay-react.css" rel="stylesheet">
 </head>
 <body>
   <a class="visually-hidden-focusable" href="#contenido">Saltar al contenido</a>
@@ -126,40 +128,45 @@
         <p class="ceja">Nuestra vitrina</p>
         <h1 class="titulo-pagina" id="tituloPagina">Catálogo</h1>
         <p class="fs-lg fg-2 texto-pagina">Horneado hoy en Barranco. Pide antes de las 6:00&nbsp;p.&nbsp;m. y llega el mismo día.</p>
-        <a class="btn btn-subtle theme-primary btn-sm mt-3" href="react/"><i class="bi bi-lightning-charge" aria-hidden="true"></i> Ver este catálogo hecho con React</a>
       </div>
     </section>
 
     <section class="seccion pt-0" aria-labelledby="productosTitulo">
       <div class="container">
         <h2 class="visually-hidden" id="productosTitulo">Productos</h2>
-        <!-- Barra de herramientas: filtros, buscador y orden -->
-        <div class="catalogo-herramientas">
-          <ul class="nav nav-pills filtros" id="filtros" aria-label="Filtrar por categoría"></ul>
-          <div class="catalogo-busqueda">
-            <label class="form-control form-adorn buscador">
-              <span class="form-adorn-icon"><i class="bi bi-search" aria-hidden="true"></i></span>
-              <span class="visually-hidden">Buscar productos</span>
-              <input class="form-ghost" type="search" id="buscador" placeholder="Busca lúcuma, cacao, empanada…" autocomplete="off">
-            </label>
-            <label class="visually-hidden" for="orden">Ordenar productos</label>
-            <select class="form-control orden" id="orden">
-              <option value="destacados">Destacados</option>
-              <option value="precio-asc">Precio: menor a mayor</option>
-              <option value="precio-desc">Precio: mayor a menor</option>
-              <option value="nombre">Nombre (A–Z)</option>
-            </select>
+        <!-- Catálogo hecho con React (tienda-react/src/components/Catalogo.jsx).
+             Mientras carga se ve este esqueleto (Placeholder de Bootstrap 6). -->
+        <div id="islaCatalogo">
+          <div class="row row-cols-1 sm:row-cols-2 lg:row-cols-3 xl:row-cols-4 g-7 mt-5 catalogo-esqueleto" role="status" aria-label="Cargando productos">
+            <div class="col"><div class="card producto h-100" aria-hidden="true">
+              <div class="producto-media placeholder-wave"><span class="placeholder w-100 h-100"></span></div>
+              <div class="card-body producto-cuerpo placeholder-wave">
+                <span class="placeholder col-4 placeholder-sm"></span><span class="placeholder col-8 placeholder-lg"></span>
+                <span class="placeholder col-11"></span><span class="placeholder col-6"></span>
+              </div>
+            </div></div>
+            <div class="col"><div class="card producto h-100" aria-hidden="true">
+              <div class="producto-media placeholder-wave"><span class="placeholder w-100 h-100"></span></div>
+              <div class="card-body producto-cuerpo placeholder-wave">
+                <span class="placeholder col-4 placeholder-sm"></span><span class="placeholder col-8 placeholder-lg"></span>
+                <span class="placeholder col-11"></span><span class="placeholder col-6"></span>
+              </div>
+            </div></div>
+            <div class="col"><div class="card producto h-100" aria-hidden="true">
+              <div class="producto-media placeholder-wave"><span class="placeholder w-100 h-100"></span></div>
+              <div class="card-body producto-cuerpo placeholder-wave">
+                <span class="placeholder col-4 placeholder-sm"></span><span class="placeholder col-8 placeholder-lg"></span>
+                <span class="placeholder col-11"></span><span class="placeholder col-6"></span>
+              </div>
+            </div></div>
+            <div class="col"><div class="card producto h-100" aria-hidden="true">
+              <div class="producto-media placeholder-wave"><span class="placeholder w-100 h-100"></span></div>
+              <div class="card-body producto-cuerpo placeholder-wave">
+                <span class="placeholder col-4 placeholder-sm"></span><span class="placeholder col-8 placeholder-lg"></span>
+                <span class="placeholder col-11"></span><span class="placeholder col-6"></span>
+              </div>
+            </div></div>
           </div>
-        </div>
-        <p class="fg-3 fs-sm mt-5 mb-0" id="resumenCatalogo" aria-live="polite"></p>
-
-        <div class="row row-cols-1 sm:row-cols-2 lg:row-cols-3 xl:row-cols-4 g-7 mt-1" id="grillaProductos"></div>
-
-        <div class="sin-resultados" id="sinResultados" hidden>
-          <i class="bi bi-search-heart" aria-hidden="true"></i>
-          <p class="fw-semibold mb-0">No encontramos productos para “<span id="textoBuscado"></span>”</p>
-          <p class="fg-3 fs-sm">Prueba con otra palabra o revisa todas las categorías.</p>
-          <button class="btn btn-outline theme-primary" type="button" id="limpiarBusqueda">Ver todo el catálogo</button>
         </div>
       </div>
     </section>
@@ -189,7 +196,6 @@
             <li><a href="nosotros.html">Nosotros</a></li>
             <li><a href="contacto.html">Visítanos</a></li>
             <li><a href="cuenta.html">Mi cuenta</a></li>
-            <li><a href="react/">Tienda React</a></li>
           </ul>
         </div>
         <div class="md:col-4">

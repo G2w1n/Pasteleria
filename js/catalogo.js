@@ -1,7 +1,6 @@
 // =========================================================
-// Catálogo: tarjetas, filtros, buscador, orden y detalle.
-// Las tarjetas y el detalle se usan en dos páginas:
-// Inicio (favoritos) y Catálogo (todos los productos).
+// Tarjetas de Inicio, categorías y detalle del producto.
+// El detalle (Dialog de Bootstrap) también lo abre el catálogo de React.
 // =========================================================
 import { Dialog, Popover, Tab, Tooltip } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { CATEGORIAS, INGREDIENTES_PERUANOS, productos } from "./productos.js";
@@ -98,7 +97,7 @@ let productoAbierto = null;
 
 // La imagen de la tarjeta "crece" hasta la ventana de detalle: la tarjeta y el
 // detalle comparten por un momento el mismo view-transition-name
-function abrirDetalle(id, tarjeta = null) {
+export function abrirDetalle(id, tarjeta = null) {
   const p = productos.find((x) => x.id === id);
   if (!p) return;
   const dibujo = tarjeta?.querySelector(".producto-media");
@@ -171,7 +170,7 @@ function cambiarCantidad(delta) {
   input.value = Math.min(Math.max(Number(input.value) + delta, 1), Number(input.max));
 }
 
-function iniciarDetalle() {
+export function iniciarDetalle() {
   $("#detalleMenos").addEventListener("click", () => cambiarCantidad(-1));
   $("#detalleMas").addEventListener("click", () => cambiarCantidad(1));
   $("#detalleAgregar").addEventListener("click", async () => {
@@ -236,117 +235,5 @@ export function pintarCategorias() {
 }
 
 // ================= PÁGINA CATÁLOGO =================
-
-// El estado se lee de la URL (?categoria=tortas&q=lucuma&orden=precio-asc)
-// para que un enlace filtrado se pueda compartir
-const leerURL = () => {
-  const p = new URLSearchParams(location.search);
-  const categoria = p.get("categoria");
-  return {
-    categoria: CATEGORIAS.some((c) => c.id === categoria) ? categoria : "todos",
-    texto: p.get("q") ?? "",
-    orden: ORDENES[p.get("orden")] ? p.get("orden") : "destacados",
-  };
-};
-
-function escribirURL({ categoria, texto, orden }) {
-  const p = new URLSearchParams();
-  if (categoria !== "todos") p.set("categoria", categoria);
-  if (texto) p.set("q", texto);
-  if (orden !== "destacados") p.set("orden", orden);
-  history.replaceState(null, "", p.size ? `?${p}` : location.pathname);
-}
-
-export function iniciarCatalogo() {
-  const estado = leerURL();
-
-  // Los filtros se pintan una sola vez; después solo se cambia cuál está activo,
-  // para que la "pastilla" de color se deslice hasta él en vez de saltar
-  function crearFiltros() {
-    const contar = (id) => (id === "todos" ? productos.length : productos.filter((p) => p.categoria === id).length);
-    $("#filtros").innerHTML =
-      `<li class="filtros-indicador" aria-hidden="true"></li>` +
-      [{ id: "todos", nombre: "Todos" }, ...CATEGORIAS]
-        .map(
-          (c) => `<li class="nav-item">
-            <button class="nav-link" type="button" data-categoria="${c.id}" aria-pressed="false">
-              ${c.nombre} <span class="filtro-cantidad">${contar(c.id)}</span>
-            </button>
-          </li>`,
-        )
-        .join("");
-  }
-
-  function pintarFiltros({ animar = true } = {}) {
-    const botones = $("#filtros").querySelectorAll("[data-categoria]");
-    botones.forEach((b) => {
-      const activo = b.dataset.categoria === estado.categoria;
-      b.classList.toggle("active", activo);
-      b.setAttribute("aria-pressed", String(activo));
-    });
-    moverIndicador(animar);
-  }
-
-  function moverIndicador(animar = true) {
-    const activo = $("#filtros .nav-link.active");
-    const indicador = $("#filtros .filtros-indicador");
-    if (!activo || !indicador) return;
-    // Posición del botón dentro de la lista (que puede estar desplazada en celular)
-    const lista = $("#filtros");
-    const x = activo.getBoundingClientRect().left - lista.getBoundingClientRect().left + lista.scrollLeft;
-    indicador.classList.toggle("sin-transicion", !animar);
-    indicador.style.width = `${activo.offsetWidth}px`;
-    indicador.style.transform = `translateX(${x}px)`;
-  }
-
-  function pintarCatalogo() {
-    const lista = filtrarProductos(productos, estado);
-    $("#grillaProductos").innerHTML = lista.map(tarjetaProducto).join("");
-    $("#sinResultados").hidden = lista.length > 0;
-    $("#textoBuscado").textContent = estado.texto;
-    $("#resumenCatalogo").textContent = `${lista.length} ${lista.length === 1 ? "producto" : "productos"}`;
-    escribirURL(estado);
-  }
-
-  // Los cambios de filtro y orden se animan; el buscador no (se escribe letra por letra)
-  const actualizar = ({ animar = true } = {}) => (animar ? transicionConTipo("filtro", pintarCatalogo) : pintarCatalogo());
-
-  $("#buscador").value = estado.texto;
-  $("#orden").value = estado.orden;
-  crearFiltros();
-  pintarFiltros({ animar: false });
-  pintarCatalogo();
-  // Las fuentes y el ancho de la ventana cambian el tamaño de los botones
-  document.fonts?.ready.then(() => moverIndicador(false));
-  window.addEventListener("resize", () => moverIndicador(false));
-
-  $("#filtros").addEventListener("click", (e) => {
-    const boton = e.target.closest("[data-categoria]");
-    if (!boton || boton.dataset.categoria === estado.categoria) return;
-    estado.categoria = boton.dataset.categoria;
-    pintarFiltros();
-    actualizar();
-  });
-
-  $("#buscador").addEventListener("input", (e) => {
-    estado.texto = e.target.value;
-    actualizar({ animar: false });
-  });
-
-  $("#orden").addEventListener("change", (e) => {
-    estado.orden = e.target.value;
-    actualizar();
-  });
-
-  $("#limpiarBusqueda").addEventListener("click", () => {
-    estado.texto = "";
-    estado.categoria = "todos";
-    $("#buscador").value = "";
-    pintarFiltros();
-    actualizar();
-    $("#buscador").focus();
-  });
-
-  activarTarjetas($("#grillaProductos"));
-  iniciarDetalle();
-}
+// La grilla, los filtros, el buscador y el orden del catálogo los dibuja React
+// (tienda-react/src/components/Catalogo.jsx, montado desde js/tienda.js).

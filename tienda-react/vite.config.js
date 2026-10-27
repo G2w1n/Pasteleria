@@ -1,17 +1,35 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
-// La tienda React se publica dentro del sitio principal, en la carpeta react/.
-// base "./" usa rutas relativas: funciona en Vercel (/react/) y en GitHub Pages (/Pasteleria/react/).
-// Con "npm run dev" se sirve en la raíz de localhost:5173.
+// Dos formas de usar este proyecto:
+//  · npm run dev   → la práctica completa (index.html + App.jsx) en localhost:5173
+//  · npm run build → compila las "islas" de React que usa la tienda principal
+//                    (catalogo.html, cuenta.html, admin.html…) en ../js/react/
 export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: command === "build" ? "./" : "/",
+  // React usa process.env.NODE_ENV para elegir su versión de producción
+  define: command === "build" ? { "process.env.NODE_ENV": JSON.stringify("production") } : {},
   build: {
-    outDir: "../react", // carpeta que publica Vercel junto al sitio principal
+    outDir: "../js/react",
     emptyOutDir: true,
+    copyPublicDir: false, // las imágenes de la tienda están en ../img/productos
+    minify: true,
+    cssCodeSplit: false,
+    lib: {
+      entry: {
+        catalogo: "src/islas/catalogo.jsx",
+      },
+      formats: ["es"],
+      fileName: (_formato, nombre) => `${nombre}.js`,
+      cssFileName: "kuyay-react",
+    },
+    rollupOptions: {
+      output: { chunkFileNames: "compartido-[hash].js", minify: true },
+    },
   },
   server: {
+    // index.html usa los estilos de la tienda principal (../css/estilos.css)
+    fs: { allow: [".."] },
     // En desarrollo, /api se pide a la página publicada en Vercel:
     // así "npm run dev" también muestra los productos en vivo desde Neon.
     proxy: {
