@@ -9,10 +9,12 @@ import { CATEGORIAS, productos } from "./productos.js";
 let disponible = false;
 let sesion; // undefined = aún no se consultó; null = sin sesión
 let costosDelivery = {};
+let resumen = null; // números del día para la portada
 let motivoSinApi = ""; // por qué no se pudo conectar (se muestra en "Mi cuenta")
 
 export const apiDisponible = () => disponible;
 export const motivoSinConexion = () => motivoSinApi;
+export const resumenDelDia = () => resumen;
 export const costoDeliveryDe = (distrito) => costosDelivery[distrito];
 export const distritosConDelivery = () => Object.keys(costosDelivery).sort((a, b) => a.localeCompare(b, "es"));
 
@@ -51,6 +53,7 @@ export async function cargarCatalogo() {
     CATEGORIAS.splice(0, CATEGORIAS.length, ...datos.categorias);
     productos.splice(0, productos.length, ...datos.productos);
     costosDelivery = datos.delivery ?? {};
+    resumen = datos.resumen ?? null;
     disponible = true;
   } catch (error) {
     disponible = false; // seguimos con js/productos.js

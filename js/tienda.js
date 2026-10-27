@@ -13,7 +13,7 @@ import { iniciarCarrito } from "./carrito.js";
 import { iniciarPedido } from "./pedido.js";
 import { iniciarCuenta } from "./cuenta.js";
 import { iniciarAnimaciones } from "./animaciones.js";
-import { api, apiDisponible, cargarCatalogo, obtenerSesion } from "./api.js";
+import { api, apiDisponible, cargarCatalogo, obtenerSesion, resumenDelDia } from "./api.js";
 import { CATEGORIAS, productos } from "./productos.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -106,6 +106,18 @@ if (existe("#islaBuscador")) montarBuscadorReact().catch(console.error);
 if (existe("#islaSeguimiento") && apiDisponible()) {
   import("./react/seguimiento.js").then(({ montarSeguimiento }) =>
     montarSeguimiento($("#islaSeguimiento"), { api, codigoInicial: new URLSearchParams(location.search).get("seguir") ?? "" }),
+  ).catch(console.error);
+}
+
+// ---------- "Hoy en Kuyay" (React) en el Inicio ----------
+if (existe("#islaEnVivo") && apiDisponible() && resumenDelDia()) {
+  import("./react/envivo.js").then(({ montarEnVivo }) =>
+    montarEnVivo($("#islaEnVivo"), {
+      inicial: resumenDelDia(),
+      productosIniciales: productos,
+      api,
+      onVer: (producto) => abrirDetalle(producto.id),
+    }),
   ).catch(console.error);
 }
 

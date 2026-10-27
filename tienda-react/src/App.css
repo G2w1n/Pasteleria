@@ -303,6 +303,35 @@
   .resenas-admin { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
 }
 
+/* ---------- Hoy en Kuyay (Inicio) ---------- */
+@layer custom {
+  .en-vivo {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-radius: 1.5rem;
+    background:
+      radial-gradient(circle at 100% 0%, color-mix(in oklch, var(--kuyay-lucuma) 22%, transparent), transparent 45%),
+      light-dark(#fff, #241b1d);
+    border: 1px solid color-mix(in oklch, var(--bs-fg-body) 10%, transparent);
+  }
+  .en-vivo-cabecera { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; }
+  .en-vivo-punto { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 99px; background: var(--bs-success-bg-subtle, color-mix(in oklch, #15804c 12%, transparent)); color: var(--bs-success-fg); }
+  .en-vivo-punto i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: currentColor; }
+  @media (prefers-reduced-motion: no-preference) {
+    .en-vivo-punto i { animation: latido-vivo 1.8s infinite; }
+  }
+  @keyframes latido-vivo { 0% { box-shadow: 0 0 0 0 currentColor; } 70%, 100% { box-shadow: 0 0 0 7px transparent; } }
+  .en-vivo-cifras { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem; }
+  .en-vivo-cifra { display: grid; gap: 0.1rem; }
+  .en-vivo-cifra i { color: var(--bs-primary-fg); font-size: 1.3rem; }
+  .en-vivo-cifra strong { font-family: var(--bs-heading-font-family); font-size: clamp(2rem, 4vw, 2.6rem); font-weight: 800; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .en-vivo-cifra span { color: var(--bs-fg-2); font-size: 0.92rem; }
+  .en-vivo-acabando { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px dashed color-mix(in oklch, var(--bs-fg-body) 18%, transparent); }
+  .en-vivo-acabando ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .en-vivo-acabando .chip { cursor: pointer; border: 1px solid color-mix(in oklch, var(--bs-fg-body) 12%, transparent); height: auto; min-height: 2rem; }
+  .en-vivo-acabando .chip b { color: light-dark(#875900, #f0b84a); }
+  .en-vivo-acabando .bi-fire { color: light-dark(#b0400e, #ffb38a); }
+}
+
 /* ---------- Solo la página de práctica (npm run dev) ---------- */
 @layer custom {
   .nav-practica { flex-direction: row; gap: 0.5rem; margin-inline: auto 0.5rem; }

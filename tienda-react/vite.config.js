@@ -25,6 +25,7 @@ export default defineConfig(({ command }) => ({
         seguimiento: "src/islas/seguimiento.jsx",
         resenas: "src/islas/resenas.jsx",
         panel: "src/islas/panel.jsx",
+        envivo: "src/islas/envivo.jsx",
       },
       formats: ["es"],
       fileName: (_formato, nombre) => `${nombre}.js`,

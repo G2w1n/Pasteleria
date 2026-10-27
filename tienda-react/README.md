@@ -3,8 +3,9 @@
 Los componentes React de la tienda, con la **estructura de la práctica**.
 Se usan de dos formas:
 
-1. **Dentro de la tienda principal** (Bootstrap 6 + Neon): el catálogo de
-   `catalogo.html` lo dibuja React. Es una "isla": React solo donde hay interacción.
+1. **Dentro de la tienda principal** (Bootstrap 6 + Neon): el catálogo, el buscador,
+   las reseñas, el seguimiento, "Hoy en Kuyay" y el panel los dibuja React.
+   Son "islas": React solo donde hay interacción; el resto sigue siendo Bootstrap.
 2. **Como la práctica completa** con `npm run dev` (index + catálogo + contador del carrito).
 
 ## Cómo ejecutarlo
@@ -41,11 +42,21 @@ tienda-react/
     │   ├── Catalogo.jsx      ← filtros, buscador y orden (estado)
     │   ├── Encabezado.jsx    ← contador del carrito
     │   ├── Carrito.jsx       ← drawer del carrito (práctica)
-    │   └── ProductoDetalle.jsx
+    │   ├── ProductoDetalle.jsx
+    │   ├── Buscador.jsx      ← buscador del menú (combobox)
+    │   ├── Resenas.jsx       ← reseñas con estrellas
+    │   ├── Seguimiento.jsx   ← sigue tu pedido sin cuenta
+    │   ├── EnVivo.jsx        ← "Hoy en Kuyay" en el Inicio
+    │   └── panel/            ← PanelAdmin, Resumen, Pedidos, Productos, Usuarios, ResenasAdmin, GraficoBarras
     ├── hooks/            ← useLocalStorage, useDialogo
     ├── utilidades.js
-    └── islas/
-        └── catalogo.jsx  ← monta <Catalogo /> dentro de catalogo.html
+    └── islas/            ← puntos de montaje dentro de la tienda Bootstrap
+        ├── catalogo.jsx  ← catalogo.html
+        ├── buscador.jsx  ← menú de todas las páginas
+        ├── resenas.jsx   ← detalle del producto
+        ├── seguimiento.jsx ← cuenta.html
+        ├── envivo.jsx    ← index.html
+        └── panel.jsx     ← admin.html
 ```
 
 ## Lista de cotejo

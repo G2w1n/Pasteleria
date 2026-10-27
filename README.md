@@ -20,7 +20,8 @@ Es el proyecto de la **Semana 10 de Diseño Web** (Unidad 3: Funciones y módulo
 | Nosotros | `nosotros.html` | Historia, cifras que suben al aparecer, valores y proceso con línea que se dibuja |
 | Pedido especial | `pedido.html` | Torta personalizada en 4 pasos con precio y vista previa en vivo |
 | Visítanos | `contacto.html` | Horario con "Abierto ahora" (hora de Lima), contacto, mapa y **preguntas frecuentes** |
-| Mi cuenta | `cuenta.html` | Ingresar / crear cuenta y **seguimiento de mis pedidos** (requiere la API en Vercel) |
+| Mi cuenta | `cuenta.html` | Ingresar / crear cuenta, **mis pedidos** y **sigue tu pedido sin cuenta** (código + celular) |
+| Panel | `admin.html` | Para el equipo: **reportes con gráficos, pedidos, productos y stock, usuarios y reseñas** (hecho con React) |
 | Error 404 | `404.html` | "Esta torta no existe… todavía": GitHub Pages la muestra en cualquier dirección que no exista |
 
 En todas las páginas: menú (con la página actual marcada), carrito, modo oscuro y pie de página.
@@ -43,6 +44,19 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | **Switch** | "¿Es un regalo?": suma S/ 8 y muestra la dedicatoria |
 | **Form floating** + **Strength** (medidor de contraseña) + Spinner | Confirmar pedido y Mi cuenta |
 | **Stepper** + Badge | Seguimiento de cada pedido en "Mis pedidos" |
+| **Range, Chips, Switch, Placeholder, Progress, Btn group** | Filtros del catálogo React (precio, alérgenos, disponibles), esqueleto de carga, "Cargar más" y vista grilla/lista |
+| **Table, Nav underline, Chips** | Panel de la tienda: tablas de productos y usuarios, pestañas y filtros por estado |
+
+### Hecho con React (islas dentro de las páginas Bootstrap)
+
+| Componente (`tienda-react/src/components/`) | Dónde se ve |
+|---|---|
+| `Catalogo.jsx` + `ProductoCard.jsx` | Catálogo: filtros, chips, favoritos ❤, vista lista, cargar más, vistos recientemente |
+| `Buscador.jsx` | Menú de todas las páginas: sugerencias mientras escribes, teclado y atajo **/** |
+| `Resenas.jsx` | Pestaña "Reseñas" del detalle: estrellas, reparto y formulario |
+| `Seguimiento.jsx` | Mi cuenta: "Sigue tu pedido" con código y celular |
+| `EnVivo.jsx` | Inicio: "Hoy en Kuyay" con números en vivo y productos que se están acabando |
+| `panel/PanelAdmin.jsx` | Panel: reportes, pedidos, productos, usuarios y reseñas |
 
 ![Inicio: favoritos y categorías](docs/capturas/inicio.jpg)
 
@@ -61,6 +75,12 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | ![Confirmar pedido](docs/capturas/checkout.jpg) | ![Pedido recibido con su código](docs/capturas/checkout-listo.jpg) |
 | **Mi cuenta: seguimiento de pedidos** | **Crear cuenta** |
 | ![Mis pedidos](docs/capturas/cuenta.jpg) | ![Crear cuenta](docs/capturas/cuenta-registro.jpg) |
+| **Catálogo con React** (filtros y chips) | **Buscador del menú** |
+| ![Catálogo React](docs/capturas/catalogo-react.jpg) | ![Buscador](docs/capturas/buscador.jpg) |
+| **Hoy en Kuyay** (en vivo) | **Reseñas** |
+| ![Hoy en Kuyay](docs/capturas/en-vivo.jpg) | ![Reseñas](docs/capturas/resenas.jpg) |
+| **Panel: reportes** | **Panel: pedidos** |
+| ![Panel reportes](docs/capturas/panel-reportes.jpg) | ![Panel pedidos](docs/capturas/panel-pedidos.jpg) |
 | **Catálogo en modo oscuro** | |
 | ![Catálogo oscuro](docs/capturas/catalogo-oscuro.jpg) | |
 
@@ -161,7 +181,8 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 ├── nosotros.html         ← Nosotros
 ├── pedido.html           ← Diseña tu torta
 ├── contacto.html         ← Visítanos
-├── cuenta.html           ← Mi cuenta (ingresar, registro y mis pedidos)
+├── cuenta.html           ← Mi cuenta (ingresar, registro, mis pedidos y seguimiento)
+├── admin.html            ← panel del equipo (administrador y empleado)
 ├── 404.html              ← página de error personalizada
 ├── tienda-react/         ← componentes React (estructura de la Semana 11)
 ├── api/                  ← funciones de Vercel (el "servidor")
@@ -169,7 +190,10 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 │   ├── productos.js      ← GET catálogo y costos de delivery
 │   ├── auth.js           ← registro, ingreso y salida
 │   ├── pedidos.js        ← crear pedido / mis pedidos
-│   └── pedidos-especiales.js ← guardar una torta personalizada
+│   ├── pedidos-especiales.js ← guardar una torta personalizada
+│   ├── cupones.js        ← validar un cupón
+│   ├── resenas.js        ← leer y publicar reseñas
+│   └── admin.js          ← panel: reportes, pedidos, productos, usuarios, reseñas
 ├── package.json          ← dependencias de la API
 ├── css/
 │   └── estilos.css       ← colores, tipografía y estilos de la marca
@@ -212,7 +236,7 @@ Requiere un navegador reciente (Chrome o Edge 130+, Firefox 132+, Safari 18+), i
 
 ## Calidad
 
-- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en las 7 páginas y en 20 estados interactivos (incluye confirmar pedido, pedido recibido, registro con error y "Mis pedidos") (carrito abierto, detalle, pestañas con tooltip, popover, calendario abierto, regalo activado, aviso, burbuja de WhatsApp, errores y confirmación del pedido, pregunta frecuente abierta, reseñas en pausa, menú móvil), en modo claro y oscuro: **0 problemas**. El carrusel de reseñas tiene botón de pausa (WCAG 2.2.2) y se puede recorrer con el teclado. Para lograrlo se ajustaron tres colores de Bootstrap que no llegaban al contraste mínimo de 4.5:1 (verde de los botones de WhatsApp, verde de textos y gris terciario en modo oscuro). Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
+- **Accesibilidad:** auditada con [axe-core](https://github.com/dequelabs/axe-core) (el motor de Lighthouse) en las 8 páginas y en más de 40 estados interactivos (incluye catálogo React con filtros, buscador, reseñas, cupón, seguimiento, "Hoy en Kuyay" y cada pestaña del panel como administrador y empleado, en celular y escritorio) (carrito abierto, detalle, pestañas con tooltip, popover, calendario abierto, regalo activado, aviso, burbuja de WhatsApp, errores y confirmación del pedido, pregunta frecuente abierta, reseñas en pausa, menú móvil), en modo claro y oscuro: **0 problemas**. El carrusel de reseñas tiene botón de pausa (WCAG 2.2.2) y se puede recorrer con el teclado. Para lograrlo se ajustaron tres colores de Bootstrap que no llegaban al contraste mínimo de 4.5:1 (verde de los botones de WhatsApp, verde de textos y gris terciario en modo oscuro). Además: navegación completa con teclado, enlace "Saltar al contenido", textos alternativos y mensajes de error asociados a cada campo.
 - **Movimiento reducido:** si el sistema lo pide, no hay animaciones.
 - **Sin JavaScript:** se muestra un aviso con el WhatsApp y el contenido sigue visible.
 - **Rendimiento:** sin imágenes pesadas (ilustraciones SVG), mapa con `loading="lazy"`, fuentes con `display=swap`, Bootstrap y los íconos por CDN con verificación SRI.
@@ -254,13 +278,30 @@ La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página l
 | `GET /api/auth` | Usuario que inició sesión |
 | `POST /api/pedidos` | Guarda el pedido del carrito, descuenta el stock y devuelve su código (`KY-000123`) |
 | `GET /api/pedidos` | "Mis pedidos" con su estado |
+| `GET /api/pedidos?codigo=KY-000123&telefono=9…` | Seguimiento sin cuenta (también `TP-` de tortas) |
 | `POST /api/pedidos-especiales` | Guarda la torta personalizada y devuelve su código (`TP-00012`) |
+| `GET /api/cupones?codigo=KUYAY10` | Dice si un cupón sirve hoy (al comprar, el servidor lo vuelve a validar) |
+| `GET` / `POST /api/resenas` | Reseñas de un producto / publicar la tuya (con cuenta) |
+| `GET` / `POST /api/admin?recurso=…` | Panel: `resumen`, `pedidos`, `productos`, `usuarios`, `resenas` (según el rol) |
 
 **Qué cambia en la página cuando la API responde:**
 - El catálogo muestra los productos y el stock de Neon (si se agota algo, se ve "Agotado").
 - En el carrito aparece **Confirmar pedido**: nombre, celular, recojo o delivery por distrito, método de pago (Yape, Plin, efectivo o tarjeta) y total con delivery. El pedido queda guardado con un código y se puede avisar por WhatsApp.
 - Aparece el botón de **Mi cuenta** (saluda con tu nombre) y la página `cuenta.html`.
 - La torta personalizada se guarda y recibe un código.
+- **Cupón** en el checkout (`KUYAY10`): se usa el mayor descuento entre el cupón y el 10 % automático.
+- **Reseñas** con estrellas en cada producto y **"Hoy en Kuyay"** en el Inicio.
+- **Panel** para administradores y empleados (aparece "Panel" en el menú).
+
+**Roles del panel:**
+
+| | Cliente | Empleado | Administrador |
+|---|:-:|:-:|:-:|
+| Comprar, reseñas, mis pedidos | ✓ | ✓ | ✓ |
+| Ver pedidos y cambiar su estado | | ✓ | ✓ |
+| Registrar producción, merma o ajuste de stock | | ✓ | ✓ |
+| Cambiar precios y activar productos | | | ✓ |
+| Reportes, usuarios (roles) y moderar reseñas | | | ✓ |
 
 **Seguridad:** el servidor recalcula precios, descuento y delivery (no confía en lo que mande el navegador), las contraseñas se guardan con bcrypt y la sesión es un JWT firmado en una cookie `HttpOnly`.
 
@@ -311,3 +352,6 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [x] **Fase 9:** Switch, pestañas, Popover, Tooltip, Datepicker y Stepper de Bootstrap 6; torta viva, palabras que rotan, chocolate que gotea, filtros deslizantes, botones flotantes, línea de tiempo y sorpresa
 - [x] **Fase 10:** Base de datos en Neon y API en Vercel: catálogo con stock real, confirmar pedido, cuentas de cliente, "Mis pedidos" con seguimiento y tortas guardadas con código
 - [x] **Fase 11:** React integrado en la tienda (Semana 11): catálogo con filtros avanzados, chips, favoritos, vista lista y vistos recientemente
+- [x] **Fase 12:** Buscador en el menú, seguimiento sin cuenta, cupones y reseñas con estrellas
+- [x] **Fase 13:** Panel de administrador y empleado con reportes y gráficos
+- [x] **Fase 14:** "Hoy en Kuyay" en vivo en el Inicio
