@@ -4,7 +4,7 @@ import Campo from "./Campo.jsx";
 import CampoClave from "./CampoClave.jsx";
 import { validarCorreo } from "./validar.js";
 
-export default function Ingresar({ api, correoInicial = "", onIngreso, onIrRegistro, enfocar }) {
+export default function Ingresar({ api, correoInicial = "", onIngreso, onIrRegistro, onError, enfocar }) {
   const [correo, setCorreo] = useState(correoInicial);
   const [clave, setClave] = useState("");
   const [tocado, setTocado] = useState(false);
@@ -25,6 +25,7 @@ export default function Ingresar({ api, correoInicial = "", onIngreso, onIrRegis
     } catch (err) {
       setError(err.message);
       setEnviando(false);
+      onError?.();
     }
   };
 
