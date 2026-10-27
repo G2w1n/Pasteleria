@@ -2451,6 +2451,8 @@
   }
   /* "¡Quedan solo 3!": el amarillo de Bootstrap no llega a 4.5:1 sobre fondo claro */
   .detalle-stock.fg-warning { color: light-dark(#875900, #f0b84a); }
+  /* En el panel del equipo no hace falta la burbuja de WhatsApp para clientes */
+  body:has(#islaPanel) .whatsapp-flotante { display: none; }
   .cupon-fila { display: flex; gap: 0.5rem; }
   .cupon-fila .form-control { text-transform: uppercase; }
   #ckEnviar {

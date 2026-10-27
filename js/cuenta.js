@@ -89,6 +89,7 @@ function pintarPanel(usuario) {
   $("#cuentaNombre").textContent = `Hola, ${usuario.nombre.split(" ")[0]}`;
   $("#cuentaCorreo").textContent = usuario.correo;
   $("#cuentaRol").textContent = ROLES[usuario.rol] ?? usuario.rol;
+  $("#cuentaIrPanel").hidden = usuario.rol === "cliente";
   mostrar("cuentaPanel");
   pintarPedidos();
 }

@@ -18,6 +18,7 @@ import { CATEGORIAS, productos } from "./productos.js";
 
 const $ = (selector) => document.querySelector(selector);
 const existe = (selector) => document.querySelector(selector) !== null;
+const PERSONAL = ["administrador", "empleado"]; // pueden entrar al panel
 // Los componentes React usan "unidad" e "imagen" (como en la práctica de la Semana 11)
 const productosParaReact = () => productos.map((p) => ({ ...p, unidad: p.porcion, imagen: p.foto ?? `img/productos/${p.id}.svg` }));
 
@@ -35,11 +36,33 @@ if (existe("#categoriasInicio")) pintarCategorias(); // Inicio
 if (existe("#islaCatalogo")) montarCatalogoReact(); // Catálogo (React)
 if (existe("#formPedido")) iniciarPedido(); // Pedido especial
 if (existe("#cuentaPanel")) iniciarCuenta(); // Mi cuenta
+if (existe("#islaPanel")) montarPanelReact().catch(console.error); // Panel (React)
 
 // ---------- Botón de cuenta: muestra el nombre si hay sesión ----------
 obtenerSesion().then((usuario) => {
-  if (usuario) $("#btnCuenta .texto-cuenta").textContent = usuario.nombre.split(" ")[0];
+  if (!usuario) return;
+  $("#btnCuenta .texto-cuenta").textContent = usuario.nombre.split(" ")[0];
+  // Administradores y empleados ven el enlace al panel en el menú
+  if (PERSONAL.includes(usuario.rol) && !existe("#enlacePanel")) {
+    $(".navbar-nav").insertAdjacentHTML("beforeend",
+      `<li class="nav-item"><a class="nav-link enlace-panel" id="enlacePanel" href="admin.html"${location.pathname.endsWith("admin.html") ? ' aria-current="page"' : ""}><i class="bi bi-speedometer2" aria-hidden="true"></i> Panel</a></li>`);
+  }
 });
+
+// ---------- Panel de la tienda (React) en admin.html ----------
+async function montarPanelReact() {
+  const contenedor = $("#islaPanel");
+  const aviso = (icono, titulo, texto, enlace = "") =>
+    (contenedor.innerHTML = `<div class="sin-resultados"><i class="bi ${icono}" aria-hidden="true"></i>
+      <p class="fw-semibold mb-0">${titulo}</p><p class="fg-3">${texto}</p>${enlace}</div>`);
+  if (!apiDisponible()) return aviso("bi-cloud-slash", "El panel necesita la base de datos", "Ábrelo desde la página publicada en Vercel.");
+  const usuario = await obtenerSesion();
+  if (!usuario) return aviso("bi-lock", "Inicia sesión", "El panel es solo para el equipo de Kuyay.", `<a class="btn btn-solid theme-primary" href="cuenta.html">Ingresar</a>`);
+  if (!PERSONAL.includes(usuario.rol)) return aviso("bi-shield-lock", "No tienes acceso al panel", "Tu cuenta es de cliente.", `<a class="btn btn-outline theme-primary" href="index.html">Volver a la tienda</a>`);
+  $("#panelSaludo").textContent = `Hola, ${usuario.nombre.split(" ")[0]} · ${usuario.rol === "administrador" ? "Administrador" : "Empleado"}`;
+  const { montarPanel } = await import("./react/panel.js");
+  montarPanel(contenedor, { usuario, api });
+}
 
 // ---------- Catálogo hecho con React (isla dentro de la página Bootstrap) ----------
 // React dibuja la grilla y los filtros; el carrito y el detalle siguen siendo los de la tienda.

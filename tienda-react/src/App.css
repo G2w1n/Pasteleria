@@ -225,6 +225,84 @@
   .resena-acciones .btn { display: inline-flex; align-items: center; gap: 0.35rem; }
 }
 
+/* ---------- Panel de la tienda ---------- */
+@layer custom {
+  :root { --grafico: light-dark(#8e2c4e, #d06d91); } /* validado: contraste ≥ 3:1 en claro y oscuro */
+  .cabecera-panel { padding-bottom: 1.5rem; }
+  .panel-pestanas { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-bottom: 1.5rem; --bs-nav-underline-link-active-color: var(--bs-primary-fg); }
+  .panel-pestanas .nav-link { white-space: nowrap; font-weight: 600; display: inline-flex; gap: 0.4rem; align-items: center; }
+  .panel-pestanas .nav-link.active { color: var(--bs-primary-fg); border-bottom-color: var(--bs-primary-bg); }
+  .panel-contenido:focus-visible { outline: 3px solid var(--bs-primary-focus-ring); outline-offset: 6px; border-radius: 0.5rem; }
+  .panel-barra { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1rem; }
+  .panel-buscar { max-width: 22rem; flex: 1 1 14rem; }
+  .enlace-panel { display: inline-flex; gap: 0.35rem; align-items: center; }
+
+  /* Indicadores (hero numbers) */
+  .indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
+  .indicador { border-radius: 1rem; border-color: color-mix(in oklch, var(--bs-fg-body) 10%, transparent); }
+  .indicador .card-body { display: grid; gap: 0.1rem; }
+  .indicador-icono { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 0.7rem; background: var(--bs-primary-bg-subtle); color: var(--bs-primary-fg); font-size: 1.15rem; margin-bottom: 0.4rem; }
+  .indicador-titulo { margin: 0; font-size: 0.85rem; color: var(--bs-fg-2); }
+  .indicador-valor { margin: 0; font-family: var(--bs-heading-font-family); font-size: 1.9rem; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.15; }
+  .indicador-detalle { margin: 0; font-size: 0.8rem; color: var(--bs-fg-3); }
+
+  /* Gráficos */
+  .graficos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr)); gap: 1rem; margin-top: 1rem; }
+  .graficos > .card { border-radius: 1rem; border-color: color-mix(in oklch, var(--bs-fg-body) 10%, transparent); }
+  .grafico-ancho { grid-column: 1 / -1; }
+  .grafico { margin: 0; }
+  .grafico-cabecera { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .grafico-lienzo { position: relative; }
+  .grafico-lienzo svg { display: block; width: 100%; height: 180px; overflow: visible; }
+  .grafico-guia { stroke: color-mix(in oklch, var(--bs-fg-body) 10%, transparent); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  .grafico-zona { fill: transparent; }
+  .grafico-barra { fill: var(--grafico); transition: opacity 0.15s; }
+  .grafico-lienzo:has(.grafico-barra.activa) .grafico-barra:not(.activa) { opacity: 0.45; }
+  .grafico-eje { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--bs-fg-3); margin-top: 0.35rem; }
+  .grafico-tooltip {
+    position: absolute; bottom: calc(100% - 1.5rem); translate: -50% 0; pointer-events: none; z-index: 2;
+    display: grid; padding: 0.4rem 0.6rem; border-radius: 0.5rem; white-space: nowrap; font-size: 0.8rem;
+    background: var(--bs-fg-body); color: var(--bs-bg-body); box-shadow: 0 8px 18px -8px rgb(0 0 0 / 0.4);
+  }
+  .grafico-ranking { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+  .grafico-ranking li { display: grid; grid-template-columns: minmax(7rem, 38%) 1fr auto; align-items: center; gap: 0.6rem; font-size: 0.88rem; }
+  .grafico-nombre { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .grafico-pista { height: 0.6rem; }
+  .grafico-barra-h { display: block; height: 100%; min-width: 2px; border-radius: 0 4px 4px 0; background: var(--grafico); }
+  .grafico-valor { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--bs-fg-body); }
+  .grafico-tabla { font-size: 0.85rem; margin: 0; }
+  .lista-simple { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; font-size: 0.9rem; }
+  ol.lista-simple { list-style: decimal inside; }
+  .lista-simple li { display: flex; justify-content: space-between; gap: 0.75rem; }
+  ol.lista-simple li { display: list-item; }
+  ol.lista-simple li b { float: right; }
+  .aviso-stock { color: light-dark(#875900, #f0b84a); }
+
+  /* Pedidos */
+  .chips-estado { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .chips-estado .chip { cursor: pointer; border: 1px solid color-mix(in oklch, var(--bs-fg-body) 12%, transparent); }
+  .tarjetas-pedido { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr)); gap: 1rem; }
+  .pedido-admin { border-radius: 1rem; border-inline-start: 4px solid var(--bs-accent-bg); }
+  .pedido-admin.estado-en_preparacion { border-inline-start-color: var(--bs-primary-bg); }
+  .pedido-admin.estado-listo, .pedido-admin.estado-en_camino { border-inline-start-color: var(--bs-success-base, #15804c); }
+  .pedido-admin.estado-entregado, .pedido-admin.estado-cancelado { border-inline-start-color: var(--bs-gray-400, #aaa); opacity: 0.85; }
+  .pedido-notas { font-size: 0.85rem; padding: 0.4rem 0.6rem; border-radius: 0.5rem; background: color-mix(in oklch, var(--kuyay-lucuma) 15%, transparent); }
+  .pedido-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding-top: 0.6rem; border-top: 1px dashed color-mix(in oklch, var(--bs-fg-body) 20%, transparent); }
+  .pedido-acciones strong { margin-inline-end: auto; font-size: 1.1rem; }
+  .pedido-acciones .btn { display: inline-flex; align-items: center; gap: 0.3rem; }
+
+  /* Tablas del panel */
+  /* Las etiquetas ocultas (visually-hidden) son absolutas: sin esto se salen del scroll y ensanchan la página */
+  .table-responsive { position: relative; }
+  .fila-inactiva { opacity: 0.55; }
+  .celda-precio, .celda-stock { display: flex; gap: 0.35rem; align-items: center; }
+  .celda-precio input { width: 6rem; }
+  .celda-stock select { width: 8.5rem; }
+  .celda-stock input { width: 5rem; }
+  .tabla-productos th[scope=row] { min-width: 11rem; }
+  .resenas-admin { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+}
+
 /* ---------- Solo la página de práctica (npm run dev) ---------- */
 @layer custom {
   .nav-practica { flex-direction: row; gap: 0.5rem; margin-inline: auto 0.5rem; }

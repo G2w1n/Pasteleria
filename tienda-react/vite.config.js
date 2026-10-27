@@ -14,6 +14,9 @@ export default defineConfig(({ command }) => ({
     emptyOutDir: true,
     copyPublicDir: false, // las imágenes de la tienda están en ../img/productos
     minify: true,
+    // Los mismos navegadores que exige Bootstrap 6: así light-dark() y :has() quedan tal cual
+    target: ["chrome130", "edge130", "firefox132", "safari18"],
+    cssTarget: ["chrome130", "edge130", "firefox132", "safari18"],
     cssCodeSplit: false,
     lib: {
       entry: {
@@ -21,6 +24,7 @@ export default defineConfig(({ command }) => ({
         buscador: "src/islas/buscador.jsx",
         seguimiento: "src/islas/seguimiento.jsx",
         resenas: "src/islas/resenas.jsx",
+        panel: "src/islas/panel.jsx",
       },
       formats: ["es"],
       fileName: (_formato, nombre) => `${nombre}.js`,
