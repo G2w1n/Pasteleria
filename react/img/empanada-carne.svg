@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300"><defs><linearGradient id="brillo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+<rect width="400" height="300" fill="#f7e8d4"/>
+<circle cx="340" cy="52" r="70" fill="#fff" opacity=".35"/><circle cx="48" cy="262" r="56" fill="#fff" opacity=".25"/>
+<g transform="translate(40 18) scale(1.6)">
+    <ellipse cx="100" cy="132" rx="72" ry="8" fill="#3a2420" opacity=".12"/>
+    <path d="M30 116c0-40 31-70 70-70s70 30 70 70z" fill="#e0a75a"/>
+    <path d="M30 116c0-40 31-70 70-70s70 30 70 70z" fill="url(#brillo)"/>
+    <path d="M30 116h140" stroke="#c98a3c" stroke-width="10" stroke-linecap="round"/>
+    <g fill="#c98a3c">
+      <circle cx="36" cy="116" r="7"/><circle cx="52" cy="116" r="7"/><circle cx="68" cy="116" r="7"/><circle cx="84" cy="116" r="7"/>
+      <circle cx="100" cy="116" r="7"/><circle cx="116" cy="116" r="7"/><circle cx="132" cy="116" r="7"/><circle cx="148" cy="116" r="7"/><circle cx="164" cy="116" r="7"/>
+    </g>
+    <g fill="#fbf6ef" opacity=".8"><circle cx="88" cy="72" r="2"/><circle cx="104" cy="66" r="2"/><circle cx="118" cy="76" r="2"/></g></g></svg>

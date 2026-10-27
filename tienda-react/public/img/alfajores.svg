@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300"><defs><linearGradient id="brillo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+<rect width="400" height="300" fill="#f7ecdf"/>
+<circle cx="340" cy="52" r="70" fill="#fff" opacity=".35"/><circle cx="48" cy="262" r="56" fill="#fff" opacity=".25"/>
+<g transform="translate(40 18) scale(1.6)">
+    <ellipse cx="100" cy="132" rx="66" ry="8" fill="#3a2420" opacity=".12"/>
+    <ellipse cx="100" cy="112" rx="60" ry="16" fill="#f6e4c3"/>
+    <rect x="40" y="98" width="120" height="14" fill="#f6e4c3"/>
+    <ellipse cx="100" cy="98" rx="60" ry="16" fill="#000" opacity=".06"/>
+    <rect x="44" y="88" width="112" height="12" rx="6" fill="#c98a4b"/>
+    <ellipse cx="100" cy="84" rx="60" ry="16" fill="#f6e4c3"/>
+    <rect x="40" y="70" width="120" height="14" fill="#f6e4c3"/>
+    <ellipse cx="100" cy="70" rx="60" ry="16" fill="#f6e4c3"/>
+    <ellipse cx="100" cy="70" rx="60" ry="16" fill="#000" opacity=".04"/>
+    <g fill="#ffffff" opacity=".95">
+      <circle cx="78" cy="66" r="2"/><circle cx="96" cy="62" r="2.4"/><circle cx="114" cy="68" r="2"/>
+      <circle cx="128" cy="64" r="1.8"/><circle cx="88" cy="74" r="1.8"/><circle cx="106" cy="76" r="2"/><circle cx="70" cy="72" r="1.6"/>
+    </g></g></svg>

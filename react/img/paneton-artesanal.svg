@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300"><defs><linearGradient id="brillo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset=".6" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+<rect width="400" height="300" fill="#f8e6ec"/>
+<circle cx="340" cy="52" r="70" fill="#fff" opacity=".35"/><circle cx="48" cy="262" r="56" fill="#fff" opacity=".25"/>
+<g transform="translate(40 18) scale(1.6)">
+    <ellipse cx="100" cy="132" rx="56" ry="8" fill="#3a2420" opacity=".12"/>
+    <path d="M50 52c0-22 22-34 50-34s50 12 50 34z" fill="#c98a3c"/>
+    <path d="M50 52c0-22 22-34 50-34s50 12 50 34z" fill="url(#brillo)"/>
+    <g fill="#e0a03a"><circle cx="78" cy="38" r="3"/><circle cx="104" cy="30" r="3"/><circle cx="124" cy="42" r="3"/><circle cx="92" cy="46" r="2.6"/></g>
+    <g fill="#8e2c4e" opacity=".85"><circle cx="66" cy="46" r="2.4"/><circle cx="116" cy="36" r="2.4"/><circle cx="138" cy="48" r="2.2"/></g>
+    <rect x="48" y="50" width="104" height="78" rx="6" fill="#8e2c4e"/>
+    <path d="M60 50v78M76 50v78M92 50v78M108 50v78M124 50v78M140 50v78" stroke="#fff" stroke-opacity=".28" stroke-width="5"/>
+    <rect x="48" y="50" width="104" height="8" fill="#000" opacity=".12"/></g></svg>

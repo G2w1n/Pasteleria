@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Kuyay</title>
+  <rect width="64" height="64" rx="16" fill="#8e2c4e"/>
+  <!-- Cúpula del cupcake -->
+  <path d="M16 31c0-8.8 7.2-15 16-15s16 6.2 16 15c0 1.7-1.3 3-3 3H19c-1.7 0-3-1.3-3-3z" fill="#fbf6ef"/>
+  <!-- Base del cupcake -->
+  <path d="M19 37h26l-3.2 12.4A3 3 0 0 1 38.9 52H25.1a3 3 0 0 1-2.9-2.6z" fill="#e0a03a"/>
+  <path d="M27 38.5v12M32 38.5v12M37 38.5v12" stroke="#3a2420" stroke-opacity=".25" stroke-width="1.6" stroke-linecap="round"/>
+  <!-- Corazón (kuyay = amor en quechua) -->
+  <path d="M32 29.5s-5-3-5-6.3a2.7 2.7 0 0 1 5-1.4 2.7 2.7 0 0 1 5 1.4c0 3.3-5 6.3-5 6.3z" fill="#8e2c4e"/>
+</svg>

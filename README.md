@@ -21,6 +21,7 @@ Es el proyecto de la **Semana 10 de Diseño Web** (Unidad 3: Funciones y módulo
 | Pedido especial | `pedido.html` | Torta personalizada en 4 pasos con precio y vista previa en vivo |
 | Visítanos | `contacto.html` | Horario con "Abierto ahora" (hora de Lima), contacto, mapa y **preguntas frecuentes** |
 | Mi cuenta | `cuenta.html` | Ingresar / crear cuenta y **seguimiento de mis pedidos** (requiere la API en Vercel) |
+| Tienda React | `react/` | El catálogo hecho con **React 19 + Vite** (Semana 11). Código en `tienda-react/`, ver su [README](tienda-react/README.md) |
 | Error 404 | `404.html` | "Esta torta no existe… todavía": GitHub Pages la muestra en cualquier dirección que no exista |
 
 En todas las páginas: menú (con la página actual marcada), carrito, modo oscuro y pie de página.
@@ -163,6 +164,8 @@ Los colores se cambian **sin tocar Bootstrap**. En `css/estilos.css`:
 ├── contacto.html         ← Visítanos
 ├── cuenta.html           ← Mi cuenta (ingresar, registro y mis pedidos)
 ├── 404.html              ← página de error personalizada
+├── tienda-react/         ← código de la versión React (Vite)
+├── react/                ← versión React compilada (la genera "npm run build")
 ├── api/                  ← funciones de Vercel (el "servidor")
 │   ├── _lib/             ← conexión a Neon, sesiones y respuestas
 │   ├── productos.js      ← GET catálogo y costos de delivery
@@ -308,3 +311,4 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [x] **Fase 8:** Torta que se arma sola, modo oscuro en círculo, detalle que crece, tarjetas 3D, confeti, parallax, reseñas, preguntas frecuentes y página 404
 - [x] **Fase 9:** Switch, pestañas, Popover, Tooltip, Datepicker y Stepper de Bootstrap 6; torta viva, palabras que rotan, chocolate que gotea, filtros deslizantes, botones flotantes, línea de tiempo y sorpresa
 - [x] **Fase 10:** Base de datos en Neon y API en Vercel: catálogo con stock real, confirmar pedido, cuentas de cliente, "Mis pedidos" con seguimiento y tortas guardadas con código
+- [x] **Fase 11:** Tienda React (Semana 11): componentes, props, estado, hooks propios, carrito persistente y datos desde Neon
