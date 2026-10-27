@@ -15,10 +15,12 @@ export function obtenerSql() {
   // En las pruebas locales se usa un PostgreSQL de prueba en lugar de Neon
   if (globalThis.__sqlDePrueba) return globalThis.__sqlDePrueba;
   if (!conexion) {
-    if (!process.env.DATABASE_URL) {
+    // DATABASE_URL es la que creamos a mano; las otras las crea la integración de Neon en Vercel
+    const url = process.env.DATABASE_URL ?? process.env.POSTGRES_URL ?? process.env.NEON_DATABASE_URL;
+    if (!url) {
       throw new ErrorApi(500, "Falta configurar DATABASE_URL en Vercel.");
     }
-    conexion = neon(process.env.DATABASE_URL);
+    conexion = neon(url);
   }
   return conexion;
 }
