@@ -56,7 +56,7 @@ En todas las páginas: menú (con la página actual marcada), carrito, modo oscu
 | `Resenas.jsx` | Pestaña "Reseñas" del detalle: estrellas, reparto y formulario |
 | `Seguimiento.jsx` | Mi cuenta: "Sigue tu pedido" con código y celular |
 | `acceso/Acceso.jsx` (+ `Mascota`, `Registro`, `ChecklistClave`, `Bienvenida`, `BotonGoogle`) | Mi cuenta: Ingresar / Crear cuenta |
-| `EnVivo.jsx` | Inicio: "Hoy en Kuyay" con números en vivo y productos que se están acabando |
+| `EnVivo.jsx` | Inicio: "Hoy en Kuyay" con números en vivo y productos que se están acabando (solo lo ven administrador y empleado) |
 | `panel/PanelAdmin.jsx` | Panel: reportes, pedidos, productos, usuarios y reseñas |
 
 ![Inicio: favoritos y categorías](docs/capturas/inicio.jpg)
@@ -292,7 +292,7 @@ La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página l
 - Aparece el botón de **Mi cuenta** (saluda con tu nombre) y la página `cuenta.html`.
 - La torta personalizada se guarda y recibe un código.
 - **Cupón** en el checkout (`KUYAY10`): se usa el mayor descuento entre el cupón y el 10 % automático.
-- **Reseñas** con estrellas en cada producto y **"Hoy en Kuyay"** en el Inicio.
+- **Reseñas** con estrellas en cada producto y **"Hoy en Kuyay"** en el Inicio (solo para el personal).
 - **Panel** para administradores y empleados (aparece "Panel" en el menú).
 
 **Roles del panel:**

@@ -114,16 +114,24 @@ if (existe("#islaSeguimiento") && apiDisponible()) {
   ).catch(console.error);
 }
 
-// ---------- "Hoy en Kuyay" (React) en el Inicio ----------
+// ---------- "Hoy en Kuyay" (React) en el Inicio: solo lo ve el personal ----------
+let enVivoMontado = false;
+async function pintarEnVivo(usuario) {
+  const esPersonal = PERSONAL.includes(usuario?.rol);
+  $("#seccionEnVivo").hidden = !esPersonal;
+  if (!esPersonal || enVivoMontado) return;
+  enVivoMontado = true;
+  const { montarEnVivo } = await import("./react/envivo.js");
+  montarEnVivo($("#islaEnVivo"), {
+    inicial: resumenDelDia(),
+    productosIniciales: productos,
+    api,
+    onVer: (producto) => abrirDetalle(producto.id),
+  });
+}
 if (existe("#islaEnVivo") && apiDisponible() && resumenDelDia()) {
-  import("./react/envivo.js").then(({ montarEnVivo }) =>
-    montarEnVivo($("#islaEnVivo"), {
-      inicial: resumenDelDia(),
-      productosIniciales: productos,
-      api,
-      onVer: (producto) => abrirDetalle(producto.id),
-    }),
-  ).catch(console.error);
+  obtenerSesion().then(pintarEnVivo).catch(console.error);
+  document.addEventListener("kuyay:sesion", (e) => pintarEnVivo(e.detail).catch(console.error));
 }
 
 // ---------- Reseñas (React) en la pestaña del detalle ----------
