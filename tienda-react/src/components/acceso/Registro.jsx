@@ -7,6 +7,7 @@ import CampoClave from "./CampoClave.jsx";
 import ChecklistClave from "./ChecklistClave.jsx";
 import Avatar from "./Avatar.jsx";
 import { CELULAR, CORREO, validarCelular, validarCorreo, validarNombre } from "./validar.js";
+import BotonEnviar from "./BotonEnviar.jsx";
 
 const PASOS = ["Tus datos", "Contraseña", "Contacto"];
 const GUSTOS = [
@@ -16,14 +17,14 @@ const GUSTOS = [
   { id: "salados", texto: "Salados", icono: "🥟" },
 ];
 
-export default function Registro({ api, correoInicial = "", onIngreso, onIrIngresar, onError, enfocar }) {
+export default function Registro({ api, correoInicial = "", onIngreso, onIrIngresar, onError, onPaso, enfocar }) {
   const [paso, setPaso] = useState(0);
   const [datos, setDatos] = useState({ nombre: "", correo: correoInicial, telefono: "", clave: "" });
   const [gustos, setGustos] = useState([]);
   const [tocados, setTocados] = useState({});
   const [disponible, setDisponible] = useState(null); // null = sin revisar · "revisando" · true · false
   const [error, setError] = useState("");
-  const [enviando, setEnviando] = useState(false);
+  const [estado, setEstado] = useState("listo"); // listo · cargando · hecho
   const titulo = useRef(null);
   const cambiar = (campo) => (valor) => {
     setDatos((d) => ({ ...d, [campo]: valor }));
@@ -62,6 +63,7 @@ export default function Registro({ api, correoInicial = "", onIngreso, onIrIngre
   const irA = (n) => {
     setError("");
     setPaso(n);
+    onPaso?.(n); // el cupcake suma una capa por paso
     requestAnimationFrame(() => titulo.current?.focus()); // el lector de pantalla anuncia el paso nuevo
   };
   const siguiente = () => {
@@ -78,16 +80,17 @@ export default function Registro({ api, correoInicial = "", onIngreso, onIrIngre
     e.preventDefault();
     if (paso < PASOS.length - 1) return siguiente();
     if (!pasoValido.every(Boolean)) return setError("Revisa los pasos anteriores.");
-    setEnviando(true);
+    setEstado("cargando");
     setError("");
     try {
       const { usuario } = await api("auth?accion=registro", { metodo: "POST", datos });
+      setEstado("hecho");
       // Los gustos se guardan en este navegador para recomendarte productos
       try { localStorage.setItem("kuyay-gustos", JSON.stringify(gustos)); } catch { /* modo privado */ }
       onIngreso(usuario, { nuevo: true, gustos });
     } catch (err) {
       setError(err.message);
-      setEnviando(false);
+      setEstado("listo");
       onError?.();
     }
   };
@@ -169,10 +172,13 @@ export default function Registro({ api, correoInicial = "", onIngreso, onIrIngre
       </div>
       <div className="registro-botones">
         {paso > 0 && <button type="button" className="btn btn-outline theme-secondary btn-lg" onClick={() => irA(paso - 1)}><i className="bi bi-arrow-left" aria-hidden="true" /> Atrás</button>}
-        <button className="btn btn-solid theme-primary btn-lg acceso-enviar" type="submit" disabled={enviando}>
-          {enviando ? <><span className="spinner-border spinner-sm" aria-hidden="true" /> Creando tu cuenta…</>
-            : paso < PASOS.length - 1 ? <>Siguiente <i className="bi bi-arrow-right" aria-hidden="true" /></> : "Crear cuenta"}
-        </button>
+        {paso < PASOS.length - 1 ? (
+          <button className="btn btn-solid theme-primary btn-lg acceso-enviar" type="submit">
+            Siguiente <i className="bi bi-arrow-right" aria-hidden="true" />
+          </button>
+        ) : (
+          <BotonEnviar estado={estado} texto="Crear cuenta" textoCargando="Creando tu cuenta…" textoHecho="¡Cuenta creada!" className="acceso-enviar" />
+        )}
       </div>
       <p className="acceso-cambiar">¿Ya tienes cuenta? <button type="button" className="btn-enlace" onClick={() => onIrIngresar(datos.correo)}>Ingresa aquí</button></p>
     </form>

@@ -283,6 +283,7 @@ La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página l
 | `POST /api/pedidos-especiales` | Guarda la torta personalizada y devuelve su código (`TP-00012`) |
 | `GET /api/cupones?codigo=KUYAY10` | Dice si un cupón sirve hoy (al comprar, el servidor lo vuelve a validar) |
 | `GET` / `POST /api/resenas` | Reseñas de un producto / publicar la tuya (con cuenta) |
+| `POST /api/auth?accion=recuperar` · `restablecer` · `google` | Enlace para nueva contraseña · guardarla · entrar con Google |
 | `GET` / `POST /api/admin?recurso=…` | Panel: `resumen`, `pedidos`, `productos`, `usuarios`, `resenas` (según el rol) |
 
 **Qué cambia en la página cuando la API responde:**
@@ -314,6 +315,7 @@ La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página l
    - `DATABASE_URL`: la cadena de conexión de Neon (*Connection string*).
    - `JWT_SECRET`: un texto secreto largo (mínimo 32 caracteres) para firmar las sesiones.
    - *(Opcional)* `GOOGLE_CLIENT_ID`: para el botón **Continuar con Google** (ver abajo).
+   - *(Opcional)* `RESEND_API_KEY` y `CORREO_REMITENTE`: para **¿Olvidaste tu contraseña?** (ver abajo).
 2. **Redeploy** para que tome las variables.
 3. Abre `https://tu-proyecto.vercel.app/api/productos`: si ves los productos en JSON, la conexión funciona.
 
@@ -324,6 +326,16 @@ La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página l
 3. Copia el **ID de cliente** (termina en `.apps.googleusercontent.com`; no es secreto) y créalo en Vercel como `GOOGLE_CLIENT_ID`. Haz **Redeploy**.
 
 Sin esa variable el botón simplemente no aparece. La API verifica la firma del token con las claves públicas de Google antes de confiar en el correo.
+
+### Activar "¿Olvidaste tu contraseña?" (opcional)
+
+La página envía un **enlace firmado** al correo (vence en 30 minutos y sirve una sola vez; no hace falta ninguna tabla nueva en Neon).
+
+1. Crea una cuenta gratis en [Resend](https://resend.com) y copia tu **API Key**.
+2. En Vercel crea `RESEND_API_KEY` con esa clave y haz **Redeploy**.
+3. *(Recomendado)* Verifica tu dominio en Resend y crea `CORREO_REMITENTE`, por ejemplo `Kuyay <hola@tudominio.com>`. Sin dominio propio, Resend solo deja enviar al correo con el que creaste la cuenta de Resend (sirve para probar).
+
+Sin `RESEND_API_KEY`, la página muestra un aviso con el enlace a WhatsApp para recuperar la cuenta.
 
 ### Crear el primer administrador
 
@@ -366,3 +378,4 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [x] **Fase 13:** Panel de administrador y empleado con reportes y gráficos
 - [x] **Fase 14:** "Hoy en Kuyay" en vivo en el Inicio
 - [x] **Fase 15:** Acceso interactivo: tarjeta que gira, validación en vivo, checklist de contraseña, Bloq Mayús, avatar, registro en 3 pasos, cupcake, bienvenida con cupón y Google
+- [x] **Fase 16:** Cupcake que se arma por pasos, tarjeta que se inclina con el mouse, botón que termina en ✓, "¿Olvidaste tu contraseña?" y el menú se actualiza al ingresar o salir

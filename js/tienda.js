@@ -39,15 +39,20 @@ if (existe("#cuentaPanel")) iniciarCuenta(); // Mi cuenta
 if (existe("#islaPanel")) montarPanelReact().catch(console.error); // Panel (React)
 
 // ---------- Botón de cuenta: muestra el nombre si hay sesión ----------
-obtenerSesion().then((usuario) => {
-  if (!usuario) return;
-  $("#btnCuenta .texto-cuenta").textContent = usuario.nombre.split(" ")[0];
+// Se vuelve a pintar al ingresar o salir (evento "kuyay:sesion"), sin recargar la página.
+function pintarBotonCuenta(usuario) {
+  $("#btnCuenta .texto-cuenta").textContent = usuario ? usuario.nombre.split(" ")[0] : "Ingresar";
+  $("#btnCuenta").setAttribute("aria-label", usuario ? `Mi cuenta (${usuario.nombre})` : "Ingresar o crear cuenta");
   // Administradores y empleados ven el enlace al panel en el menú
-  if (PERSONAL.includes(usuario.rol) && !existe("#enlacePanel")) {
+  const personal = usuario && PERSONAL.includes(usuario.rol);
+  if (personal && !existe("#enlacePanel")) {
     $(".navbar-nav").insertAdjacentHTML("beforeend",
       `<li class="nav-item"><a class="nav-link enlace-panel" id="enlacePanel" href="admin.html"${location.pathname.endsWith("admin.html") ? ' aria-current="page"' : ""}><i class="bi bi-speedometer2" aria-hidden="true"></i> Panel</a></li>`);
   }
-});
+  if (!personal) $("#enlacePanel")?.closest("li").remove();
+}
+obtenerSesion().then(pintarBotonCuenta);
+document.addEventListener("kuyay:sesion", (e) => pintarBotonCuenta(e.detail));
 
 // ---------- Panel de la tienda (React) en admin.html ----------
 async function montarPanelReact() {

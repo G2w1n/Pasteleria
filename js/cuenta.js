@@ -84,7 +84,11 @@ async function pintarPedidos() {
   }
 }
 
+// Avisa al menú (js/tienda.js) que cambió la sesión: muestra el nombre o "Ingresar"
+const avisarSesion = (usuario) => document.dispatchEvent(new CustomEvent("kuyay:sesion", { detail: usuario }));
+
 function pintarPanel(usuario) {
+  avisarSesion(usuario);
   $("#cuentaAvatar").textContent = iniciales(usuario.nombre);
   $("#cuentaNombre").textContent = `Hola, ${usuario.nombre.split(" ")[0]}`;
   $("#cuentaCorreo").textContent = usuario.correo;
@@ -104,13 +108,17 @@ export async function iniciarCuenta() {
   const { montarAcceso } = await import("./react/acceso.js");
   // cuenta.html#registro abre directo en "Crear cuenta" (solo la primera vez; al cerrar sesión, "Ingresar")
   const mostrarAcceso = (inicio = location.hash === "#registro" ? "registro" : "ingresar") => {
+    // ?restablecer=... viene del enlace del correo "¿Olvidaste tu contraseña?"
+    const tokenRestablecer = new URLSearchParams(location.search).get("restablecer") ?? "";
     montarAcceso($("#islaAcceso"), {
       api,
       inicio,
+      tokenRestablecer,
       // Para las recomendaciones de la bienvenida (según los gustos elegidos)
       productos: productos.map((p) => ({ ...p, imagen: p.foto ?? `img/productos/${p.id}.svg` })),
       onBienvenida: () => confeti(), // cuenta nueva: confeti con el cupón de regalo
       onIngreso: async (usuario) => {
+        if (tokenRestablecer) history.replaceState(null, "", location.pathname); // el enlace ya se usó
         await obtenerSesion({ recargar: true });
         pintarPanel(usuario);
         $("#cuentaPanel").scrollIntoView({ block: "start", behavior: "smooth" });
@@ -122,6 +130,7 @@ export async function iniciarCuenta() {
   $("#btnSalir").addEventListener("click", async () => {
     await api("auth?accion=salir", { metodo: "POST" }).catch(() => {});
     olvidarSesion();
+    avisarSesion(null);
     mostrarAcceso("ingresar");
   });
 

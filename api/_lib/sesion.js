@@ -28,6 +28,22 @@ export async function iniciarSesion(res, usuario) {
   res.setHeader("Set-Cookie", `${COOKIE}=${token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${DURACION_DIAS * 86400}${segura}`);
 }
 
+// Enlaces firmados de un solo uso (por ejemplo, "restablecer contraseña").
+// "huella" se calcula con la clave actual: al cambiarla, el enlace deja de servir.
+export async function firmarEnlace(datos, duracion = "30m") {
+  return new SignJWT(datos).setProtectedHeader({ alg: "HS256" }).setIssuedAt().setExpirationTime(duracion).sign(clave());
+}
+
+export async function verificarEnlace(token, proposito) {
+  try {
+    const { payload } = await jwtVerify(token, clave());
+    return payload.proposito === proposito ? payload : null;
+  } catch (error) {
+    if (error instanceof ErrorApi) throw error;
+    return null; // vencido o alterado
+  }
+}
+
 export function cerrarSesion(res) {
   res.setHeader("Set-Cookie", `${COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`);
 }

@@ -7,16 +7,22 @@ import Registro from "./Registro.jsx";
 import Mascota from "./Mascota.jsx";
 import Bienvenida from "./Bienvenida.jsx";
 import BotonGoogle from "./BotonGoogle.jsx";
+import Recuperar from "./Recuperar.jsx";
+import NuevaClave from "./NuevaClave.jsx";
 import { prefiereQuieto } from "../../utilidades.js";
 
-export default function Acceso({ api, onIngreso, onBienvenida, productos = [], inicio = "ingresar" }) {
+export default function Acceso({ api, onIngreso, onBienvenida, productos = [], inicio = "ingresar", tokenRestablecer = "" }) {
   const [cara, setCara] = useState(inicio);
   const [correo, setCorreo] = useState("");
   const [mascota, setMascota] = useState({ modo: "mirar", mirada: 0.5 });
   const primerCampo = { ingresar: useRef(null), registro: useRef(null) };
   const [bienvenida, setBienvenida] = useState(null); // { usuario, gustos } al crear la cuenta
   const [google, setGoogle] = useState(null); // ID de cliente de Google (si está configurado en Vercel)
+  const [pasoRegistro, setPasoRegistro] = useState(0); // el cupcake se arma con cada paso
+  // Cara de adelante: ingresar · recuperar (olvidé mi contraseña) · restablecer (enlace del correo)
+  const [frente, setFrente] = useState(tokenRestablecer ? "restablecer" : "ingresar");
   const yaGiro = useRef(false);
+  const inclinacion = useRef(null);
   const reloj = useRef(null);
 
   useEffect(() => {
@@ -25,14 +31,19 @@ export default function Acceso({ api, onIngreso, onBienvenida, productos = [], i
 
   const girar = (destino) => (correoActual = "") => {
     setCorreo(correoActual);
+    setFrente("ingresar");
+    setPasoRegistro(0);
     setCara(destino);
     yaGiro.current = true;
   };
 
-  // Al girar, el foco pasa al primer campo de la cara nueva
+  // Al girar (o cambiar de pantalla), el foco pasa al primer campo de la cara nueva
   useEffect(() => {
     if (yaGiro.current) setTimeout(() => primerCampo[cara].current?.focus(), 350);
   }, [cara]);
+  useEffect(() => {
+    if (frente === "recuperar") setTimeout(() => primerCampo.ingresar.current?.focus(), 50);
+  }, [frente]);
 
   // ---- El cupcake reacciona a lo que pasa en el formulario (delegación de eventos) ----
   const esClave = (el) => el.matches?.("input[autocomplete$=password]");
@@ -64,10 +75,26 @@ export default function Acceso({ api, onIngreso, onBienvenida, productos = [], i
     }, prefiereQuieto() ? 0 : 700);
   };
 
+  // La tarjeta se inclina un poco hacia el mouse (solo con mouse y sin "movimiento reducido").
+  // Se cambian variables CSS directamente: no hace falta volver a dibujar con React.
+  const inclinar = (e) => {
+    if (e.pointerType !== "mouse" || prefiereQuieto()) return;
+    const caja = inclinacion.current.getBoundingClientRect();
+    const x = (e.clientX - caja.left) / caja.width - 0.5;
+    const y = (e.clientY - caja.top) / caja.height - 0.5;
+    inclinacion.current.style.setProperty("--incl-x", `${(-y * 7).toFixed(2)}deg`);
+    inclinacion.current.style.setProperty("--incl-y", `${(x * 7).toFixed(2)}deg`);
+    inclinacion.current.style.setProperty("--brillo-x", `${(x + 0.5) * 100}%`);
+    inclinacion.current.style.setProperty("--brillo-y", `${(y + 0.5) * 100}%`);
+  };
+  const enderezar = () => {
+    for (const v of ["--incl-x", "--incl-y"]) inclinacion.current?.style.setProperty(v, "0deg");
+  };
+
   if (bienvenida) {
     return (
       <div className="acceso-escena">
-        <Mascota modo="feliz" />
+        <Mascota modo="feliz" nivel={4} />
         <Bienvenida {...bienvenida} productos={productos} api={api} onContinuar={() => onIngreso(bienvenida.usuario, { nuevo: true })} />
       </div>
     );
@@ -77,22 +104,34 @@ export default function Acceso({ api, onIngreso, onBienvenida, productos = [], i
     <div className={`acceso-escena ${cara === "registro" ? "girada" : ""}`}
          onFocus={alEnfocar} onInput={alEscribir} onBlur={alSalir}
          onClick={(e) => e.target.closest(".ver-clave") && alVerClave(e.target.closest(".ver-clave").getAttribute("aria-pressed") !== "true")}>
-      <Mascota {...mascota} />
+      <Mascota {...mascota} nivel={cara === "registro" ? pasoRegistro + 1 : 3} />
+      <div className="acceso-inclinacion" ref={inclinacion} onPointerMove={inclinar} onPointerLeave={enderezar}>
       <div className="acceso-tarjeta">
         <section className="card acceso-cara acceso-frente" inert={cara !== "ingresar"} aria-hidden={cara !== "ingresar"}>
           <div className="card-body">
-            <Ingresar key={`i-${correo}`} api={api} correoInicial={correo} onIngreso={entrar} onError={ponerTriste}
-                      onIrRegistro={girar("registro")} enfocar={primerCampo.ingresar} />
-            <BotonGoogle clienteId={google} api={api} onIngreso={entrar} onError={ponerTriste} />
+            {frente === "ingresar" && (
+              <>
+                <Ingresar key={`i-${correo}`} api={api} correoInicial={correo} onIngreso={entrar} onError={ponerTriste}
+                          onIrRegistro={girar("registro")} onOlvido={(c) => { setCorreo(c); setFrente("recuperar"); }} enfocar={primerCampo.ingresar} />
+                <BotonGoogle clienteId={google} api={api} onIngreso={entrar} onError={ponerTriste} />
+              </>
+            )}
+            {frente === "recuperar" && (
+              <Recuperar api={api} correoInicial={correo} onVolver={() => setFrente("ingresar")} enfocar={primerCampo.ingresar} />
+            )}
+            {frente === "restablecer" && (
+              <NuevaClave api={api} token={tokenRestablecer} onIngreso={entrar} onError={ponerTriste} onPedirOtro={() => setFrente("recuperar")} />
+            )}
           </div>
         </section>
         <section className="card acceso-cara acceso-dorso" inert={cara !== "registro"} aria-hidden={cara !== "registro"}>
           <div className="card-body">
             <Registro key={`r-${correo}`} api={api} correoInicial={correo} onIngreso={entrar} onError={ponerTriste}
-                      onIrIngresar={girar("ingresar")} enfocar={primerCampo.registro} />
+                      onIrIngresar={girar("ingresar")} onPaso={(n) => { setPasoRegistro(n); setMascota({ modo: "mirar", mirada: 0.5 }); }} enfocar={primerCampo.registro} />
             <BotonGoogle clienteId={google} api={api} onIngreso={entrar} onError={ponerTriste} />
           </div>
         </section>
+      </div>
       </div>
     </div>
   );
