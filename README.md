@@ -277,7 +277,8 @@ La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página l
 | `GET /api/productos` | Catálogo y **stock real** desde la base de datos, y el costo de delivery por distrito |
 | `POST /api/auth?accion=registro` · `login` · `salir` | Cuentas de cliente. La sesión es una cookie `HttpOnly` (JavaScript no puede leerla) |
 | `GET /api/auth` | Usuario que inició sesión |
-| `POST /api/pedidos` | Guarda el pedido del carrito, descuenta el stock y devuelve su código (`KY-000123`) |
+| `POST /api/pedidos` | Guarda el pedido del carrito (con o sin cuenta), con día y franja de entrega; descuenta el stock y devuelve su código (`KY-000123`) |
+| `GET /api/pedidos?horarios=1` | Próximos 7 días con sus franjas (mañana / tarde): cerrado el domingo en la tarde, "ya cerró" si pasó la hora de corte y "lleno" al llegar a 15 pedidos |
 | `GET /api/pedidos` | "Mis pedidos" con su estado |
 | `GET /api/pedidos?codigo=KY-000123&telefono=9…` | Seguimiento sin cuenta (también `TP-` de tortas) |
 | `POST /api/pedidos-especiales` | Guarda la torta personalizada y devuelve su código (`TP-00012`) |
@@ -379,3 +380,4 @@ Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraci
 - [x] **Fase 14:** "Hoy en Kuyay" en vivo en el Inicio
 - [x] **Fase 15:** Acceso interactivo: tarjeta que gira, validación en vivo, checklist de contraseña, Bloq Mayús, avatar, registro en 3 pasos, cupcake, bienvenida con cupón y Google
 - [x] **Fase 16:** Cupcake que se arma por pasos, tarjeta que se inclina con el mouse, botón que termina en ✓, "¿Olvidaste tu contraseña?" y el menú se actualiza al ingresar o salir
+- [x] **Fase 17:** Compra sin cuenta con **día y franja de entrega** disponibles (cupo por franja, domingos solo en la mañana y hora de corte), validados también en el servidor; la fecha aparece en la confirmación, WhatsApp, "Mis pedidos", el seguimiento y el panel

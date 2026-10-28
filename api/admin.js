@@ -43,13 +43,13 @@ const LECTURA = {
     const todos = req.query.todos === "1"; // también entregados y cancelados (últimos 3 días)
     const [pedidos, especiales] = await Promise.all([
       sql`select p.id, p.codigo, p.estado, p.canal, p.tipo_entrega, p.distrito, p.direccion, p.metodo_pago,
-                 p.nombre_contacto, p.telefono, p.notas, p.total::float, p.creado_en,
+                 p.nombre_contacto, p.telefono, p.notas, p.fecha_entrega::text, p.franja, p.total::float, p.creado_en,
                  coalesce((select json_agg(json_build_object('nombre', pr.nombre, 'cantidad', d.cantidad) order by pr.nombre)
                            from pedido_detalle d join productos pr on pr.id = d.producto_id where d.pedido_id = p.id), '[]') as productos
           from pedidos p
           where p.estado not in ('entregado', 'cancelado')
              or (${todos} and p.creado_en > now() - interval '3 days')
-          order by p.creado_en desc
+          order by p.fecha_entrega nulls last, p.franja, p.creado_en desc
           limit 100`,
       sql`select id, codigo, estado, nombre_contacto, telefono, ocasion, tamano, bizcocho, relleno, cobertura, extras,
                  mensaje, es_regalo, alergias, fecha_entrega::text, franja, tipo_entrega, distrito, precio_estimado::float as precio

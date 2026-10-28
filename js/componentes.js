@@ -188,6 +188,13 @@ const CHECKOUT = `
           </div>
         </div>
 
+        <fieldset class="mt-5" id="ckCuando" aria-describedby="ckCuandoAyuda">
+          <legend class="form-label">¿Cuándo lo quieres?</legend>
+          <p class="form-text mt-0" id="ckCuandoAyuda">Elige el día y la franja. Los horarios llenos o que ya pasaron no se pueden elegir.</p>
+          <div class="dias-entrega" id="ckDias"><p class="fg-3 fs-sm mb-0"><span class="spinner-border spinner-sm" aria-hidden="true"></span> Buscando horarios…</p></div>
+          <div class="opciones-entrega mt-3" id="ckFranjas"></div>
+        </fieldset>
+
         <fieldset class="mt-5">
           <legend class="form-label">Método de pago</legend>
           <div class="opciones-pago">

@@ -2411,6 +2411,73 @@
   .checkout textarea.form-control {
     min-height: 5rem;
   }
+  /* Día y franja de entrega del checkout */
+  .dias-entrega {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding: 0.25rem 0.1rem 0.5rem;
+    scroll-snap-type: x proximity;
+  }
+  .dia-entrega {
+    position: relative;
+    flex: 0 0 auto;
+    display: grid;
+    justify-items: center;
+    min-width: 4.4rem;
+    padding: 0.5rem 0.6rem;
+    border: 1.5px solid color-mix(in oklch, var(--bs-fg-body) 14%, transparent);
+    border-radius: 0.85rem;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: border-color 0.15s, background-color 0.15s, transform 0.15s;
+  }
+  .dia-entrega input,
+  .franja-entrega input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: inherit;
+  }
+  .dia-entrega small {
+    font-size: 0.75rem;
+    color: var(--bs-fg-2);
+    text-transform: capitalize;
+  }
+  .dia-entrega b {
+    font-family: var(--bs-heading-font-family);
+    font-size: 1.35rem;
+    line-height: 1.1;
+  }
+  .dia-entrega:hover {
+    border-color: var(--bs-primary-border);
+  }
+  .dia-entrega:has(input:checked) {
+    border-color: var(--bs-primary-bg);
+    background: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary-fg);
+  }
+  .dia-entrega:has(input:focus-visible) {
+    outline: 3px solid var(--bs-primary-focus-ring);
+    outline-offset: 2px;
+  }
+  .dia-entrega:active {
+    transform: scale(0.96);
+  }
+  .dia-entrega:has(input:disabled),
+  .franja-entrega:has(input:disabled) {
+    cursor: not-allowed;
+    border-style: dashed;
+    opacity: 0.7;
+  }
+  .dia-entrega:has(input:disabled) b {
+    text-decoration: line-through;
+  }
+  .franja-entrega .franja-estado {
+    font-weight: 600;
+    color: var(--bs-fg-2);
+  }
+
   .opciones-pago {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));

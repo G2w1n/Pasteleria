@@ -364,6 +364,51 @@ function iniciarCheckout(carrito) {
     animarNumero($("#ckTotal"), Math.round((t.total + costo) * 100) / 100, soles);
   }
 
+  // ---------- Día y franja de entrega (los da la API: cupo, domingos y hora de Lima) ----------
+  let horarios = [];
+  const MOTIVO = { cerrado: "Cerrado", paso: "Ya cerró", lleno: "Lleno" };
+  const NOMBRE_FRANJA = { manana: "Mañana", tarde: "Tarde" };
+  const hoyLima = () => new Intl.DateTimeFormat("en-CA", { timeZone: NEGOCIO.zonaHoraria }).format(new Date());
+  const formatoDia = (iso, opciones) => new Intl.DateTimeFormat("es-PE", { ...opciones, timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
+  const manana = (iso) => new Date(Date.parse(`${iso}T12:00:00Z`) + 864e5).toISOString().slice(0, 10);
+  const nombreDia = (iso) => (iso === hoyLima() ? "Hoy" : iso === manana(hoyLima()) ? "Mañana" : formatoDia(iso, { weekday: "short" }).replace(".", ""));
+  const fechaLarga = (iso) => formatoDia(iso, { weekday: "long", day: "numeric", month: "long" });
+  const textoEntrega = (fecha, franja) => `${fechaLarga(fecha)}, en la ${franja === "manana" ? "mañana" : "tarde"}`;
+
+  function pintarFranjas() {
+    const dia = horarios.find((d) => d.fecha === form.fecha_entrega?.value);
+    const antes = form.franja?.value;
+    $("#ckFranjas").innerHTML = dia
+      ? dia.franjas.map((f) => `
+          <label class="opcion-tarjeta franja-entrega"><input type="radio" name="franja" value="${f.franja}" required
+                 ${f.disponible ? "" : "disabled"} ${f.disponible && f.franja === antes ? "checked" : ""}>
+            <span><b><i class="bi ${f.franja === "manana" ? "bi-sunrise" : "bi-sun"}" aria-hidden="true"></i> ${NOMBRE_FRANJA[f.franja]}</b>
+              <small>${f.horas}</small>${f.disponible ? "" : `<small class="franja-estado">${MOTIVO[f.motivo]}</small>`}</span></label>`).join("")
+      : "";
+    // Si solo queda una franja libre, se elige sola
+    const libres = dia?.franjas.filter((f) => f.disponible) ?? [];
+    if (libres.length === 1 && !form.franja?.value) form.querySelector(`[name=franja][value=${libres[0].franja}]`).checked = true;
+  }
+
+  async function cargarHorarios() {
+    const antes = form.fecha_entrega?.value;
+    try {
+      ({ horarios } = await api("pedidos?horarios=1"));
+    } catch {
+      $("#ckDias").innerHTML = `<p class="fg-danger fs-sm mb-0">No pudimos cargar los horarios. Cierra y vuelve a intentarlo.</p>`;
+      return;
+    }
+    const libre = (d) => d.franjas.some((f) => f.disponible);
+    const elegido = horarios.find((d) => d.fecha === antes && libre(d)) ?? horarios.find(libre);
+    $("#ckDias").innerHTML = horarios.map((d) => `
+      <label class="dia-entrega"><input type="radio" name="fecha_entrega" value="${d.fecha}" required
+             aria-label="${fechaLarga(d.fecha)}${libre(d) ? "" : " (sin horarios)"}"
+             ${libre(d) ? "" : "disabled"} ${d === elegido ? "checked" : ""}>
+        <small>${nombreDia(d.fecha)}</small><b>${formatoDia(d.fecha, { day: "numeric" })}</b><small>${formatoDia(d.fecha, { month: "short" }).replace(".", "")}</small></label>`).join("");
+    pintarFranjas();
+  }
+  form.addEventListener("change", (e) => e.target.name === "fecha_entrega" && pintarFranjas());
+
   const mostrarError = (texto) => {
     error.textContent = texto;
     error.hidden = !texto;
@@ -390,6 +435,7 @@ function iniciarCheckout(carrito) {
       form.telefono.value ||= usuario.telefono ?? "";
     }
     pintarTotales();
+    cargarHorarios();
     Dialog.getOrCreateInstance(dialogo).show();
   });
 
@@ -417,6 +463,8 @@ function iniciarCheckout(carrito) {
         invalido === form.nombre ? "Escribe tu nombre (mínimo 3 letras)."
         : invalido === form.telefono ? "El celular debe tener 9 dígitos y empezar con 9."
         : invalido === form.distrito ? "Elige el distrito de entrega."
+        : invalido.name === "fecha_entrega" ? "Elige el día de entrega."
+        : invalido.name === "franja" ? "Elige la franja de entrega: mañana o tarde."
         : "Escribe la dirección de entrega.",
       );
       invalido.focus();
@@ -436,11 +484,11 @@ function iniciarCheckout(carrito) {
       });
       const usuario = await obtenerSesion();
       $("#ckCodigo").textContent = pedido.codigo;
-      $("#ckResumenListo").textContent = `Total ${soles(pedido.total)} · ${datos.tipo_entrega === "delivery" ? `delivery a ${datos.distrito}` : "recojo en tienda"} · pago con ${datos.metodo_pago}.`;
+      $("#ckResumenListo").textContent = `${datos.tipo_entrega === "delivery" ? `Delivery a ${datos.distrito}` : "Recojo en tienda"} el ${textoEntrega(pedido.fecha_entrega, pedido.franja)} · total ${soles(pedido.total)} · pago con ${datos.metodo_pago}. Guarda tu código para seguir el pedido.`;
       $("#ckVerPedidos").hidden = !usuario;
       $("#ckSeguir").hidden = Boolean(usuario);
       $("#ckSeguir").href = `cuenta.html?seguir=${pedido.codigo}#seguimiento`;
-      const texto = `¡Hola ${NEGOCIO.nombre}! Acabo de hacer el pedido *${pedido.codigo}* en la web por ${soles(pedido.total)}. A nombre de ${datos.nombre}.`;
+      const texto = `¡Hola ${NEGOCIO.nombre}! Acabo de hacer el pedido *${pedido.codigo}* en la web por ${soles(pedido.total)}, para el ${textoEntrega(pedido.fecha_entrega, pedido.franja)}. A nombre de ${datos.nombre}.`;
       $("#ckWhatsApp").href = `https://wa.me/${NEGOCIO.whatsapp}?text=${encodeURIComponent(texto)}`;
       form.hidden = true;
       listo.hidden = false;
@@ -449,6 +497,7 @@ function iniciarCheckout(carrito) {
       confeti();
     } catch (err) {
       mostrarError(err.message);
+      if (err.estado === 409) cargarHorarios(); // la franja se llenó: se muestran los horarios al día
     } finally {
       cargando(false);
     }

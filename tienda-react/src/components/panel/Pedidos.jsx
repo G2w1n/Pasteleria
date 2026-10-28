@@ -17,6 +17,7 @@ const TEMA = { recibido: "theme-accent", en_preparacion: "theme-primary", listo:
 const siguiente = (p) =>
   ({ recibido: "en_preparacion", en_preparacion: p.tipo_entrega === "delivery" ? "en_camino" : "listo", listo: "entregado", en_camino: "entregado" })[p.estado];
 
+const dia = (iso) => new Intl.DateTimeFormat("es-PE", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
 const hora = (iso) => new Intl.DateTimeFormat("es-PE", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit", timeZone: "America/Lima" }).format(new Date(iso));
 
 export default function Pedidos({ api }) {
@@ -87,6 +88,11 @@ export default function Pedidos({ api }) {
                   <i className={`bi ${p.tipo_entrega === "delivery" ? "bi-truck" : "bi-shop"}`} aria-hidden="true" />{" "}
                   {p.tipo_entrega === "delivery" ? `${p.distrito} · ${p.direccion}` : "Recojo en tienda"} · {p.metodo_pago}
                 </p>
+                {p.fecha_entrega && (
+                  <p className="fs-sm fw-semibold mb-2">
+                    <i className="bi bi-calendar-event" aria-hidden="true" /> Entregar el {dia(p.fecha_entrega)} · {p.franja === "manana" ? "mañana" : "tarde"}
+                  </p>
+                )}
                 <ul className="pedido-productos">{p.productos.map((x) => <li key={x.nombre}><span>{x.cantidad} × {x.nombre}</span></li>)}</ul>
                 {p.notas && <p className="pedido-notas"><i className="bi bi-chat-left-text" aria-hidden="true" /> {p.notas}</p>}
                 <div className="pedido-acciones">

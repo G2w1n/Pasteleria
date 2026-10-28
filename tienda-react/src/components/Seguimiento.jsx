@@ -16,6 +16,7 @@ const PASOS = {
   delivery: ["recibido", "en_preparacion", "en_camino", "entregado"],
 };
 const fecha = (iso) => new Intl.DateTimeFormat("es-PE", { day: "numeric", month: "long", hour: "numeric", minute: "2-digit", timeZone: "America/Lima" }).format(new Date(iso));
+const diaCorto = (iso) => new Intl.DateTimeFormat("es-PE", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${iso}T12:00:00Z`));
 
 export default function Seguimiento({ codigoInicial = "", api }) {
   const [codigo, setCodigo] = useState(codigoInicial);
@@ -88,7 +89,10 @@ export default function Seguimiento({ codigoInicial = "", api }) {
                 </ul>
               )}
               <p className="pedido-total">
-                <span className="fg-3 fs-sm">{pedido.tipo_entrega === "delivery" ? `Delivery${pedido.distrito ? ` a ${pedido.distrito}` : ""}` : "Recojo en tienda"}</span>
+                <span className="fg-3 fs-sm">
+                  {pedido.tipo_entrega === "delivery" ? `Delivery${pedido.distrito ? ` a ${pedido.distrito}` : ""}` : "Recojo en tienda"}
+                  {!pedido.especial && pedido.fecha_entrega && ` · ${diaCorto(pedido.fecha_entrega)}, ${pedido.franja === "manana" ? "mañana" : "tarde"}`}
+                </span>
                 <strong>{soles(pedido.total)}</strong>
               </p>
             </div>

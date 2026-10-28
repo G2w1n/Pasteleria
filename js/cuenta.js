@@ -29,6 +29,12 @@ const escapar = (texto) =>
 const fechaCorta = (iso) =>
   new Intl.DateTimeFormat("es-PE", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit", timeZone: "America/Lima" }).format(new Date(iso));
 
+// Fecha y franja de entrega elegidas en el checkout (pedidos antiguos no las tienen)
+const entrega = (p) =>
+  p.fecha_entrega
+    ? ` · ${new Intl.DateTimeFormat("es-PE", { weekday: "short", day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${p.fecha_entrega}T12:00:00Z`))}, ${p.franja === "manana" ? "mañana" : "tarde"}`
+    : "";
+
 const iniciales = (nombre) =>
   nombre.trim().split(/\s+/).slice(0, 2).map((p) => p[0]).join("").toUpperCase();
 
@@ -58,7 +64,7 @@ function tarjetaPedido(p) {
           ${p.productos.map((it) => `<li><span>${it.cantidad} × ${escapar(it.nombre)}</span><span>${soles(it.importe)}</span></li>`).join("")}
         </ul>
         <p class="pedido-total">
-          <span class="fg-3 fs-sm">${p.tipo_entrega === "delivery" ? `Delivery a ${escapar(p.distrito)}` : "Recojo en tienda"} · ${p.metodo_pago}</span>
+          <span class="fg-3 fs-sm">${p.tipo_entrega === "delivery" ? `Delivery a ${escapar(p.distrito)}` : "Recojo en tienda"}${entrega(p)} · ${p.metodo_pago}</span>
           <strong>${soles(p.total)}</strong>
         </p>
       </div>
