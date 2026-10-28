@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:ruta*",
+      "has": [{ "type": "host", "value": "pasteleria-git-main-jefferson-mvs-projects\\.vercel\\.app" }],
+      "destination": "https://pasteleria-three-steel.vercel.app/:ruta*",
+      "permanent": false
+    }
+  ]
+}
