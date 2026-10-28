@@ -17,7 +17,7 @@ const GUSTOS = [
   { id: "salados", texto: "Salados", icono: "🥟" },
 ];
 
-export default function Registro({ api, correoInicial = "", onIngreso, onIrIngresar, onError, onPaso, enfocar }) {
+export default function Registro({ api, correoInicial = "", onIngreso, onIrIngresar, onError, onPaso, onNivel, enfocar }) {
   const [paso, setPaso] = useState(0);
   const [datos, setDatos] = useState({ nombre: "", correo: correoInicial, telefono: "", clave: "" });
   const [gustos, setGustos] = useState([]);
@@ -59,6 +59,12 @@ export default function Registro({ api, correoInicial = "", onIngreso, onIrIngre
     claveOk,
     !datos.telefono || CELULAR.test(datos.telefono),
   ];
+
+  // El cupcake se arma mientras completas: crema con tus datos, cereza con la contraseña
+  const nivel = 1 + (pasoValido[0] ? 1 : 0) + (pasoValido[0] && claveOk ? 1 : 0);
+  useEffect(() => {
+    onNivel?.(nivel);
+  }, [nivel, onNivel]);
 
   const irA = (n) => {
     setError("");

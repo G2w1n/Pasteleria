@@ -18,7 +18,7 @@ export default function Acceso({ api, onIngreso, onBienvenida, productos = [], i
   const primerCampo = { ingresar: useRef(null), registro: useRef(null) };
   const [bienvenida, setBienvenida] = useState(null); // { usuario, gustos } al crear la cuenta
   const [google, setGoogle] = useState(null); // ID de cliente de Google (si está configurado en Vercel)
-  const [pasoRegistro, setPasoRegistro] = useState(0); // el cupcake se arma con cada paso
+  const [nivelRegistro, setNivelRegistro] = useState(1); // el cupcake se arma mientras completas el registro
   // Cara de adelante: ingresar · recuperar (olvidé mi contraseña) · restablecer (enlace del correo)
   const [frente, setFrente] = useState(tokenRestablecer ? "restablecer" : "ingresar");
   const yaGiro = useRef(false);
@@ -32,7 +32,7 @@ export default function Acceso({ api, onIngreso, onBienvenida, productos = [], i
   const girar = (destino) => (correoActual = "") => {
     setCorreo(correoActual);
     setFrente("ingresar");
-    setPasoRegistro(0);
+    setNivelRegistro(1);
     setCara(destino);
     yaGiro.current = true;
   };
@@ -104,7 +104,7 @@ export default function Acceso({ api, onIngreso, onBienvenida, productos = [], i
     <div className={`acceso-escena ${cara === "registro" ? "girada" : ""}`}
          onFocus={alEnfocar} onInput={alEscribir} onBlur={alSalir}
          onClick={(e) => e.target.closest(".ver-clave") && alVerClave(e.target.closest(".ver-clave").getAttribute("aria-pressed") !== "true")}>
-      <Mascota {...mascota} nivel={cara === "registro" ? pasoRegistro + 1 : 3} />
+      <Mascota {...mascota} nivel={cara === "registro" ? nivelRegistro : 3} />
       <div className="acceso-inclinacion" ref={inclinacion} onPointerMove={inclinar} onPointerLeave={enderezar}>
       <div className="acceso-tarjeta">
         <section className="card acceso-cara acceso-frente" inert={cara !== "ingresar"} aria-hidden={cara !== "ingresar"}>
@@ -127,7 +127,7 @@ export default function Acceso({ api, onIngreso, onBienvenida, productos = [], i
         <section className="card acceso-cara acceso-dorso" inert={cara !== "registro"} aria-hidden={cara !== "registro"}>
           <div className="card-body">
             <Registro key={`r-${correo}`} api={api} correoInicial={correo} onIngreso={entrar} onError={ponerTriste}
-                      onIrIngresar={girar("ingresar")} onPaso={(n) => { setPasoRegistro(n); setMascota({ modo: "mirar", mirada: 0.5 }); }} enfocar={primerCampo.registro} />
+                      onIrIngresar={girar("ingresar")} onPaso={() => setMascota({ modo: "mirar", mirada: 0.5 })} onNivel={setNivelRegistro} enfocar={primerCampo.registro} />
             <BotonGoogle clienteId={google} api={api} onIngreso={entrar} onError={ponerTriste} />
           </div>
         </section>
