@@ -40,6 +40,7 @@ export const productos = [
   // ---------------- Tortas ----------------
   {
     id: "torta-lucuma",
+    foto: "img/productos/torta-lucuma.webp",
     nombre: "Torta de lúcuma",
     categoria: "tortas",
     precio: 89,
@@ -53,6 +54,7 @@ export const productos = [
   },
   {
     id: "torta-cacao",
+    foto: "img/productos/torta-cacao.webp",
     nombre: "Torta de cacao de Cusco",
     categoria: "tortas",
     precio: 95,
@@ -66,6 +68,7 @@ export const productos = [
   },
   {
     id: "tres-leches-maracuya",
+    foto: "img/productos/tres-leches-maracuya.webp",
     nombre: "Tres leches de maracuyá",
     categoria: "tortas",
     precio: 79,
@@ -79,6 +82,7 @@ export const productos = [
   },
   {
     id: "cheesecake-aguaymanto",
+    foto: "img/productos/cheesecake-aguaymanto.webp",
     nombre: "Cheesecake de aguaymanto",
     categoria: "tortas",
     precio: 85,
@@ -94,6 +98,7 @@ export const productos = [
   // ---------------- Postres ----------------
   {
     id: "suspiro-limena",
+    foto: "img/productos/suspiro-limena.webp",
     nombre: "Suspiro a la limeña",
     categoria: "postres",
     precio: 12,
@@ -107,6 +112,7 @@ export const productos = [
   },
   {
     id: "alfajores",
+    foto: "img/productos/alfajores.webp",
     nombre: "Alfajores de maicena (x6)",
     categoria: "postres",
     precio: 18,
@@ -120,6 +126,7 @@ export const productos = [
   },
   {
     id: "mazamorra-morada",
+    foto: "img/productos/mazamorra-morada.webp",
     nombre: "Mazamorra morada",
     categoria: "postres",
     precio: 10,
@@ -133,6 +140,7 @@ export const productos = [
   },
   {
     id: "crema-volteada",
+    foto: "img/productos/crema-volteada.webp",
     nombre: "Crema volteada",
     categoria: "postres",
     precio: 11,
@@ -148,6 +156,7 @@ export const productos = [
   // ---------------- Panes ----------------
   {
     id: "pan-yema",
+    foto: "img/productos/pan-yema.webp",
     nombre: "Pan de yema",
     categoria: "panes",
     precio: 6,
@@ -161,6 +170,7 @@ export const productos = [
   },
   {
     id: "pan-chancay",
+    foto: "img/productos/pan-chancay.webp",
     nombre: "Pan chancay",
     categoria: "panes",
     precio: 5,
@@ -174,6 +184,7 @@ export const productos = [
   },
   {
     id: "paneton-artesanal",
+    foto: "img/productos/paneton-artesanal.webp",
     nombre: "Panetón artesanal",
     categoria: "panes",
     precio: 45,
@@ -187,6 +198,7 @@ export const productos = [
   },
   {
     id: "pan-masa-madre-quinua",
+    foto: "img/productos/pan-masa-madre-quinua.webp",
     nombre: "Pan de masa madre con quinua",
     categoria: "panes",
     precio: 14,
@@ -202,6 +214,7 @@ export const productos = [
   // ---------------- Salados ----------------
   {
     id: "empanada-carne",
+    foto: "img/productos/empanada-carne.webp",
     nombre: "Empanada de carne",
     categoria: "salados",
     precio: 9,
@@ -215,6 +228,7 @@ export const productos = [
   },
   {
     id: "empanada-aji-gallina",
+    foto: "img/productos/empanada-aji-gallina.webp",
     nombre: "Empanada de ají de gallina",
     categoria: "salados",
     precio: 9,
@@ -228,6 +242,7 @@ export const productos = [
   },
   {
     id: "pan-chicharron",
+    foto: "img/productos/pan-chicharron.webp",
     nombre: "Pan con chicharrón",
     categoria: "salados",
     precio: 14,

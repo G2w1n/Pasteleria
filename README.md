@@ -348,8 +348,9 @@ Sin `RESEND_API_KEY`, la página muestra un aviso con el enlace a WhatsApp para 
 
 ## Fotos de los productos
 
-Cada producto se muestra con una **ilustración SVG** generada por `js/ilustraciones.js`
-(8 formas que cambian de color según el producto). Para usar una foto real:
+15 productos tienen **foto real** en `img/productos/*.webp` (800 × 600 px, recortadas y comprimidas
+desde las originales de la carpeta `imagenes/`). Los que no tienen foto se muestran con una
+**ilustración SVG** generada por `js/ilustraciones.js`. Para agregar o cambiar una foto:
 
 1. Guarda la foto en `img/productos/` (de preferencia en `.webp`, 800 × 600 px).
 2. En `js/productos.js`, agrega a ese producto la línea `foto: "img/productos/nombre.webp",`.

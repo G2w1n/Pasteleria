@@ -51,7 +51,9 @@ export async function cargarCatalogo() {
     const datos = await api("productos", { espera: 4000 });
     if (!Array.isArray(datos.productos) || datos.productos.length === 0) return false;
     CATEGORIAS.splice(0, CATEGORIAS.length, ...datos.categorias);
-    productos.splice(0, productos.length, ...datos.productos);
+    // Las fotos viven en img/productos/: si la base de datos no trae una, se usa la de js/productos.js
+    const fotos = new Map(productos.map((p) => [p.id, p.foto]));
+    productos.splice(0, productos.length, ...datos.productos.map((p) => ({ ...p, foto: p.foto ?? fotos.get(p.id) ?? null })));
     costosDelivery = datos.delivery ?? {};
     resumen = datos.resumen ?? null;
     disponible = true;

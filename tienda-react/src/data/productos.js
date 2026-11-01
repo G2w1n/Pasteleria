@@ -4,7 +4,11 @@
 
 // Lo que está en public/ se sirve desde la raíz del sitio. BASE_URL es "/" con
 // "npm run dev" y "/react/" al publicar, así la ruta funciona en los dos casos.
-export const imagen = (id) => `${import.meta.env.BASE_URL}img/${id}.svg`;
+// Los productos con foto real usan .webp; el resto, su dibujo .svg (y sin-imagen.svg si falla).
+const CON_FOTO = new Set(["torta-lucuma", "torta-cacao", "tres-leches-maracuya", "cheesecake-aguaymanto", "suspiro-limena", "alfajores",
+  "mazamorra-morada", "crema-volteada", "pan-yema", "pan-chancay", "pan-masa-madre-quinua", "paneton-artesanal", "pan-chicharron",
+  "empanada-carne", "empanada-aji-gallina"]);
+export const imagen = (id) => `${import.meta.env.BASE_URL}img/${id}.${CON_FOTO.has(id) ? "webp" : "svg"}`;
 
 export const productos = [
   {
