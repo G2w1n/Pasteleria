@@ -167,8 +167,35 @@
           </div>
           <div class="lg:col-5">
             <div class="hero-ilustracion">
-              <img src="img/hero-torta.svg" width="480" height="480"
-                   alt="Ilustración de una torta de tres pisos de cacao, lúcuma y mora, decorada con aguaymantos">
+              <div class="torta-cortable">
+                <img src="img/hero-torta.svg" width="480" height="480"
+                     alt="Ilustración de una torta de tres pisos de cacao, lúcuma y mora, decorada con aguaymantos">
+                <!-- "Corta la torta": al pasar el mouse (o tocar), sale una tajada del piso de abajo
+                     y se ven las capas por dentro. Coordenadas iguales a img/hero-torta.svg -->
+                <svg class="torta-corte" viewBox="0 0 480 480" aria-hidden="true" focusable="false">
+                  <defs><clipPath id="tajadaRecorte"><rect x="300" y="286" width="52" height="98"/></clipPath></defs>
+                  <g class="corte-interior">
+                    <rect x="300" y="290" width="52" height="92" fill="#4a2b24"/>
+                    <rect x="300" y="290" width="52" height="9" fill="#8e2c4e"/>
+                    <rect x="300" y="309" width="52" height="5" fill="#f3e1c4"/>
+                    <rect x="300" y="322" width="52" height="12" fill="#e0a03a"/>
+                    <rect x="300" y="346" width="52" height="5" fill="#f3e1c4"/>
+                    <rect x="300" y="363" width="52" height="5" fill="#f3e1c4"/>
+                    <rect x="300" y="290" width="7" height="92" fill="#000" opacity=".18"/>
+                  </g>
+                  <g class="corte-sombra"><ellipse cx="384" cy="386" rx="34" ry="6" fill="#3a2420" opacity=".18"/></g>
+                  <g class="corte-tajada">
+                    <g clip-path="url(#tajadaRecorte)">
+                      <rect x="112" y="290" width="256" height="92" rx="14" fill="#5a352c"/>
+                      <rect x="112" y="322" width="256" height="12" fill="#e0a03a"/>
+                      <path d="M112 304c0-8 6-14 14-14h228c8 0 14 6 14 14v6c-10 0-10 16-21 16s-11-12-22-12-11 22-22 22-11-18-22-18-11 12-22 12-11-20-22-20-11 14-22 14-11-10-22-10-11 18-22 18-11-14-22-14-11 8-22 8-10-12-21-12z" fill="#8e2c4e"/>
+                    </g>
+                    <circle class="miga" cx="296" cy="378" r="2.5" fill="#5a352c"/>
+                    <circle class="miga" cx="290" cy="381" r="1.8" fill="#5a352c"/>
+                    <circle class="miga" cx="304" cy="382" r="1.5" fill="#e0a03a"/>
+                  </g>
+                </svg>
+              </div>
             </div>
           </div>
         </div>

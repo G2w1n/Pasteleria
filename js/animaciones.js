@@ -219,9 +219,14 @@ function sorpresa() {
   });
   const torta = document.querySelector(".hero-ilustracion");
   if (!torta) return;
+  // "Corta la torta" se habilita cuando la torta terminó de armarse (animación de img/hero-torta.svg).
+  // Con mouse basta pasar por encima (CSS :hover); en celular, cada toque la corta o la vuelve a juntar.
+  setTimeout(() => torta.classList.add("torta-lista"), prefiereQuieto() ? 0 : 2300);
+  const tactil = matchMedia("(hover: none)");
   let clics = 0;
   let reloj = null;
   torta.addEventListener("click", () => {
+    if (tactil.matches) torta.classList.toggle("cortada");
     clics += 1;
     torta.classList.remove("rebotar");
     void torta.offsetWidth;

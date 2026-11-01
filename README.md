@@ -285,7 +285,7 @@ La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página l
 | `GET /api/cupones?codigo=KUYAY10` | Dice si un cupón sirve hoy (al comprar, el servidor lo vuelve a validar) |
 | `GET` / `POST /api/resenas` | Reseñas de un producto / publicar la tuya (con cuenta) |
 | `POST /api/auth?accion=recuperar` · `restablecer` · `google` | Enlace para nueva contraseña · guardarla · entrar con Google |
-| `GET` / `POST /api/admin?recurso=…` | Panel: `resumen`, `envivo` ("Hoy en Kuyay"), `pedidos`, `productos`, `usuarios`, `resenas` (según el rol) |
+| `GET` / `POST /api/admin?recurso=…` | Panel: `resumen`, `envivo` ("Hoy en Kuyay"), `temporada` (Modo Navidad), `pedidos`, `productos`, `usuarios`, `resenas` (según el rol) |
 
 **Qué cambia en la página cuando la API responde:**
 - El catálogo muestra los productos y el stock de Neon (si se agota algo, se ve "Agotado").
@@ -383,3 +383,4 @@ desde las originales de la carpeta `imagenes/`). Si falta una foto, el producto 
 - [x] **Fase 16:** Cupcake que se arma por pasos, tarjeta que se inclina con el mouse, botón que termina en ✓, "¿Olvidaste tu contraseña?" y el menú se actualiza al ingresar o salir
 - [x] **Fase 17:** Compra sin cuenta con **día y franja de entrega** disponibles (cupo por franja, domingos solo en la mañana y hora de corte), validados también en el servidor; la fecha aparece en la confirmación, WhatsApp, "Mis pedidos", el seguimiento y el panel
 - [x] **Fase 18:** Fotos que cargan borrosas y se aclaran (`js/fotos-suaves.js`), la foto vuela de la tarjeta al detalle y vuelve al cerrar, y cuenta regresiva "Pide en las próximas… y llega hoy" (`js/cuenta-regresiva.js`)
+- [x] **Fase 19:** **Modo Navidad** que activa solo el administrador desde el panel (nieve que cada visitante puede quitar, aviso del panetón y cinta navideña; `js/navidad.js`), **camioncito** que avanza en el seguimiento del pedido y **"corta la torta"** en el Inicio

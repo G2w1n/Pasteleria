@@ -73,13 +73,19 @@ export default function Seguimiento({ codigoInicial = "", api }) {
               {pedido.estado === "cancelado" ? (
                 <p className="pedido-cancelado"><i className="bi bi-x-circle" aria-hidden="true" /> Este pedido fue cancelado.</p>
               ) : (
-                <ol className="stepper stepper-horizontal pedido-seguimiento" aria-label={`Seguimiento del pedido ${pedido.codigo}`}>
-                  {pasos.map((paso, i) => (
-                    <li key={paso} className={`stepper-item ${i <= actual ? "active" : ""}`} aria-current={i === actual ? "step" : undefined}>
-                      {NOMBRE_ESTADO[paso]}
-                    </li>
-                  ))}
-                </ol>
+                <>
+                  <div className={`ruta-pedido ruta-${pedido.estado}`} style={{ "--n": pasos.length, "--paso": Math.max(actual, 0) }} aria-hidden="true">
+                    <span className="ruta-linea"><span className="ruta-relleno" /></span>
+                    <span className="ruta-vehiculo"><i className={`bi ${pedido.tipo_entrega === "delivery" ? "bi-truck" : "bi-bag-heart"}`} /></span>
+                  </div>
+                  <ol className="stepper stepper-horizontal pedido-seguimiento" aria-label={`Seguimiento del pedido ${pedido.codigo}`}>
+                    {pasos.map((paso, i) => (
+                      <li key={paso} className={`stepper-item ${i <= actual ? "active" : ""}`} aria-current={i === actual ? "step" : undefined}>
+                        {NOMBRE_ESTADO[paso]}
+                      </li>
+                    ))}
+                  </ol>
+                </>
               )}
               {pedido.especial ? (
                 <p className="mb-2">Torta personalizada {pedido.tamano} · entrega el <b>{pedido.fecha_entrega}</b> en la {pedido.franja === "manana" ? "mañana" : "tarde"}.</p>

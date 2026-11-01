@@ -15,7 +15,8 @@ import { iniciarCuenta } from "./cuenta.js";
 import { iniciarAnimaciones } from "./animaciones.js";
 import { iniciarFotosSuaves } from "./fotos-suaves.js";
 import { iniciarCuentaRegresiva } from "./cuenta-regresiva.js";
-import { api, apiDisponible, cargarCatalogo, obtenerSesion } from "./api.js";
+import { api, apiDisponible, cargarCatalogo, modoNavidad, obtenerSesion } from "./api.js";
+import { iniciarNavidad } from "./navidad.js";
 import { CATEGORIAS, productos } from "./productos.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -33,6 +34,7 @@ await cargarCatalogo();
 // ---------- Comunes a todas las páginas ----------
 insertarComponentes({ conDetalle: existe("#islaCatalogo") || existe("#grillaDestacados"), whatsapp: NEGOCIO.whatsapp });
 iniciarCuentaRegresiva();
+if (modoNavidad()) iniciarNavidad();
 iniciarTema($("#btnTema"));
 iniciarCarrito();
 

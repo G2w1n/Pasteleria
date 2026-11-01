@@ -8,6 +8,8 @@ import { CATEGORIAS, productos } from "./productos.js";
 
 let disponible = false;
 let sesion; // undefined = aún no se consultó; null = sin sesión
+let navidad = false; // Modo Navidad: lo activa el administrador desde el panel
+export const modoNavidad = () => navidad;
 let costosDelivery = {};
 let motivoSinApi = ""; // por qué no se pudo conectar (se muestra en "Mi cuenta")
 
@@ -53,6 +55,7 @@ export async function cargarCatalogo() {
     const fotos = new Map(productos.map((p) => [p.id, p.foto]));
     productos.splice(0, productos.length, ...datos.productos.map((p) => ({ ...p, foto: p.foto ?? fotos.get(p.id) ?? null })));
     costosDelivery = datos.delivery ?? {};
+    navidad = datos.navidad === true;
     disponible = true;
   } catch (error) {
     disponible = false; // seguimos con js/productos.js

@@ -4,6 +4,7 @@
 //
 //   GET  /api/admin?recurso=resumen     → reportes (solo administrador)
 //   GET  /api/admin?recurso=envivo      → números del día para "Hoy en Kuyay" (administrador y empleado)
+//   GET  /api/admin?recurso=temporada   → si el Modo Navidad está activo (solo administrador)
 //   GET  /api/admin?recurso=pedidos     → pedidos activos y tortas (administrador y empleado)
 //   GET  /api/admin?recurso=productos   → productos y stock (administrador y empleado)
 //   GET  /api/admin?recurso=usuarios    → usuarios (solo administrador)
@@ -50,6 +51,11 @@ const LECTURA = {
         (select round(avg(estrellas), 1)::float from resenas where visible) as calificacion,
         (select count(*)::int from resenas where visible) as resenas`;
     return { resumen };
+  },
+
+  async temporada(sql) {
+    const [fila] = await sql`select valor from configuracion where clave = 'modo_navidad'`;
+    return { navidad: fila?.valor === true };
   },
 
   async pedidos(sql, req) {
@@ -102,7 +108,7 @@ const LECTURA = {
     return { resenas };
   },
 };
-const PERMISOS_LECTURA = { resumen: ADMIN, envivo: PERSONAL, pedidos: PERSONAL, productos: PERSONAL, usuarios: ADMIN, resenas: ADMIN };
+const PERMISOS_LECTURA = { resumen: ADMIN, envivo: PERSONAL, temporada: ADMIN, pedidos: PERSONAL, productos: PERSONAL, usuarios: ADMIN, resenas: ADMIN };
 
 // ---------- Cambios ----------
 const CAMBIOS = {
@@ -167,6 +173,14 @@ const CAMBIOS = {
     return { usuario: fila };
   },
 
+  // { id: "navidad", activo } · lo lee /api/productos para decorar la tienda
+  async temporada(sql, _usuario, d) {
+    if (d.id !== "navidad" || typeof d.activo !== "boolean") throw new ErrorApi(400, "Temporada no válida.");
+    await sql`insert into configuracion (clave, valor) values ('modo_navidad', ${JSON.stringify(d.activo)}::jsonb)
+              on conflict (clave) do update set valor = excluded.valor`;
+    return { navidad: d.activo };
+  },
+
   // { id, visible }
   async resenas(sql, _usuario, d) {
     const [fila] = await sql`update resenas set visible = ${Boolean(d.visible)} where id = ${d.id} returning id, visible`;
@@ -174,7 +188,7 @@ const CAMBIOS = {
     return { resena: fila };
   },
 };
-const PERMISOS_CAMBIO = { pedidos: PERSONAL, productos: PERSONAL, usuarios: ADMIN, resenas: ADMIN };
+const PERMISOS_CAMBIO = { pedidos: PERSONAL, productos: PERSONAL, usuarios: ADMIN, resenas: ADMIN, temporada: ADMIN };
 
 export default ruta({
   async GET(req, res) {

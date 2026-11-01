@@ -48,7 +48,11 @@ function tarjetaPedido(p) {
   const actual = pasos.indexOf(p.estado);
   const seguimiento = p.estado === "cancelado"
     ? `<p class="pedido-cancelado"><i class="bi bi-x-circle" aria-hidden="true"></i> Pedido cancelado</p>`
-    : `<ol class="stepper stepper-horizontal pedido-seguimiento" aria-label="Seguimiento del pedido ${p.codigo}">
+    : `<div class="ruta-pedido ruta-${p.estado}" style="--n: ${pasos.length}; --paso: ${Math.max(actual, 0)}" aria-hidden="true">
+        <span class="ruta-linea"><span class="ruta-relleno"></span></span>
+        <span class="ruta-vehiculo"><i class="bi ${p.tipo_entrega === "delivery" ? "bi-truck" : "bi-bag-heart"}"></i></span>
+      </div>
+      <ol class="stepper stepper-horizontal pedido-seguimiento" aria-label="Seguimiento del pedido ${p.codigo}">
         ${pasos.map((paso, i) => `<li class="stepper-item ${i <= actual ? "active" : ""}" ${i === actual ? 'aria-current="step"' : ""}>${NOMBRE_ESTADO[paso]}</li>`).join("")}
       </ol>`;
   return `

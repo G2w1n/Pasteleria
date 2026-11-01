@@ -1,6 +1,7 @@
 // src/components/panel/Resumen.jsx · reportes (solo administrador)
 import { useEffect, useState } from "react";
 import GraficoBarras from "./GraficoBarras.jsx";
+import Temporada from "./Temporada.jsx";
 import { soles } from "../../utilidades.js";
 
 const diaCorto = (iso) => new Intl.DateTimeFormat("es-PE", { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(`${iso}T00:00:00Z`));
@@ -32,6 +33,7 @@ export default function Resumen({ api }) {
 
   return (
     <div className="panel-resumen">
+      <Temporada api={api} />
       <div className="indicadores">
         <Indicador icono="bi-cash-coin" titulo="Ventas de hoy" valor={soles(r.ventas_hoy)} detalle={`${r.pedidos_hoy} pedidos`} />
         <Indicador icono="bi-calendar-week" titulo="Esta semana" valor={soles(r.ventas_semana)} />

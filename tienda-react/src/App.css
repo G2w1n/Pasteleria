@@ -237,6 +237,15 @@
   .panel-buscar { max-width: 22rem; flex: 1 1 14rem; }
   .enlace-panel { display: inline-flex; gap: 0.35rem; align-items: center; }
 
+  /* Interruptor del Modo Navidad (Temporada.jsx) */
+  .temporada { border-radius: 1rem; margin-bottom: 1rem; border-color: color-mix(in oklch, var(--bs-fg-body) 10%, transparent); transition: background-color 0.3s, border-color 0.3s; }
+  .temporada .card-body { display: flex; flex-direction: row; align-items: center; gap: 1rem; }
+  .temporada-icono { font-size: 1.8rem; filter: grayscale(1); opacity: 0.6; transition: filter 0.3s, opacity 0.3s; }
+  .temporada-activa { border-color: var(--bs-success-border); background: var(--bs-success-bg-subtle); }
+  .temporada-activa .temporada-icono { filter: none; opacity: 1; }
+  .temporada-texto { flex: 1; }
+  .temporada label { cursor: pointer; }
+
   /* Indicadores (hero numbers) */
   .indicadores { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
   .indicador { border-radius: 1rem; border-color: color-mix(in oklch, var(--bs-fg-body) 10%, transparent); }
