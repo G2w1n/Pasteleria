@@ -7,7 +7,7 @@
 // Los productos con foto real usan .webp; el resto, su dibujo .svg (y sin-imagen.svg si falla).
 const CON_FOTO = new Set(["torta-lucuma", "torta-cacao", "tres-leches-maracuya", "cheesecake-aguaymanto", "suspiro-limena", "alfajores",
   "mazamorra-morada", "crema-volteada", "pan-yema", "pan-chancay", "pan-masa-madre-quinua", "paneton-artesanal", "pan-chicharron",
-  "empanada-carne", "empanada-aji-gallina"]);
+  "empanada-carne", "empanada-aji-gallina", "tequenos-queso"]);
 export const imagen = (id) => `${import.meta.env.BASE_URL}img/${id}.${CON_FOTO.has(id) ? "webp" : "svg"}`;
 
 export const productos = [

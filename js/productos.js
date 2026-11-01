@@ -256,6 +256,7 @@ export const productos = [
   },
   {
     id: "tequenos-queso",
+    foto: "img/productos/tequenos-queso.webp",
     nombre: "Tequeños de queso (x8)",
     categoria: "salados",
     precio: 16,
