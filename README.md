@@ -285,7 +285,7 @@ La carpeta `api/` tiene funciones que Vercel ejecuta como servidor. La página l
 | `GET /api/cupones?codigo=KUYAY10` | Dice si un cupón sirve hoy (al comprar, el servidor lo vuelve a validar) |
 | `GET` / `POST /api/resenas` | Reseñas de un producto / publicar la tuya (con cuenta) |
 | `POST /api/auth?accion=recuperar` · `restablecer` · `google` | Enlace para nueva contraseña · guardarla · entrar con Google |
-| `GET` / `POST /api/admin?recurso=…` | Panel: `resumen`, `pedidos`, `productos`, `usuarios`, `resenas` (según el rol) |
+| `GET` / `POST /api/admin?recurso=…` | Panel: `resumen`, `envivo` ("Hoy en Kuyay"), `pedidos`, `productos`, `usuarios`, `resenas` (según el rol) |
 
 **Qué cambia en la página cuando la API responde:**
 - El catálogo muestra los productos y el stock de Neon (si se agota algo, se ve "Agotado").

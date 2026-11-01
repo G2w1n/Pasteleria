@@ -2,6 +2,8 @@
 // Página de la práctica (npm run dev): el index con el catálogo y el contador del carrito.
 // Los mismos componentes (Catalogo, ProductoCard) se usan dentro de la tienda principal.
 import { useCallback, useState } from "react";
+// Estilos de la tienda principal (Bootstrap 6 se carga en index.html)
+import "../../css/estilos.css";
 import Encabezado from "./components/Encabezado.jsx";
 import Catalogo from "./components/Catalogo.jsx";
 import Carrito from "./components/Carrito.jsx";

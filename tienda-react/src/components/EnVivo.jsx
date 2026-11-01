@@ -1,5 +1,6 @@
 // src/components/EnVivo.jsx
 // "Hoy en Kuyay": números del día en vivo desde Neon y productos que se están acabando.
+// Solo para administrador y empleado: los números vienen de /api/admin (pide sesión).
 // Se actualiza solo cada minuto; los números suben animados (salvo movimiento reducido).
 import { useEffect, useRef, useState } from "react";
 import { prefiereQuieto } from "../utilidades.js";
@@ -27,13 +28,16 @@ function Contador({ valor, decimales = 0 }) {
   return mostrado.toLocaleString("es-PE", { minimumFractionDigits: decimales, maximumFractionDigits: decimales });
 }
 
-export default function EnVivo({ inicial, productosIniciales, api, onVer }) {
-  const [datos, setDatos] = useState({ resumen: inicial, productos: productosIniciales });
+export default function EnVivo({ productosIniciales, api, onVer }) {
+  const [datos, setDatos] = useState({ resumen: null, productos: productosIniciales });
 
   useEffect(() => {
-    const reloj = setInterval(() => {
-      api("productos").then((d) => setDatos({ resumen: d.resumen, productos: d.productos })).catch(() => {});
-    }, CADA);
+    const cargar = () =>
+      Promise.all([api("admin?recurso=envivo"), api("productos")])
+        .then(([vivo, catalogo]) => setDatos({ resumen: vivo.resumen, productos: catalogo.productos }))
+        .catch(() => {});
+    cargar();
+    const reloj = setInterval(cargar, CADA);
     return () => clearInterval(reloj);
   }, [api]);
 

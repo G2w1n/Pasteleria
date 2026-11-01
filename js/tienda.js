@@ -13,7 +13,7 @@ import { iniciarCarrito } from "./carrito.js";
 import { iniciarPedido } from "./pedido.js";
 import { iniciarCuenta } from "./cuenta.js";
 import { iniciarAnimaciones } from "./animaciones.js";
-import { api, apiDisponible, cargarCatalogo, obtenerSesion, resumenDelDia } from "./api.js";
+import { api, apiDisponible, cargarCatalogo, obtenerSesion } from "./api.js";
 import { CATEGORIAS, productos } from "./productos.js";
 
 const $ = (selector) => document.querySelector(selector);
@@ -123,13 +123,12 @@ async function pintarEnVivo(usuario) {
   enVivoMontado = true;
   const { montarEnVivo } = await import("./react/envivo.js");
   montarEnVivo($("#islaEnVivo"), {
-    inicial: resumenDelDia(),
     productosIniciales: productos,
     api,
     onVer: (producto) => abrirDetalle(producto.id),
   });
 }
-if (existe("#islaEnVivo") && apiDisponible() && resumenDelDia()) {
+if (existe("#islaEnVivo") && apiDisponible()) {
   obtenerSesion().then(pintarEnVivo).catch(console.error);
   document.addEventListener("kuyay:sesion", (e) => pintarEnVivo(e.detail).catch(console.error));
 }

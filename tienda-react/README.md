@@ -31,7 +31,7 @@ tienda-react/
 ├── public/
 │   └── img/              ← imágenes del catálogo (16 productos + sin-imagen.svg)
 └── src/
-    ├── main.jsx          ← monta App (página de práctica)
+    ├── main.jsx          ← igual al que crea Vite (no se toca)
     ├── index.css         ← vacío
     ├── App.jsx           ← el carrito vive aquí (estado elevado)
     ├── App.css           ← estilos, transiciones y animaciones de los componentes

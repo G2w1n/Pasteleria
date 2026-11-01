@@ -3,6 +3,7 @@
 // el límite de funciones del plan gratuito de Vercel.
 //
 //   GET  /api/admin?recurso=resumen     → reportes (solo administrador)
+//   GET  /api/admin?recurso=envivo      → números del día para "Hoy en Kuyay" (administrador y empleado)
 //   GET  /api/admin?recurso=pedidos     → pedidos activos y tortas (administrador y empleado)
 //   GET  /api/admin?recurso=productos   → productos y stock (administrador y empleado)
 //   GET  /api/admin?recurso=usuarios    → usuarios (solo administrador)
@@ -37,6 +38,18 @@ const LECTURA = {
       sql`select nombre, pedidos::int, total_gastado::float from reporte_clientes limit 5`,
     ]);
     return { resumen, diarias, productos, categorias, distritos, horas, stockBajo, clientes };
+  },
+
+  // "Hoy en Kuyay" en el Inicio (hora de Lima)
+  async envivo(sql) {
+    const [resumen] = await sql`select
+        (select count(*)::int from pedidos where estado <> 'cancelado'
+           and (creado_en at time zone 'America/Lima')::date = (now() at time zone 'America/Lima')::date) as pedidos_hoy,
+        (select count(*)::int from pedidos where estado = 'entregado') as entregados,
+        (select count(*)::int from usuarios where rol = 'cliente' and activo) as clientes,
+        (select round(avg(estrellas), 1)::float from resenas where visible) as calificacion,
+        (select count(*)::int from resenas where visible) as resenas`;
+    return { resumen };
   },
 
   async pedidos(sql, req) {
@@ -89,7 +102,7 @@ const LECTURA = {
     return { resenas };
   },
 };
-const PERMISOS_LECTURA = { resumen: ADMIN, pedidos: PERSONAL, productos: PERSONAL, usuarios: ADMIN, resenas: ADMIN };
+const PERMISOS_LECTURA = { resumen: ADMIN, envivo: PERSONAL, pedidos: PERSONAL, productos: PERSONAL, usuarios: ADMIN, resenas: ADMIN };
 
 // ---------- Cambios ----------
 const CAMBIOS = {

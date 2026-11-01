@@ -9,12 +9,10 @@ import { CATEGORIAS, productos } from "./productos.js";
 let disponible = false;
 let sesion; // undefined = aún no se consultó; null = sin sesión
 let costosDelivery = {};
-let resumen = null; // números del día para la portada
 let motivoSinApi = ""; // por qué no se pudo conectar (se muestra en "Mi cuenta")
 
 export const apiDisponible = () => disponible;
 export const motivoSinConexion = () => motivoSinApi;
-export const resumenDelDia = () => resumen;
 export const costoDeliveryDe = (distrito) => costosDelivery[distrito];
 export const distritosConDelivery = () => Object.keys(costosDelivery).sort((a, b) => a.localeCompare(b, "es"));
 
@@ -55,7 +53,6 @@ export async function cargarCatalogo() {
     const fotos = new Map(productos.map((p) => [p.id, p.foto]));
     productos.splice(0, productos.length, ...datos.productos.map((p) => ({ ...p, foto: p.foto ?? fotos.get(p.id) ?? null })));
     costosDelivery = datos.delivery ?? {};
-    resumen = datos.resumen ?? null;
     disponible = true;
   } catch (error) {
     disponible = false; // seguimos con js/productos.js
