@@ -5,7 +5,7 @@
 import { Dialog, Popover, Tab, Tooltip } from "https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/js/bootstrap.bundle.min.js";
 import { CATEGORIAS, INGREDIENTES_PERUANOS, productos } from "./productos.js";
 import { dibujarProducto } from "./ilustraciones.js";
-import { transicionConTipo } from "./animaciones.js";
+import { prefiereQuieto, transicionConTipo } from "./animaciones.js";
 
 // ---------- Utilidades (funciones flecha) ----------
 export const soles = (monto) => `S/ ${monto.toFixed(2)}`;
@@ -94,13 +94,24 @@ function pedirAgregar(id, cantidad = 1, origen = null) {
 
 // ---------- Detalle del producto (Dialog de Bootstrap) ----------
 let productoAbierto = null;
+let cierreDirecto = false; // true cuando el detalle se cierra sin que la foto vuelva (al agregar al carrito)
+
+// Foto de la tarjeta de un producto, solo si se ve en la pantalla. Sirve también
+// cuando el detalle se abre desde el buscador, "Vistos recientemente" o "Se están acabando".
+function fotoEnPantalla(id, tarjeta = null) {
+  const media = tarjeta?.querySelector(".producto-media")
+    ?? document.querySelector(`.producto [data-detalle="${id}"]`)?.closest(".producto")?.querySelector(".producto-media");
+  if (!media) return null;
+  const caja = media.getBoundingClientRect();
+  return caja.width > 0 && caja.bottom > 0 && caja.top < innerHeight ? media : null;
+}
 
 // La imagen de la tarjeta "crece" hasta la ventana de detalle: la tarjeta y el
 // detalle comparten por un momento el mismo view-transition-name
 export function abrirDetalle(id, tarjeta = null) {
   const p = productos.find((x) => x.id === id);
   if (!p) return;
-  const dibujo = tarjeta?.querySelector(".producto-media");
+  const dibujo = fotoEnPantalla(id, tarjeta);
   const dialogo = $("#detalleProducto");
 
   if (dibujo) dibujo.style.viewTransitionName = "producto-activo";
@@ -174,14 +185,43 @@ function cambiarCantidad(delta) {
   input.value = Math.min(Math.max(Number(input.value) + delta, 1), Number(input.max));
 }
 
+// Al cerrar, la foto vuelve a su tarjeta (el camino inverso de abrirDetalle).
+// Se frena el cierre normal de Bootstrap y se repite sin su animación, dentro de la transición.
+function volverATarjeta(e) {
+  if (cierreDirecto || !document.startViewTransition || prefiereQuieto()) return;
+  const media = fotoEnPantalla(productoAbierto?.id);
+  if (!media) return;
+  e.preventDefault();
+  cierreDirecto = true;
+  const dialogo = $("#detalleProducto");
+  $("#detalleMedia").style.viewTransitionName = "producto-activo";
+  const vista = transicionConTipo("detalle", async () => {
+    $("#detalleMedia").style.viewTransitionName = "";
+    media.style.viewTransitionName = "producto-activo";
+    dialogo.classList.add("dialog-instant");
+    await Dialog.getInstance(dialogo)?.hide();
+  });
+  const limpiar = () => {
+    media.style.viewTransitionName = "";
+    $("#detalleMedia").style.viewTransitionName = "";
+    dialogo.classList.remove("dialog-instant");
+    cierreDirecto = false;
+  };
+  if (vista) vista.finished.finally(limpiar);
+  else limpiar();
+}
+
 export function iniciarDetalle() {
+  $("#detalleProducto").addEventListener("hide.bs.dialog", volverATarjeta);
   $("#detalleMenos").addEventListener("click", () => cambiarCantidad(-1));
   $("#detalleMas").addEventListener("click", () => cambiarCantidad(1));
   $("#detalleAgregar").addEventListener("click", async () => {
     // El dibujo vuela desde la tarjeta del catálogo, cuando el detalle ya se cerró
     const id = productoAbierto.id;
     const cantidad = Number($("#detalleCantidad").value);
+    cierreDirecto = true; // aquí vuela al carrito, no de vuelta a la tarjeta
     await Dialog.getInstance($("#detalleProducto"))?.hide();
+    cierreDirecto = false;
     const tarjeta = document.querySelector(`[data-detalle="${id}"]`)?.closest(".producto");
     pedirAgregar(id, cantidad, tarjeta?.querySelector(".producto-media > svg, .producto-media > img"));
   });

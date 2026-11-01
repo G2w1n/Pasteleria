@@ -19,4 +19,8 @@ export const NEGOCIO = {
     5: [8, 20],
     6: [8, 21],
   },
+  // Hasta qué hora (Lima) se puede pedir para que llegue el mismo día.
+  // Son las mismas horas de corte que revisa la API (api/pedidos.js): franja de la
+  // tarde hasta las 5 p. m.; los domingos solo hay franja de la mañana, hasta las 11 a. m.
+  corteMismoDia: { domingo: 11, otrosDias: 17 },
 };

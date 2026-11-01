@@ -13,6 +13,8 @@ import { iniciarCarrito } from "./carrito.js";
 import { iniciarPedido } from "./pedido.js";
 import { iniciarCuenta } from "./cuenta.js";
 import { iniciarAnimaciones } from "./animaciones.js";
+import { iniciarFotosSuaves } from "./fotos-suaves.js";
+import { iniciarCuentaRegresiva } from "./cuenta-regresiva.js";
 import { api, apiDisponible, cargarCatalogo, obtenerSesion } from "./api.js";
 import { CATEGORIAS, productos } from "./productos.js";
 
@@ -22,11 +24,15 @@ const PERSONAL = ["administrador", "empleado"]; // pueden entrar al panel
 // Los componentes React usan "unidad" e "imagen" (como en la práctica de la Semana 11)
 const productosParaReact = () => productos.map((p) => ({ ...p, unidad: p.porcion, imagen: p.foto ?? `img/productos/${p.id}.svg` }));
 
+// Fotos de productos: primero borrosas y se aclaran al cargar (antes de dibujar cualquier tarjeta)
+iniciarFotosSuaves();
+
 // ---------- Datos: base de datos (Neon) si la API responde; si no, js/productos.js ----------
 await cargarCatalogo();
 
 // ---------- Comunes a todas las páginas ----------
 insertarComponentes({ conDetalle: existe("#islaCatalogo") || existe("#grillaDestacados"), whatsapp: NEGOCIO.whatsapp });
+iniciarCuentaRegresiva();
 iniciarTema($("#btnTema"));
 iniciarCarrito();
 

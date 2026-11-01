@@ -382,3 +382,4 @@ desde las originales de la carpeta `imagenes/`). Si falta una foto, el producto 
 - [x] **Fase 15:** Acceso interactivo: tarjeta que gira, validación en vivo, checklist de contraseña, Bloq Mayús, avatar, registro en 3 pasos, cupcake, bienvenida con cupón y Google
 - [x] **Fase 16:** Cupcake que se arma por pasos, tarjeta que se inclina con el mouse, botón que termina en ✓, "¿Olvidaste tu contraseña?" y el menú se actualiza al ingresar o salir
 - [x] **Fase 17:** Compra sin cuenta con **día y franja de entrega** disponibles (cupo por franja, domingos solo en la mañana y hora de corte), validados también en el servidor; la fecha aparece en la confirmación, WhatsApp, "Mis pedidos", el seguimiento y el panel
+- [x] **Fase 18:** Fotos que cargan borrosas y se aclaran (`js/fotos-suaves.js`), la foto vuela de la tarjeta al detalle y vuelve al cerrar, y cuenta regresiva "Pide en las próximas… y llega hoy" (`js/cuenta-regresiva.js`)

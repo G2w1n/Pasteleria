@@ -30,6 +30,7 @@ const CARRITO = `
         <div class="fila-descuento" id="filaDescuento" hidden><dt>Descuento 10 %</dt><dd id="carritoDescuento"></dd></div>
         <div class="fila-total"><dt>Total</dt><dd id="carritoTotal"></dd></div>
       </dl>
+      <p class="cuenta-regresiva cuenta-regresiva-sm" data-cuenta-regresiva hidden><i class="bi bi-clock-history" aria-hidden="true"></i> <span class="cuenta-texto"></span></p>
       <p class="fg-3 fs-xs mb-0">El costo de delivery se calcula al confirmar, según tu distrito.</p>
       <!-- Solo aparece si la API (base de datos) está disponible -->
       <button class="btn btn-solid theme-primary btn-lg w-100 solo-con-api" type="button" id="btnCheckout">

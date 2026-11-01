@@ -263,6 +263,40 @@
     max-width: 52ch;
     color: var(--bs-fg-2);
   }
+  /* Cuenta regresiva "Pide en las próximas… y llega hoy" (js/cuenta-regresiva.js) */
+  .cuenta-regresiva {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 1rem 0 0;
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    background: var(--bs-primary-bg-subtle);
+    color: var(--bs-primary-fg);
+    font-weight: 600;
+  }
+  .cuenta-regresiva strong {
+    font-variant-numeric: tabular-nums;
+  }
+  .cuenta-regresiva.urgente {
+    background: var(--bs-warning-bg-subtle);
+    color: var(--bs-warning-fg-emphasis); /* warning-fg no llega a 4.5:1 sobre este fondo */
+  }
+  .cuenta-regresiva.urgente i {
+    animation: reloj-latido 1.2s ease-in-out infinite;
+  }
+  .cuenta-regresiva-sm {
+    margin: 0;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    align-self: flex-start;
+  }
+  @keyframes reloj-latido {
+    50% { scale: 1.2; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cuenta-regresiva.urgente i { animation: none; }
+  }
   .beneficios {
     list-style: none;
     padding: 0;
@@ -384,6 +418,14 @@
     display: grid;
     place-items: center;
     background: light-dark(var(--tono), color-mix(in oklch, var(--tono) 14%, #241b1d));
+  }
+  /* Fotos que cargan suaves (js/fotos-suaves.js): la versión diminuta, borrosa,
+     se ve de fondo mientras llega la foto real */
+  img.foto-cargando {
+    background-size: cover;
+    background-position: center;
+    filter: blur(14px);
+    scale: 1.08;
   }
   .producto-media svg,
   .producto-media img {
@@ -2709,6 +2751,14 @@
   }
   html:active-view-transition-type(tema) * {
     view-transition-name: none !important;
+  }
+
+  /* Fotos que cargan suaves: al terminar de cargar, se aclaran (js/fotos-suaves.js) */
+  img.foto-aclara {
+    animation: foto-aclara 0.6s ease-out;
+  }
+  @keyframes foto-aclara {
+    from { filter: blur(14px); scale: 1.08; }
   }
 
   /* Detalle que crece desde la tarjeta (js/catalogo.js). Solo el dibujo lleva
